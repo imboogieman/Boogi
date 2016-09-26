@@ -1,0 +1,385 @@
+<?php
+
+/**
+ * This is the model class for table "gig".
+ *
+ * The followings are the available columns in table 'gig':
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $venue_id
+ * @property string $name
+ * @property string $alias
+ * @property string $datetime
+ * @property integer $status
+ * @property string $timestamp
+ * @property integer $capacity
+ * @property integer $type
+ * @property integer $accommodation
+ * @property integer $transfer
+ * @property string $ds_id
+ * @property integer $ds_type
+ *
+ * The followings are the available model relations:
+ * @property User $user
+ * @property Venue $venue
+ */
+class Gig extends Model
+{
+    const STATUS_PREBOOKING = 1;
+    const STATUS_ACCEPTED = 2;
+
+    public $image;
+
+    protected $_related_params = array(
+        'artist_id' => null
+    );
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'gig';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('venue_id, datetime', 'required'),
+            array('user_id, venue_id, status, capacity, type, accommodation, transfer', 'numerical', 'integerOnly' => true),
+            array('name', 'length', 'max' => 255),
+            array('timestamp', 'safe'),
+            array('name, datetime, status, timestamp', 'safe', 'on' => 'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+            'venue' => array(self::BELONGS_TO, 'Venue', 'venue_id'),
+            'artistGigs' => array(self::HAS_MANY, 'ArtistGig', 'gig_id'),
+            'gigFiles' => array(self::HAS_MANY, 'GigFile', 'gig_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'user_id' => 'User',
+            'venue_id' => 'Venue',
+            'name' => 'Gig Name',
+            'datetime' => 'Date',
+            'status' => 'Status',
+            'timestamp' => 'Timestamp',
+            'capacity' => 'Capacity',
+            'type' => 'Type',
+            'accommodation' => 'Accommodation',
+            'transfer' => 'Transfer',
+            'ds_id' => 'Data Provider ID',
+            'ds_type' => 'Data Provider',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
+
+        $criteria = new CDbCriteria;
+
+        $criteria->compare('id', $this->id);
+        $criteria->compare('user_id', $this->user_id);
+        $criteria->compare('venue_id', $this->venue_id);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('datetime', $this->datetime, true);
+        $criteria->compare('status', $this->status);
+        $criteria->compare('timestamp', $this->timestamp, true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Gig the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * Save current gig data and update artist relations
+     * @return bool
+     */
+    public function save()
+    {
+        if (parent::save()) {
+            // Add new relations with gigs
+            if (is_array($this->_related_params['artist_id'])) {
+                // Delete all old relations with gigs
+                ArtistGig::model()->deleteAll('gig_id = ?', array($this->id));
+
+                // Add new records
+                foreach ($this->_related_params['artist_id'] as $artist_id) {
+                    $artistGig = new ArtistGig;
+                    $artistGig->artist_id = $artist_id;
+                    $artistGig->gig_id = $this->id;
+                    $artistGig->save();
+                }
+            }
+
+            // Generates alias
+            $this->generateAlias();
+
+            return true;
+        }
+    }
+
+    /**
+     * Return list of related artists
+     * @return array
+     */
+    public function getGigs()
+    {
+        $result = array();
+        foreach ($this->artistGigs as $artistGig) {
+            $result[$artistGig->artist_id] = $artistGig->artist->name;
+        }
+        return $result;
+    }
+
+    /**
+     * Return selection options array for CHtml::listBox
+     * @return array
+     */
+    public function getArtistsSelected()
+    {
+        $result = array();
+        foreach ($this->artistGigs as $artistGig) {
+            $result[$artistGig->artist_id] = array('selected' => 'selected');
+        }
+        return $result;
+    }
+
+    /**
+     * Get gigs assoc array
+     * @return array
+     */
+    public static function getArray()
+    {
+        return CHtml::listData(self::model()->findAll(), 'id', 'name');
+    }
+
+    /**
+     * Gig statuses
+     * @return array
+     */
+    public static function getStatuses()
+    {
+        return array(
+            Gig::STATUS_PREBOOKING => 'Pre-booking',
+            Gig::STATUS_ACCEPTED => 'Accepted'
+        );
+    }
+
+    /**
+     * Get readable status
+     * @return string
+     */
+    public function getStatus()
+    {
+        $variants = self::getStatuses();
+        return isset($variants[$this->status]) ? $variants[$this->status] : 'Not set';
+    }
+
+    /**
+     * Gig capacities
+     * @return array
+     */
+    public static function getCapacities()
+    {
+        return array(
+            1 => 'up to 100',
+            2 => '100-300',
+            3 => '300-1000',
+            4 => '1000-5000',
+            5 => '5000 and more'
+        );
+    }
+
+    /**
+     * Get readable capacity
+     * @return string
+     */
+    public function getCapacity()
+    {
+        $variants = self::getCapacities();
+        return isset($variants[$this->capacity]) ? $variants[$this->capacity] : 'Not set';
+    }
+
+    /**
+     * Gig types
+     * @return array
+     */
+    public static function getTypes()
+    {
+        return array(
+            1 => 'Club night',
+            2 => 'Festival',
+            3 => 'Solo concert',
+            4 => 'Group concert',
+            5 => 'Private party',
+            6 => 'Wedding',
+            7 => 'Corporate event',
+            8 => 'Charity event'
+        );
+    }
+
+    /**
+     * Get readable type
+     * @return string
+     */
+    public function getType()
+    {
+        $variants = self::getTypes();
+        return isset($variants[$this->type]) ? $variants[$this->type] : 'Not set';
+    }
+
+    /**
+     * Gig accommodations
+     * @return array
+     */
+    public static function getAccommodations()
+    {
+        return array(
+            1 => 'No/Yourself',
+            2 => 'Couch',
+            3 => 'Hostel',
+            4 => 'Rented flat',
+            5 => '1 star hotel',
+            6 => '2 star hotel',
+            7 => '3 star hotel',
+            8 => 'VIP'
+        );
+    }
+
+    /**
+     * Get readable accommodation
+     * @return string
+     */
+    public function getAccommodation()
+    {
+        $variants = self::getAccommodations();
+        return isset($variants[$this->accommodation]) ? $variants[$this->accommodation] : 'Not set';
+    }
+
+    /**
+     * Gig accommodations
+     * @return array
+     */
+    public static function getTransferTypes()
+    {
+        return array(
+            1 => 'No/Yourself',
+            2 => 'Car',
+            3 => 'Bus',
+            4 => 'Coach',
+            5 => 'Plane'
+        );
+    }
+
+    /**
+     * Get readable transfer type
+     * @return string
+     */
+    public function getTransferType()
+    {
+        $variants = self::getTransferTypes();
+        return isset($variants[$this->transfer]) ? $variants[$this->transfer] : 'Not set';
+    }
+
+    /**
+     * Get readable data provide
+     * @return string
+     */
+    public function getDataProvider()
+    {
+        $data = DataSource::getDSRealName($this->ds_type);
+        return $data ? $data : 'Starway';
+    }
+
+    /**
+     * Gig all attributes lists
+     * @return array
+     */
+    public static function getAttributesList()
+    {
+        return array(
+            'capacities'     => Model::arrayToList(self::getCapacities()),
+            'types'          => Model::arrayToList(self::getTypes()),
+            'accommodations' => Model::arrayToList(self::getAccommodations()),
+            'transfertypes'  => Model::arrayToList(self::getTransferTypes()),
+        );
+    }
+
+    /**
+     * Return formatted date
+     * @param string $format
+     * @return string
+     */
+    public function getDate($format = 'Y-m-d')
+    {
+        return date($format, strtotime($this->datetime));
+    }
+
+    /**
+     * Return Gig normalized data
+     * @return array
+     */
+    public function getNormalizedData()
+    {
+        return array(
+            'id'            => $this->id,
+            'name'          => $this->name,
+            'alias'         => $this->alias,
+            'venue'         => $this->venue->getNormalizedData(),
+            'image'         => $this->getMainImage(),
+            'capacity'      => $this->getCapacity(),
+            'type'          => $this->getType(),
+            'accommodation' => $this->getAccommodation(),
+            'transfertype'  => $this->getTransferType(),
+            'date'          => $this->getDate(),
+        );
+    }
+}
+

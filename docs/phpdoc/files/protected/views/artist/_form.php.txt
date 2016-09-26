@@ -1,0 +1,134 @@
+<?php
+    /* @var $this ArtistController */
+    /* @var $model Artist */
+    /* @var $form CActiveForm */
+
+    $newArtistGig = new ArtistGig;
+
+    $latitude = $model->latitude ? $model->latitude : Model::getDefaultLatitude();
+    $longitude = $model->longitude ? $model->longitude : Model::getDefaultLongitude();
+?>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['googleApiKey']; ?>&sensor=true"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var center = new google.maps.LatLng(<?php echo $latitude; ?>, <?php echo $longitude; ?>),
+            mapOptions = {
+                center      : center,
+                zoom        : 8,
+                mapTypeId   : google.maps.MapTypeId.ROADMAP
+            };
+
+        // Init map
+        var map = new google.maps.Map(document.getElementById('artist-map'), mapOptions);
+
+        // User marker
+        var marker = new google.maps.Marker({
+            position    : center,
+            map         : map,
+            draggable   : true,
+            title       : 'Artist hometown',
+            icon        : '/images/m-artist.png'
+        });
+
+        // Update user position with radius update
+        google.maps.event.addListener(marker, 'dragend', function () {
+            $('#Artist_latitude').val(this.getPosition().lat());
+            $('#Artist_longitude').val(this.getPosition().lng());
+        });
+    });
+</script>
+
+<div class="form">
+
+    <?php
+    $form = $this->beginWidget('CActiveForm', array(
+        'id' => 'artist-form',
+        'enableAjaxValidation' => true,
+        'htmlOptions' => array('enctype' => 'multipart/form-data'),
+    ));
+    ?>
+
+    <?php echo $form->hiddenField($model, 'timestamp'); ?>
+
+    <p class="note">Fields with <span class="required">*</span> are required.</p>
+
+    <?php echo $form->errorSummary($model); ?>
+
+    <fieldset>
+        <legend>General information</legend>
+        <div class="row">
+            <?php echo $form->labelEx($model, 'email'); ?>
+            <?php echo $form->emailField($model, 'email', array('size' => 60, 'maxlength' => 255)); ?>
+            <?php echo $form->error($model, 'email'); ?>
+        </div>
+
+        <div class="row">
+            <?php echo $form->labelEx($model, 'name'); ?>
+            <?php echo $form->textField($model, 'name', array('size' => 60, 'maxlength' => 64)); ?>
+            <?php echo $form->error($model, 'name'); ?>
+        </div>
+
+        <div class="row">
+            <?php echo $form->labelEx($model, 'image'); ?>
+            <?php echo $form->fileField($model, 'image'); ?>
+            <?php echo $form->error($model, 'image'); ?>
+        </div>
+
+        <div class="row">
+            <?php echo $form->labelEx($model, 'description'); ?>
+            <?php echo $form->textArea($model, 'description', array('rows' => 6, 'cols' => 50)); ?>
+            <?php echo $form->error($model, 'description'); ?>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Link artist to gigs</legend>
+        <?php if (count($model->artistGigs)) { ?>
+            <div class="row">
+                <?php echo $form->labelEx($newArtistGig, 'gig_id'); ?>
+                <?php echo $form->listBox($newArtistGig, 'gig_id', Gig::getArray(), array('multiple' => 'multiple', 'size' => 10, 'options' => $model->getGigsSelected())); ?>
+                <?php echo $form->error($newArtistGig, 'gig_id'); ?>
+            </div>
+        <?php } else { ?>
+            <div class="row">
+                <?php echo $form->labelEx($newArtistGig, 'gig_id'); ?>
+                <?php echo $form->listBox($newArtistGig, 'gig_id', Gig::getArray(), array('multiple' => 'multiple', 'size' => 10)); ?>
+                <?php echo $form->error($newArtistGig, 'gig_id'); ?>
+            </div>
+        <?php } ?>
+        <div class="note">Hold down the control or shift button to select multiple Gigs</div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Venue location</legend>
+
+        <div class="row">
+            <div class="column">
+                <?php echo $form->labelEx($model, 'latitude'); ?>
+                <?php echo $form->textField($model, 'latitude'); ?>
+                <?php echo $form->error($model, 'latitude'); ?>
+            </div>
+
+            <div class="column">
+                <?php echo $form->labelEx($model, 'longitude'); ?>
+                <?php echo $form->textField($model, 'longitude'); ?>
+                <?php echo $form->error($model, 'longitude'); ?>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+
+        <div class="row notice">You can drag points on map to change your location info</div>
+
+        <div class="row">
+            <div id="artist-map"></div>
+        </div>
+    </fieldset>
+
+    <div class="row buttons">
+        <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+    </div>
+
+    <?php $this->endWidget(); ?>
+
+</div><!-- form -->

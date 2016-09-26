@@ -1,0 +1,176 @@
+#promoter {
+  margin-top: 65px;
+
+  .wrap {
+    margin: 0 10px;
+    padding: 0;
+    background: @white;
+
+    h1 {
+      font-size: 24pt;
+      font-weight: 600;
+
+      .back {
+        float: right;
+        padding-top: 15px;
+        font-size: 16px;
+      }
+    }
+
+    h2 {
+      margin-bottom: 5px;
+      font-size: 15pt;
+      font-weight: 600;
+    }
+
+    h3 {
+      font-size: 12pt;
+      font-weight: 600;
+    }
+
+    .spacer {
+      padding-bottom: 5px;
+      border-bottom: 1px solid @light-grey;
+    }
+
+    #profile {
+      max-width: 1200px;
+      margin: 0 auto;
+
+      .left-column {
+        width: 30%;
+        margin-top: 15px;
+        font-size: 11pt;
+
+        .wrap {
+          padding: 20px 30px;
+
+          h3 {
+            font-size: 11pt;
+            margin-bottom: 10px;
+          }
+
+          a {
+            text-decoration: none;
+            color: @grey;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+
+          .push {
+            margin-left: 15px;
+          }
+
+          #status {
+            display: inline-block;
+            margin-top: 10px;
+            padding-right: 20px;
+            background: url(@images + 'icon/i-approved.png') no-repeat center right;
+          }
+
+          #facebook {
+            padding-left: 22px;
+            background: url(@images + 'icon/i-facebook.png') no-repeat center left;
+          }
+
+          #twitter {
+            padding-left: 22px;
+            background: url(@images + 'icon/i-twitter.png') no-repeat center left;
+          }
+
+          #abuse {
+            margin: 30px 15px;
+            padding-left: 22px;
+            background: url(@images + 'icon/i-report.png') no-repeat center left;
+          }
+
+          #image {
+            width: 100%;
+            max-width: 250px;
+            max-height: 250px;
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              border-radius: 125px;
+            }
+          }
+        }
+      }
+
+      .right-column {
+        width: 68%;
+        margin: 0;
+
+        .wrap {
+          padding: 0 30px 40px 0;
+
+          h1 {
+            margin-bottom: 0;
+          }
+
+          #type {
+            margin-bottom: 15px;
+            font-size: 11pt;
+            color: @grey;
+          }
+
+          #description {
+            p {
+              margin: 0 0 5px 0;
+            }
+          }
+
+          .booking {
+            padding: 10px 15px;
+            font-size: 11pt;
+            border: 1px solid @light-grey;
+            border-bottom: none;
+
+            &:last-child {
+              border-bottom: 1px solid @light-grey;
+            }
+
+            .image {
+              float: left;
+              margin: 5px 15px 5px 0;
+              width: 40px;
+              height: 40px;
+              overflow: hidden;
+
+              img {
+                width: 40px;
+              }
+            }
+
+            .date {
+              float: right;
+              font-size: 9pt;
+            }
+
+            .name {
+              float: left;
+
+              h3 {
+                display: inline-block;
+                margin: 0 5px 0 0;
+                font-size: 11pt;
+              }
+
+              .description {
+                font-size: 9pt;
+                color: @grey;
+              }
+            }
+
+            .gig {
+              margin-top: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

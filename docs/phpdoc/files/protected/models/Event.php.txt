@@ -1,0 +1,135 @@
+<?php
+
+/**
+ * This is the model class for table "event".
+ *
+ * The followings are the available columns in table 'event':
+ * @property integer $id
+ * @property string $type
+ * @property string $init_type
+ * @property integer $init_id
+ * @property string $target_type
+ * @property integer $target_id
+ * @property string $timestamp
+ */
+class Event extends CActiveRecord
+{
+    const CREATE = 'Create';
+    const UPDATE = 'Update';
+    const DELETE = 'Delete';
+
+    const BOOK = 'Book';
+
+    const FOLLOW = 'Follow';
+    const UNFOLLOW = 'Unfollow';
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'event';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('type, init_type, init_id, target_type, target_id', 'required'),
+            array('init_id, target_id', 'numerical', 'integerOnly' => true),
+            array('type, init_type, target_type', 'length', 'max' => 64),
+            array('timestamp', 'safe'),
+            array('id, type, init_type, init_id, target_type, target_id, timestamp', 'safe', 'on'=>'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'type' => 'Type',
+            'init_type' => 'Init Type',
+            'init_id' => 'Init',
+            'target_type' => 'Target Type',
+            'target_id' => 'Target',
+            'timestamp' => 'Timestamp',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('id',$this->id);
+        $criteria->compare('type',$this->type,true);
+        $criteria->compare('init_type',$this->init_type,true);
+        $criteria->compare('init_id',$this->init_id);
+        $criteria->compare('target_type',$this->target_type,true);
+        $criteria->compare('target_id',$this->target_id);
+        $criteria->compare('timestamp',$this->timestamp,true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+        ));
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Event the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * Return event normalized data
+     * @return array $data
+     */
+    public function getNormalizedData()
+    {
+        $init = call_user_func(array($this->init_type, 'model'))->findByPk($this->init_id);
+        $target = call_user_func(array($this->target_type, 'model'))->findByPk($this->target_id);
+
+        return array(
+            'type'      => $this->type,
+            'init'      => $init ? $init->getNormalizedData() : null,
+            'target'    => $target ? $target->getNormalizedData() : null,
+        );
+    }
+}
+

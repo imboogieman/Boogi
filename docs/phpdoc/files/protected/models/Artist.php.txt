@@ -1,0 +1,297 @@
+<?php
+
+/**
+ * This is the model class for table "artist".
+ *
+ * The followings are the available columns in table 'artist':
+ * @property integer $id
+ * @property string $email
+ * @property string $name
+ * @property string $alias
+ * @property string $image
+ * @property string $description
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $timestamp
+ * @property int $fb_id
+ *
+ * The followings are the available model relations:
+ * @property ArtistFile[] $artistFiles
+ * @property ArtistGig[] $artistGigs
+ * @property ArtistPromoter[] $artistPromoters
+ */
+class Artist extends Model
+{
+    public $image;
+
+    public $following;
+
+    public $gigs;
+
+    protected $_related_params = array(
+        'gig_id' => null
+    );
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Artist the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'artist';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('name', 'required'),
+            array('email', 'length', 'max' => 255),
+            array('name', 'length', 'max' => 64),
+            array('image', 'file', 'allowEmpty' => true, 'types' => 'jpg, gif, png'),
+            array('description, timestamp', 'safe'),
+            array('email, name, description', 'safe', 'on' => 'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'artistFiles' => array(self::HAS_MANY, 'ArtistFile', 'artist_id'),
+            'artistGigs' => array(self::HAS_MANY, 'ArtistGig', 'artist_id'),
+            'artistPromoters' => array(self::HAS_MANY, 'ArtistPromoter', 'artist_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'email' => 'Email',
+            'name' => 'Name',
+            'image' => 'Image',
+            'description' => 'Description',
+            'timestamp' => 'Timestamp',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria;
+
+        $criteria->compare('id', $this->id);
+        $criteria->compare('email', $this->email, true);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('description', $this->description, true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
+
+    /**
+     * Save current artist data and update gig relations
+     * @return bool
+     */
+    public function save()
+    {
+        if (parent::save()) {
+            // Add new relations with gigs
+            if (is_array($this->_related_params['gig_id'])) {
+                // Delete all old relations with gigs
+                ArtistGig::model()->deleteAll('artist_id = ?', array($this->id));
+
+                // Add new records
+                foreach ($this->_related_params['gig_id'] as $gig_id) {
+                    $artistGig = new ArtistGig;
+                    $artistGig->artist_id = $this->id;
+                    $artistGig->gig_id = $gig_id;
+                    $artistGig->save();
+                }
+            }
+
+            // Generates alias
+            $this->generateAlias();
+
+            return true;
+        }
+    }
+
+    /**
+     * Return list of linked files
+     * @return array
+     */
+    public function getFiles()
+    {
+        $result = array();
+        foreach ($this->artistFiles as $file) {
+            $result[$file->file_id] = $file->file->path;
+        }
+        return $result;
+    }
+
+    /**
+     * Return list of related gigs
+     * @return array
+     */
+    public function getGigs()
+    {
+        $result = array();
+        foreach ($this->artistGigs as $artistGig) {
+            $result[$artistGig->gig_id] = $artistGig->gig->name;
+        }
+        return $result;
+    }
+
+    /**
+     * Return selection options array for CHtml::listBox
+     * @return array
+     */
+    public function getGigsSelected()
+    {
+        $result = array();
+        foreach ($this->artistGigs as $artistGig) {
+            $result[$artistGig->gig_id] = array('selected' => 'selected');
+        }
+        return $result;
+    }
+
+    /**
+     * Get artists assoc array
+     * @return array
+     */
+    public static function getArray()
+    {
+        return CHtml::listData(self::model()->findAll(), 'id', 'name');
+    }
+
+    public function getMapData()
+    {
+        $result = array(
+            'followCount' => 0,
+            'gigCount' => 0,
+            'mapData' => array()
+        );
+
+        foreach ($this->artistGigs as $artistGig) {
+            $result['gigCount']++;
+            $result['mapData'][] = array(
+                'date' => date('Y-m-d', strtotime($artistGig->gig->datetime)),
+                'label' => date('d.m', strtotime($artistGig->gig->datetime)),
+                'gig' => $artistGig->gig->name,
+                'venue' => $artistGig->gig->venue->name,
+                'latitude' => $artistGig->gig->venue->latitude,
+                'longitude' => $artistGig->gig->venue->longitude,
+            );
+        }
+
+        return $result;
+    }
+
+    public function isCurrentUserFollowing()
+    {
+        if (!Yii::app()->user->isGuest) {
+            $user_id = Yii::app()->user->getId();
+            foreach ($this->artistPromoters as $artistPromoter) {
+                if ($artistPromoter->promoter->user_id == $user_id) return true;
+            }
+        }
+        return false;
+    }
+
+    public static function getList()
+    {
+        $result = array();
+        $artists = self::model()->findAll();
+
+        if ($artists) {
+            foreach ($artists as $artist) {
+                $result[] = $artist->getNormalizedData();
+            }
+        }
+
+        usort($result, array('self', 'sortByGigCount'));
+
+        return $result;
+    }
+
+    public static function getForMap($id)
+    {
+        if ($artist = Artist::model()->findByPk($id)) {
+            return $artist->getNormalizedData();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Return Artist normalized data
+     * @return array
+     */
+    public function getNormalizedData()
+    {
+        return array(
+            'id'            => $this->id,
+            'name'          => $this->name,
+            'alias'         => $this->alias,
+            'description'   => $this->description,
+            'latitude'      => $this->latitude,
+            'longitude'     => $this->longitude,
+            'image'         => $this->getMainImage(),
+            'gigCount'      => count($this->artistGigs),
+            'venueCount'    => count($this->artistGigs),
+            'following'     => $this->isCurrentUserFollowing(),
+            'gigs'          => $this->getMapData(),
+            'date'          => date('Y-m-d', strtotime($this->timestamp))
+        );
+    }
+
+    /**
+     * Sort artist by gigs count
+     * @param Artist $a
+     * @param Artist $b
+     * @return int
+     */
+    private static function sortByGigCount($a, $b)
+    {
+        if ($a['gigs'] == $b['gigs']) {
+            return 0;
+        }
+        return ($a['gigs'] > $b['gigs']) ? -1 : 1;
+    }
+}
+

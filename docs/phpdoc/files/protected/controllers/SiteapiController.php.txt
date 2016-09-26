@@ -1,0 +1,268 @@
+<?php
+
+class SiteApiController extends Controller
+{
+    public function actionSubscribe()
+    {
+        // Get artists
+        $subscription = new Subscription;
+
+        // Validate user input and redirect to the previous page if valid
+        if (isset($_POST['name']) && isset($_POST['email'])) {
+            $subscription->name = $_POST['name'];
+            $subscription->email = $_POST['email'];
+
+            if ($subscription->save()) {
+                $result = array(
+                    'result' => 'success',
+                    'data'   => $subscription->id
+                );
+            } else {
+                $result = array(
+                    'result'  => 'error',
+                    'message' => 'Could not create subscription, please try later.'
+                );
+            }
+        } else {
+            $result = array(
+                'result'  => 'error',
+                'message' => 'Please enter your email and name.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionUpload()
+    {
+        $model = new File;
+        $file = CUploadedFile::getInstance($model, 'image');
+        $attributes = $model->attributes;
+        unset($attributes['image']);
+
+        if ($model->save() && $file) {
+            $image_name = 'images/temp/' . substr(md5(time()), 0, 10) . '.' . $file->getExtensionName();
+            if (!$file->getHasError() && $file->saveAs($image_name)) {
+                $model->path = $image_name;
+                if ($model->save()) {
+                    $result = array(
+                        'result'  => 'success',
+                        'file_id' => $model->id,
+                        'file_name' => '/' . $image_name
+                    );
+                } else {
+                    $result = array(
+                        'result'  => 'error',
+                        'message' => 'Could not save model'
+                    );
+                }
+            } else {
+                $result = array(
+                    'result'  => 'error',
+                    'message' => $file->getError()
+                );
+            }
+        } else {
+            $result = array(
+                'result'  => 'error',
+                'message' => $model->getErrors()
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    /**
+     * Follow item to current promoter.
+     */
+    public function actionFollow()
+    {
+        $result = array();
+
+        $follow_id = isset($_POST['id']) && $_POST['id'] > 0 ? $_POST['id'] : 0;
+        $follow_type = isset($_POST['type']) && !empty($_POST['type']) ? $_POST['type'] : 'artist';
+
+        if ($follow_id) {
+            // Get logged promoter
+            $promoter = Promoter::getLogged();
+
+            // Check login status
+            if ($promoter) {
+                $isNewRelation = false;
+
+                // Check follow type
+                switch ($follow_type) {
+                    case 'promoter':
+                        $item = Promoter::model()->findByPk($_POST['id']);
+                        if (!$item) {
+                            break;
+                        }
+
+                        $relation = PromoterPromoter::model()->find(
+                            'promoter_id = :promoter_id AND follow_id = :follow_id',
+                            array(
+                                ':promoter_id' => $promoter->id,
+                                ':follow_id'   => $item->id,
+                            )
+                        );
+
+                        if (!$relation) {
+                            $isNewRelation = true;
+                            $relation = new PromoterPromoter;
+                            $relation->promoter_id = $promoter->id;
+                            $relation->follow_id = $item->id;
+                        }
+                        break;
+                    default:
+                        $item = Artist::model()->findByPk($_POST['id']);
+                        if (!$item) {
+                            break;
+                        }
+
+                        $relation = ArtistPromoter::model()->find(
+                            'promoter_id = :promoter_id AND artist_id = :artist_id',
+                            array(
+                                ':promoter_id' => $promoter->id,
+                                ':artist_id'   => $item->id,
+                            )
+                        );
+
+                        if (!$relation) {
+                            $isNewRelation = true;
+                            $relation = new ArtistPromoter;
+                            $relation->promoter_id = $promoter->id;
+                            $relation->artist_id = $item->id;
+                        }
+                        break;
+                }
+
+                if ($item) {
+                    if ($isNewRelation) {
+                        if ($relation->save()) {
+                            // Create event
+                            $promoter->createEvent(Event::FOLLOW, $item);
+
+                            $result['result'] = 'success';
+                        } else {
+                            $result = array(
+                                'result' => 'error',
+                                'error' => 'Cant save record'
+                            );
+                        }
+                    } else {
+                        $result = array(
+                            'result' => 'error',
+                            'error' => 'You already following this artist'
+                        );
+                    }
+                } else {
+                    $result = array(
+                        'result' => 'error',
+                        'error' => 'Cant find follow item'
+                    );
+                }
+            } else {
+                $result = array(
+                    'result' => 'error',
+                    'error' => 'Please login first',
+                    'require_auth' => true
+                );
+            }
+        } else {
+            $result = array(
+                'result' => 'error',
+                'error' => 'Follow ID could not be empty'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    /**
+     * Unfollow item from current promoter.
+     */
+    public function actionUnfollow()
+    {
+        $result = array();
+
+        $follow_id = isset($_POST['id']) && $_POST['id'] > 0 ? $_POST['id'] : 0;
+        $follow_type = isset($_POST['type']) && !empty($_POST['type']) ? $_POST['type'] : 'artist';
+
+        if ($follow_id) {
+            // Check login status
+            $promoter = Promoter::getLogged();
+            if ($promoter) {
+                // Check follow type
+                switch ($follow_type) {
+                    case 'promoter':
+                        $item = Promoter::model()->findByPk($_POST['id']);
+                        if (!$item) {
+                            break;
+                        }
+
+                        $relation = PromoterPromoter::model()->find(
+                            'promoter_id = :promoter_id AND follow_id = :follow_id',
+                            array(
+                                ':promoter_id' => $promoter->id,
+                                ':follow_id'   => $item->id,
+                            )
+                        );
+                        break;
+                    default:
+                        $item = Artist::model()->findByPk($_POST['id']);
+                        if (!$item) {
+                            break;
+                        }
+
+                        $relation = ArtistPromoter::model()->find(
+                            'promoter_id = :promoter_id AND artist_id = :artist_id',
+                            array(
+                                ':promoter_id' => $promoter->id,
+                                ':artist_id'   => $item->id,
+                            )
+                        );
+                        break;
+                }
+
+                if ($item) {
+                    if ($relation) {
+                        if ($relation->delete()) {
+                            // Create event
+                            $promoter->createEvent(Event::UNFOLLOW, $item);
+
+                            $result['result'] = 'success';
+                        } else {
+                            $result = array(
+                                'result' => 'error',
+                                'error' => 'Cant delete record'
+                            );
+                        }
+                    } else {
+                        $result = array(
+                            'result' => 'error',
+                            'error' => 'You are not following this item'
+                        );
+                    }
+                } else {
+                    $result = array(
+                        'result' => 'error',
+                        'error' => 'Cant find follow item'
+                    );
+                }
+            } else {
+                $result = array(
+                    'result' => 'error',
+                    'error' => 'Please login first',
+                    'require_auth' => true
+                );
+            }
+        } else {
+            $result = array(
+                'result' => 'error',
+                'error' => 'Follow ID could not be empty'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "name"              : "m2/boogi",
+    "description"       : "Social network for promoters",
+    "minimum-stability" : "stable",
+    "authors": [
+        {
+            "name"      : "Alexander Chaika",
+            "email"     : "manti.by@gmail.com"
+        }
+    ],
+    "require": {
+        "php"                           : ">=5.4.0",
+        "ext-gd"                        : "*",
+        "ext-curl"                      : "*",
+        "ext-dom"                       : "*",
+        "ext-json"                      : "*",
+        "ext-mcrypt"                    : "*",
+        "ext-mysqlnd"                   : "*",
+        "ext-openssl"                   : "*",
+        "ext-pcre"                      : "*",
+        "ext-reflection"                : "*",
+        "ext-spl"                       : "*",
+        "ext-xsl"                       : "*",
+        "yiisoft/yii"                   : "1.1.16",
+        "phpmailer/phpmailer"           : "v5.2.7",
+        "mandrill/mandrill"             : "1.0.*",
+        "mailchimp/mailchimp"           : "2.0.6",
+        "leafo/lessphp"                 : "0.4.0",
+        "nervo/yuicompressor"           : "2.4.8",
+        "jalle19/php-yui-compressor"    : "1.0.1"
+    },
+    "require-dev": {
+        "phpdocumentor/phpdocumentor"   : "v2.5.0",
+        "pdepend/pdepend"               : "2.0.0",
+        "phpunit/php-invoker"           : "*",
+        "phpunit/dbunit"                : ">=1.2",
+        "phpunit/phpunit-story"         : ">=1.0.2",
+        "phpunit/phpunit-selenium"      : ">=1.3",
+        "se/selenium-server-standalone" : "v2.42.2",
+        "parse/php-sdk"                 : "1.1.*"
+    }
+}

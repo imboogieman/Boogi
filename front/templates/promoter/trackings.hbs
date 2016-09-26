@@ -1,0 +1,46 @@
+<script type="text/x-handlebars-template" id="t-promoter-trackings">
+    <div id="promoter-trackings" class="container">
+        <div id="trackings" class="shadow rounded">
+            <div class="wrapper">
+                <h1>Your Tracked Artists</h1>
+                <div id="tracked-artists">
+                    {{#artists}}
+                        <div class="item clear {{#if in_radius}}in-radius{{/if}}" data-id="{{id}}" title="{{#if in_radius}}{{name}} has Gigs in Your radius{{/if}}">
+                            <div class="wrap">
+                                <div class="image"><img src="{{image}}" alt="{{name}}"  /></div>
+                                <div class="name">
+                                    <a href="{{link}}" data-id="{{id}}" class="show-item artist">{{name}}</a>
+                                </div>
+                                <div class="description">{{description}}</div>
+                                <div class="info">
+                                    <span class="gig-count">
+                                        <img src="/images/icon/i-gig.png" />
+                                        {{gig_count}}
+                                    </span>
+                                    <span class="venue-count">
+                                        <img src="/images/icon/i-user.png" />
+                                        {{promoter_count}}
+                                    </span>
+                                    <span class="{{#if following}}following bg-orange{{else}}follow bg-blue{{/if}}">
+                                        <a href="{{link}}/follow" data-id="{{id}}" data-type="artist" class="follow-item">
+                                            {{#if following}}unfollow{{else}}follow{{/if}}
+                                        </a>
+                                    </span>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    {{else}}
+                        <div class="empty">
+                            You don't have tracked artists. <br />
+                            Please use follow button to add you favourite artists here.
+                        </div>
+                    {{/artists}}
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

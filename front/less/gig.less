@@ -1,0 +1,58 @@
+#gig-list {
+
+  #gig-filter-form,
+  #gig-items {
+    position: fixed;
+    margin: 5px 0;
+    padding: 5px;
+    width: 380px;
+    color: @grey;
+    background: white;
+    z-index: 20;
+  }
+
+  #gig-filter-form {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+
+    .input {
+      width: 85px;
+      font-size: 16px;
+      font-weight: normal;
+    }
+
+    .button {
+      padding: 8px 10px 7px 10px;
+      margin-left: 5px;
+      font-size: 14px;
+      border: none;
+    }
+  }
+
+  #gig-items {
+    top: 212px;
+    height: 410px;
+    overflow-y: scroll;
+  }
+
+  .gig-iw-block {
+    width: 320px;
+
+    &.is-multi {
+      width: 380px;
+      height: 120px;
+    }
+
+    .venue {
+      margin-top: 5px;
+    }
+  }
+
+  #map {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}

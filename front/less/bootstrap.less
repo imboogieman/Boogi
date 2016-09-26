@@ -1,0 +1,55 @@
+@images     : '../../images/';
+
+@blue       : #009EEF;
+@light-blue : #dceafb;
+
+@navi       : #79b5ff;
+@light-navi : #ddeafa;
+
+@orange     : #FF9000;
+@yellow     : #FFCC00;
+@light-yellow: #FFF8C8;
+
+@pink       : #FFCCCC;
+@light-green: #C5FBBD;
+@green      : #00B029;
+@red        : #E9322D;
+
+@extra-light-grey : #e9eaed;
+@light-grey : #dcdcdc;
+@grey       : #4d5765;
+@dark-grey  : #333333;
+
+@white      : #FFFFFF;
+@black      : #000000;
+
+@shadow     : rgba(0,0,0,0.2) 1px 1px 1px 0;
+
+
+@import 'common/reset';
+@import 'common/layout';
+@import 'common/yui';
+@import 'common/statuses';
+
+@import 'artist/index';
+@import 'artist/import';
+@import 'artist/profile';
+@import 'artist/dashboard';
+@import 'artist/book-form';
+
+@import 'promoter/index';
+@import 'promoter/profile';
+@import 'promoter/dashboard';
+
+@import 'index';
+@import 'user';
+@import 'gig';
+
+// Temporary disable responsive layout
+// @import 'responsive/bootstrap';
+.mobile-hidden {
+  display: auto;
+}
+.mobile-visible {
+  display: none;
+}

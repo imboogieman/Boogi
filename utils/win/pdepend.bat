@@ -1,0 +1,1 @@
+php -f ../vendor/pdepend/pdepend/src/bin/pdepend.php --summary-xml=../docs/pdepend/summary.xml --jdepend-chart=../docs/pdepend/jdepend-chart.svg --jdepend-xml=../docs/pdepend/jdepend.xml --overview-pyramid=../docs/pdepend/overview.svg ../front

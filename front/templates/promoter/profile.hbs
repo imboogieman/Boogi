@@ -1,0 +1,203 @@
+<script type="text/x-handlebars-template" id="t-promoter-profile">
+    <div id="promoter-profile" class="container">
+        <div class="shadow rounded">
+
+            <div id="promoter-profile-menu">
+                <h1>Promoter profile</h1>
+                <ul>
+                    <li data-target="info" class="tab active">General Info</li>
+                    <li data-target="credentials" class="tab">Email and Password</li>
+                    <li data-target="location" class="tab">Location and Radar</li>
+                    <li data-target="social" class="tab">Social Links</li>
+                    <li data-target="payment" class="tab">Payment Info</li>
+                    <li><a href="{{promoter.link}}">View profile</a></li>
+                </ul>
+            </div>
+
+            <form id="profile-form">
+                <div class="wrap">
+                    <div id="info" class="tab-pane">
+                        <h3>General Info</h3>
+
+                        <div>
+                            <label for="name">Name</label>
+                            <fieldset>
+                                <input type="text" id="name" name="name" class="input" value="{{promoter.name}}" />
+                                <span id="name-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="file_image">Avatar</label>
+                            <fieldset>
+                                {{#if promoter.image}}
+                                    <img id="file_image" src="{{promoter.image}}" data-original="{{promoter.image}}" alt="{{promoter.name}}" width="200" />
+                                {{else}}
+                                    <img id="file_image" src="/images/default.png" data-original="" alt="{{promoter.name}}" width="200" />
+                                {{/if}}
+                                <br />
+                                <span id="image"></span>
+                                <a id="file_cancel" href="#cancel" class="hidden">Cancel</a>
+                                <input type="hidden" id="file_id" name="file_id" value="" />
+                                <span id="image-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="description">Description</label>
+                            <fieldset>
+                                <textarea id="description" name="description">{{promoter.description}}</textarea>
+                                <span id="description-error" class="error"></span>
+                                <div class="notice">
+                                    Allowed tags:
+                                    {{#allowedTags}}{{this}} {{/allowedTags}}
+                                </div>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div id="credentials" class="tab-pane hidden">
+                        <h3>Email and Password</h3>
+
+                        <div>
+                            <label for="email">Email</label>
+                            <fieldset>
+                                <input type="text" id="email" name="email" class="input" value="{{email}}" />
+                                <span id="email-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="old_password">Old Password</label>
+                            <fieldset>
+                                <input type="password" id="old_password" name="old_password" class="input" value="" />
+                                <span id="old_password-error" class="error"></span>
+                                <div class="notice">If you forgot yor password, please follow <a href="/user/restore">this link</a> to restore it.</div>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="new_password">New Password</label>
+                            <fieldset>
+                                <input type="password" id="new_password" name="new_password" class="input" value="" />
+                                <span id="new_password-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="retype_password">Retype Password</label>
+                            <fieldset>
+                                <input type="password" id="retype_password" name="retype_password" class="input" value="" />
+                                <span id="retype_password-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div id="location" class="tab-pane hidden">
+                        <h3>Location and Radar</h3>
+                        <div>
+                            <div>
+                                <label for="address">Location</label>
+                                <fieldset>
+                                    <input type="text" id="address" name="address" class="input" value="{{promoter.address}}" />
+                                    <span id="address-error" class="error"></span>
+                                </fieldset>
+                                <div class="clear"></div>
+                            </div>
+
+                            <div class="column">
+                                Latitude<br />
+                                <input type="text" id="latitude" name="latitude" class="input" value="{{latitude}}" />
+                                <span id="latitude-error" class="error"></span>
+                            </div>
+                            <div class="column">
+                                Longitude<br />
+                                <input type="text" id="longitude" name="longitude" class="input" value="{{longitude}}" />
+                                <span id="longitude-error" class="error"></span>
+                            </div>
+                            <div class="column">
+                                Radius<br />
+                                <input type="text" id="radius" name="radius" class="input" value="{{radius}}" />
+                                <span id="radius-error" class="error"></span>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="notice">You can drag points on map to change your location info</div>
+
+                        <div id="profile-map"></div>
+
+                        <div class="clear"></div>
+                    </div>
+
+                    <div id="social" class="tab-pane hidden">
+                        <h3>Social Links</h3>
+                        <div>
+                            <label for="facebook">Link to Facebook</label>
+                            <fieldset>
+                                <input type="text" id="facebook" name="facebook" class="input" value="{{promoter.facebook}}" />
+                                <span id="facebook-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="twitter">Link to Twitter</label>
+                            <fieldset>
+                                <input type="text" id="twitter" name="twitter" class="input" value="{{promoter.twitter}}" />
+                                <span id="twitter-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="homepage">Link to Homepage</label>
+                            <fieldset>
+                                <input type="text" id="homepage" name="homepage" class="input" value="{{promoter.homepage}}" />
+                                <span id="homepage-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div id="payment" class="tab-pane hidden">
+                        <h3>Payment Info</h3>
+                        <div>
+                            <label for="name">Account Plan</label>
+                            <fieldset>
+                                <div id="plan">{{ plan }}</div>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="name">Expire on</label>
+                            <fieldset>
+                                <div id="plan_expire">{{ plan_expire }}</div>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <a name="top"></a>
+                        <div id="pricing">
+                            {{> pricing }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <input type="button" id="update" name="update" class="button" value="Update info" />
+                </div>
+            </form>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</script>

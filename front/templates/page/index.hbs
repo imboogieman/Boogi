@@ -1,0 +1,196 @@
+<script type="text/x-handlebars-template" id="t-index">
+    <div id="home" class="container">
+        <div id="welcome" class="shadow rounded">
+            <div class="wrapper">
+                <div id="search-area">
+                    <h1>Save time and money<br />on booking artists for your events.</h1>
+
+                    <a id="search-logo" href="/artist/list"><img src="/images/logo-white-small.png" /></a>
+
+                    <div id="home-search">
+                        <span class="mobile-hidden">I want to book</span>
+                        <input type="text" id="home-ac-input" name="home-ac-input" value="" placeholder="Elvis Presley" />
+                        <input type="button" id="home-ac-submit" name="home-ac-submit" value="Check free dates" class="button" />
+                    </div>
+                </div>
+
+                <div id="featured-artists">
+                    <p>or choose one from the top artists</p>
+                    <div class="row">
+                        {{#featured_artists}}
+                            <div class="item" data-id="{{id}}">
+                                <div class="image"><img src="{{image}}" alt="{{name}}" /></div>
+                                <div class="name">
+                                    <a href="{{link}}">{{name}}</a>
+                                </div>
+                                <div class="description">{{description}}</div>
+                                <div class="info">
+                                    <span class="gig-count">
+                                        <img src="/images/icon/i-gig.png" />
+                                        {{gig_count}}
+                                    </span>
+                                    <span class="venue-count">
+                                        <img src="/images/icon/i-user.png" />
+                                        {{promoter_count}}
+                                    </span>
+                                    <span class="{{#if following}}following bg-orange{{else}}follow bg-blue{{/if}}">
+                                        <a href="{{link}}#follow" data-id="{{id}}" data-type="artist" class="follow-item">
+                                            {{#if following}}Unfollow{{else}}Follow{{/if}}
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        {{/featured_artists}}
+                        <div class="clear"></div>
+                    </div>
+                    <p class="hidden">or anyone from {{artists_count}} artists</p>
+
+                    <div class="browse-buttons">
+                        <a href="/artist/list">
+                            <input type="button" class="button browse" value="Browse artists" />
+                        </a>
+                        <a href="/user/signup" class="register">Sign Up</a>
+                    </div>
+                </div>
+
+                <div id="features-tabs" class="row">
+                    <h2>Features For
+                        <a href="#benefits-for-promoters" class="switch-to-benefits active" data-target="benefits-for-promoters">Promoters</a>
+                        <a href="#benefits-for-artists" class="switch-to-benefits" data-target="benefits-for-artists">Artists</a></h2>
+                </div>
+
+                <div id="benefits-for-promoters" class="benefits">
+                    <div class="wrapper">
+                        <div class="row">
+                            <div class="column">
+                                <img src="/images/frontpage/promoter_save_money_on_logistics.png" />
+                            </div>
+                            <div class="column">
+                                <h3>Save Money On Logistics</h3>
+                                <p>
+                                    Unique geolocation technology shows artists tour routes or gigs location so you can
+                                    save up money on booking from a closer area.
+                                </p>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column">
+                                <h3>Book With Ease</h3>
+                                <p>
+                                    No need to feel up endless booking request form with easy booking technology.
+                                </p>
+                            </div>
+                            <div class="column">
+                                <img src="/images/frontpage/promoter_book_with_ease.png" />
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column">
+                                <img src="/images/frontpage/promoter_21st_centure_booking_management.png" />
+                            </div>
+                            <div class="column">
+                                <h3>21st centure booking management</h3>
+                                <p>
+                                    Keep all your bookings in one place. Edit or cancel requests in seconds, discuss
+                                    details and get confirmation without hustle.
+                                </p>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column">
+                                <h3>Favorite Artists at Hand</h3>
+                                <p>
+                                    Make up a list of your favorite artists to save time on looking for booking
+                                    information and contacts.
+                                </p>
+                            </div>
+                            <div class="column">
+                                <img src="/images/frontpage/promoter_favorite_artists_at_hand.png" />
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="benefits-for-artists" class="hidden benefits">
+                    <div class="wrapper">
+                        <div class="row">
+                            <div class="column">
+                                <img src="/images/frontpage/artist_booking_management_dead.png" />
+                            </div>
+                            <div class="column">
+                                <h3>Booking Management is dead</h3>
+                                <p>
+                                    Just press “Accept” on incoming booking offer or communicate with a promoter to
+                                    close the deal. Now everything in one place presented in a friendly visual way.
+                                    Most of routines are robotized.
+                                </p>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column">
+                                <h3>Get more gigs</h3>
+                                <p>
+                                    Open gig calendar gives promoters an easy way to find your available dates and book
+                                    you in advance and in seconds.
+                                </p>
+                            </div>
+                            <div class="column">
+                                <img src="/images/frontpage/artist_get_more_gigs.png" />
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column">
+                                <img src="/images/frontpage/artist_go_paperless.png" />
+                            </div>
+                            <div class="column">
+                                <h3>Go paperless</h3>
+                                <p>
+                                    Once you complete your profile with promo items, technical and hospitality rider
+                                    you will no longer need to send it for each and every time. All the information
+                                    immediately goes into an automatically generated agreement and invoice just right
+                                    after a gig is confirmed.
+                                </p>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column">
+                                <h3>Worldwide tour? One moment!</h3>
+                                <p>
+                                    Announce your tour, collect offers  from promoters around the world, accept and
+                                    that's it. The rest is done. The system will help you to make most optimized route,
+                                    plan and confirm all gigs in a ludicrously short time.
+                                </p>
+                            </div>
+                            <div class="column">
+                                <img src="/images/frontpage/artist_worldwide_tour.png" />
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="browse-buttons bottom">
+                    <a href="/artist/list">
+                        <input type="button" class="button browse" value="Browse artists" />
+                    </a>
+                    <a href="/user/signup" class="register">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{> footer }}
+</script>

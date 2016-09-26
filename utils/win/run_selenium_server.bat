@@ -1,0 +1,1 @@
+java -Dwebdriver.chrome.driver=../common/drivers/chromedriver.exe -jar ../vendor/se/selenium-server-standalone/composer/bin/selenium-server-standalone.jar

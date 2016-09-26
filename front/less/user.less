@@ -1,0 +1,98 @@
+#user {
+  .wrapper {
+    width: 380px;
+    margin: 100px auto 50px auto;
+
+    #login-form,
+    #register-form,
+    #restore-form,
+    #newpass-form {
+      padding: 40px 50px;
+      background: @white;
+    }
+
+    #login-form {
+      .button {
+        width: 170px;
+        margin-right: 10px;
+      }
+
+      .or-spacer {
+        padding: 10px 0 15px 0;
+        text-align: center;
+      }
+
+      .or-spacer-left,
+      .or-spacer-right {
+        float: left;
+        width: 110px;
+        margin-top: 10px;
+        border-bottom: 1px solid @light-grey;
+      }
+
+      .or-spacer-right {
+        float: right;
+      }
+
+      .help-spacer {
+        padding: 15px 0 15px 0;
+        text-align: center;
+      }
+
+      .help-spacer-left,
+      .help-spacer-right {
+        float: left;
+        width: 80px;
+        margin-top: 10px;
+        border-bottom: 1px solid @light-grey;
+      }
+
+      .help-spacer-right {
+        float: right;
+      }
+    }
+
+    #register-form {
+      .roles {
+        margin-top: 5px;
+      }
+      .terms {
+        font-size: 12px;
+        margin: 5px 0;
+        input {
+          position: relative;
+          top: 2px;
+        }
+      }
+      .button {
+        width: 185px;
+      }
+      .already {
+        text-align: center;
+        margin-top: 20px;
+      }
+    }
+
+    #restore-form {
+      .button {
+        width: 195px;
+      }
+    }
+
+    #show-register-form,
+    #show-restore-form {
+      color: @grey;
+    }
+  }
+}
+
+.home {
+  float: right;
+  font-size: 16px;
+  margin: 15px 10px 0 0;
+}
+
+.cancel {
+  color: @grey;
+  margin-left: 10px;
+}

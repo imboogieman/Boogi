@@ -1,0 +1,52 @@
+<?php
+
+// This is the configuration for yiic console application.
+// Any writable CConsoleApplication properties can be configured here.
+return array(
+    'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
+    'name' => 'My Console Application',
+
+    // preloading 'log' component
+    'preload' => array('log'),
+
+    // autoloading model and component classes
+    'import' => array(
+        'application.models.*',
+        'application.components.*',
+    ),
+
+    // application components
+    'components' => array(
+        'db' => array(
+            'connectionString' => 'mysql:host=localhost;dbname=starway',
+            'emulatePrepare' => true,
+            'username' => 'root',
+            'password' => 'Dalt0nik',
+            'charset' => 'utf8',
+        ),
+        'log' => array(
+            'class' => 'CLogRouter',
+            'routes' => array(
+                array(
+                    'class' => 'CFileLogRoute',
+                    'levels' => 'trace, error, warning',
+                ),
+            ),
+        ),
+    ),
+
+    // application-level parameters that can be accessed
+    // using Yii::app()->params['paramName']
+    'params' => array(
+        // this is used in contact page
+        'adminEmail' => 'webmaster@example.com',
+        'ipinfoKey' => '8067b473e90dd43d4db06cc5dfd490dfd2bf201086fb166fa33e39c9b2d45fb5',
+        'googleApiKey' => 'AIzaSyDwABveJ-O5F0i5fUSo3dHWKkkpfzx2Po4',
+
+        'fbAppId' => '177857332412297',
+        'fbSecret' => 'de369485628908e74b2c3396ceb6dcb3',
+
+        'gtApiKey' => '03767f2fec2f5ef4a1'
+    ),
+);
+

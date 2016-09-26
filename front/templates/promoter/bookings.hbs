@@ -1,0 +1,621 @@
+<script type="text/x-handlebars-template" id="t-promoter-bookings">
+    <div id="promoter-bookings" class="container">
+        <div class="shadow rounded">
+            <div id="bookings">
+                <h1>
+                    Your Bookings
+                    <select id="gig-filter">
+                        <option value="active" {{#if active}}selected{{/if}}>Active</option>
+                        <option value="past" {{#unless active}}selected{{/unless}}>Past</option>
+                    </select>
+                </h1>
+                <div class="wrap scrollable">
+                    <div id="active-gigs" class="gig-list{{#unless active}} hidden{{/unless}}">
+                        {{#active}}
+                            {{> promoter-booking this }}
+                        {{else}}
+                            <div class="empty">
+                                You don't have any active bookings.
+                                Please use booking button to create new requests.
+                            </div>
+                        {{/active}}
+                    </div>
+
+                    <div id="past-gigs" class="gig-list{{#if active}} hidden{{/if}}">
+                        {{#past}}
+                            {{> promoter-booking this }}
+                        {{else}}
+                            <div class="empty">
+                                You don't have any past bookings.
+                            </div>
+                        {{/past}}
+
+                        {{#if past}}
+                            {{#if show_past_label }}
+                                <div id="last-30" class="notice">
+                                    Shows the last 30 entries. <a href="/contact">Need more?</a>
+                                </div>
+                            {{/if}}
+                        {{/if}}
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+
+            <div id="details"></div>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-booking-partial">
+    <div id="{{id}}" class="gig{{#if have_updates}} updated{{/if}}{{#if is_past}} past{{/if}}" data-id="{{id}}">
+        <a name="anchor-{{id}}"></a>
+        <div class="date">
+            <div class="month">{{month}}</div>
+            <div class="day">{{day}}</div>
+        </div>
+
+        {{#if have_updates}}
+            <div class="updates">{{have_updates}}</div>
+        {{/if}}
+
+        <div class="name">{{name}}</div>
+
+        <div class="venue">
+            {{venue.name}}
+            {{#if venue.city}}
+                ({{venue.city}}{{#if venue.country}}, {{venue.country}}{{/if}})
+            {{/if}}
+        </div>
+
+        <div class="statuses">
+            {{#statuses}}
+                <span class="ag-counter status-mark-{{id}}{{#if count}}{{else}} disabled{{/if}}">{{count}}</span>
+            {{/statuses}}
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="bookings hidden">
+            {{#bookings}}
+                <div id="{{gig_id}}-{{artist_id}}" class="booking{{#if have_updates}} updated{{/if}}" data-id="{{id}}">
+                    <div class="pointer"></div>
+                    <div class="image"><img src="{{artist_image}}" /></div>
+                    <div class="name">{{artist_name}}</div>
+                    <div class="status status-{{status}}">{{{status_name}}}</div>
+                    {{#if start_time}}
+                        <div class="time">
+                            {{start_time}} - {{end_time}}
+                        </div>
+                    {{/if}}
+                    <div class="clear"></div>
+                    <ul class="actions hidden">
+                        <li class="chat subpage" data-gig-id="{{gig_id}}" data-artist-id="{{artist_id}}">Chat</li>
+                        <li class="features subpage">Features</li>
+                    </ul>
+                </div>
+            {{/bookings}}
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-gig-details">
+    <h3>
+        Gig Details
+        {{#unless is_past}}
+            <span class="edit edit-gig" data-id="{{id}}">&nbsp;</span>
+        {{/unless}}
+    </h3>
+    <div class="wrap scrollable">
+        <div class="name">{{name}}</div>
+
+        {{#if type }}
+            <div class="type">{{type}}</div>
+        {{/if}}
+
+        <div class="date">
+            <strong>Date:</strong>
+            {{formatDateRange datetime_from datetime_to }}
+        </div>
+
+        {{#if capacity }}
+            <div class="capacity"><strong>Capacity:</strong> {{capacity}} ppl</div>
+        {{/if}}
+
+        {{#if venue }}
+            <div class="venue"><strong>Place:</strong> {{venue.name}}</div>
+        {{/if}}
+
+        {{#if address}}
+            <div class="address"><strong>Address:</strong> {{address}}</div>
+        {{/if}}
+
+        <div class="line-up">
+            <strong>Line-up:</strong>
+            {{#bookings}}
+                {{#if @index}},{{/if}}
+                <span class="time">{{artist_name}}</span>
+                {{#if start_time}}
+                    <span class="time">
+                        ({{start_time}} - {{end_time}})
+                    </span>
+                {{/if}}
+            {{/bookings}}
+        </div>
+
+        <div id="map"></div>
+
+        {{#if description }}
+            <div class="description">{{description}}</div>
+        {{/if}}
+
+        {{#if details_log}}
+            <div class="details-log">
+                <strong>Gig Details Log:</strong>
+                <div class="wrap">
+                    {{#details_log}}
+                        <div class="detail">
+                            <span class="small">{{date}} [{{time}}]</span> {{message}}
+                        </div>
+                    {{/details_log}}
+                </div>
+            </div>
+        {{/if}}
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-booking-details">
+    <h3>
+        Booking Details
+    </h3>
+
+    <div id="booking-details" class="wrap scrollable">
+        <div class="image"><a href="{{artist_link}}"><img src="{{artist_image}}" /></a></div>
+        <div class="name"><a href="{{artist_link}}">{{artist_name}}</a></div>
+
+        <div class="price">
+            {{{currency_symbol}}}{{price}} - {{max_price}}
+
+            <div class="info">
+                <span class="min-price">Min</span>
+                <span class="max-price">Max</span>
+            </div>
+        </div>
+
+        <div class="status">
+            <strong>Status:</strong>
+            <span class="status-{{status}}">{{{status_name}}}</span>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="date row">
+            <strong>Set Time:</strong>
+            {{formatDateRange datetime_from datetime_to }}
+        </div>
+
+        <div class="row">
+            <strong>Guaranteed Fee:</strong>
+            {{{currency_symbol}}}{{price}}
+        </div>
+        <div class="row">
+            <strong>Potential Fee:</strong>
+            {{{currency_symbol}}}{{max_price}}
+        </div>
+
+        <div class="row">
+            <div id="revenue-calc">
+                <div class="row">
+                    <strong>
+                        Venue Capacity:
+                        <div class="notice">(Max Attendance)</div>
+                    </strong>
+                    {{capacity}}
+                </div>
+                <div class="row">
+                    <strong>Average Ticket Price:</strong>
+                    {{{currency_symbol}}}{{gig_price}}
+                </div>
+                <div class="row">
+                    <strong>Potential Revenue:</strong>
+                    {{{currency_symbol}}}{{potential_revenue}}
+                </div>
+                <div class="row">
+                    <strong>Revenue Share, &percnt;:</strong>
+                    {{revenue_share}}
+                </div>
+            </div>
+        </div>
+
+        <div class="transfertype row">
+            <strong>Travel:</strong> {{transfertype}}
+        </div>
+
+        <div class="accommodation row">
+            <strong>Accommodation:</strong> {{accommodation}}
+        </div>
+
+        {{> statuses }}
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-gig-form">
+    <div id="gig-form">
+        <h3>Edit Gig Details</h3>
+
+        <form action="/api/gig/update" class="wrap scrollable">
+
+            <input type="hidden" id="id" name="id" value="{{id}}" />
+            <input type="hidden" id="venue_id" name="venue_id" value="{{venue.id}}" />
+            <input type="hidden" id="venue_data" name="venue_data" value="" />
+
+            <div class="row datetime">
+                <div class="date-range">
+                    <strong>Date:</strong>
+                    <div class="column">
+                        <input type="text" id="date_to" name="date_to" class="input datepicker required" value="{{formatDate datetime_to "edit"}}" data-disable="{{json disable}}" />
+                    </div>
+                    <div class="column">
+                        <select id="time_to" name="time_to" class="timepicker required">
+                            {{#times}}
+                                <option value="{{this}}" {{#ifCond this ../time_to}}selected{{/ifCond}}>{{this}}</option>
+                            {{/times}}
+                        </select>
+                    </div>
+                    <div class="column spacer">
+                        to
+                    </div>
+                    <div class="column">
+                        <select id="time_from" name="time_from" class="timepicker required">
+                            {{#times}}
+                                <option value="{{this}}" {{#ifCond this ../time_from}}selected{{/ifCond}}>{{this}}</option>
+                            {{/times}}
+                        </select>
+                    </div>
+                    <div class="column">
+                        <input type="text" id="date_from" name="date_from" class="input datepicker required" value="{{formatDate datetime_from "edit"}}" data-disable="{{json disable}}" />
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="tz-block dropdown">
+                    <input type="hidden" id="timezone" name="timezone" value="{{timezone.name}}" />
+                    <span class="error" id="datetime-error">
+                        {{#errors.datetime}}
+                            {{this}}
+                        {{/errors.datetime}}
+                    </span>
+                    <span id="tz-toggle" class="tz-toggle">
+                        {{timezone.canonical}}
+                    </span>
+                    <span id="tz-menu" class="hidden">
+                        <div class="tz-list">
+                            <ul>
+                                {{#tzInfo}}
+                                    <li class="tz-item" data-value="{{name}}" data-canonical="{{canonical}}"
+                                        data-target="timezone" data-label="tz-toggle">{{canonical}}</li>
+                                {{/tzInfo}}
+                            </ul>
+                        </div>
+                    </span>
+                </div>
+                <span class="error" id="datetime-error">
+                    {{#errors.datetime}}
+                        {{this}}
+                    {{/errors.datetime}}
+                </span>
+            </div>
+
+            <div class="row">
+                <strong>Gig Name:</strong>
+                <input type="text" id="name" name="name" class="input iselect" value="{{name}}" autocomplete="off" />
+                <div class="error" data-id="name-error">
+                    {{#errors.name}}
+                        {{this}}
+                    {{/errors.name}}
+                </div>
+            </div>
+
+            <div class="row">
+                <strong>Gig type:</strong>
+                <select id="type" name="type">
+                    <option selected="selected" disabled="disabled">Select</option>
+                    {{#venueAttrs.types}}
+                        {{#ifCond id ../type_id}}
+                        <option value="{{id}}" selected>{{name}}</option>
+                        {{else}}
+                        <option value="{{id}}">{{name}}</option>
+                        {{/ifCond}}
+                    {{/venueAttrs.types}}
+                </select>
+                <div class="error" data-id="type-error">
+                    {{#errors.type}}
+                        {{this}}
+                    {{/errors.type}}
+                </div>
+            </div>
+
+            <div class="row">
+                <strong>Venue Capacity:</strong>
+                <input type="text" id="capacity" name="capacity" class="input required" value="{{capacity}}" />
+                <span class="error" id="capacity-error">
+                    {{#errors.capacity}}
+                        {{this}}
+                    {{/errors.capacity}}
+                </span>
+            </div>
+
+            <div class="row">
+                <strong>Average Ticket Price:</strong>
+                <input type="text" id="price" name="price" class="input required" value="{{price}}" />
+                <span class="error" id="price-error">
+                    {{#errors.price}}
+                        {{this}}
+                    {{/errors.price}}
+                </span>
+            </div>
+
+            <div class="row">
+                <strong for="revenue">Potential Revenue Net:</strong>
+                <input type="text" id="revenue" name="revenue" class="input required readonly" value="{{revenue}}" readonly />
+            </div>
+
+            <div class="row">
+                <strong for="currency">Currency:</strong>
+                <select id="currency" name="currency">
+                    {{#venueAttrs.currencies}}
+                        <option value="{{id}}" {{#ifCond id ../currency}}selected{{/ifCond}}>{{name}}</option>
+                    {{/venueAttrs.currencies}}
+                </select>
+                <span class="error" id="gig_currency-error">
+                    {{#errors.currency}}
+                        {{this}}
+                    {{/errors.currency}}
+                </span>
+            </div>
+
+            <div class="row">
+                <strong>Venue:</strong>
+                <input type="text" id="venue" name="venue" class="input" value="{{venue.name}}" />
+                <div class="error" data-id="venue-error">
+                    {{#errors.venue}}
+                        {{this}}
+                    {{/errors.venue}}
+                </div>
+            </div>
+
+            <div class="row">
+                <strong>Address:</strong>
+                <input type="text" id="address" name="address" class="input" value="{{address}}" />
+                <div class="error" data-id="address-error">
+                    {{#errors.address}}
+                        {{this}}
+                    {{/errors.address}}
+                </div>
+            </div>
+
+            <div class="row">
+                <strong>Description:</strong>
+                <textarea id="description" name="description">{{description}}</textarea>
+                <div class="error" data-id="description">
+                    {{#errors.description}}
+                        {{this}}
+                    {{/errors.description}}
+                </div>
+            </div>
+
+            <div class="buttons">
+                <input type="button" class="button update-gig" value="Update" />
+                <a href="#" class="cancel-update status-5 no-image" data-rel="{{id}}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-book-form">
+    <div id="book-form">
+        <h3>Edit Booking Details</h3>
+
+        <form action="/api/gig/updatebooking" class="wrap scrollable">
+
+            <input type="hidden" id="id" name="id" value="{{id}}" />
+            <input type="hidden" id="gig_id" name="gig_id" value="{{gig_id}}" />
+            <input type="hidden" id="artist_id" name="artist_id" value="{{artist_id}}" />
+
+            <div class="image"><a href="{{artist_link}}"><img src="{{artist_image}}" /></a></div>
+            <div class="name"><a href="{{artist_link}}">{{artist_name}}</a></div>
+
+            <div class="price">
+                {{{currency_symbol}}}<span id="price-min">{{price}}</span> - <span id="price-max">{{max_price}}</span>
+
+                <span class="column">
+                    <select id="currency" name="currency">
+                        {{#venueAttrs.currencies}}
+                            {{#ifCond id ../currency_id}}
+                                <option value="{{id}}" selected>{{name}}</option>
+                            {{else}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/ifCond}}
+                        {{/venueAttrs.currencies}}
+                    </select>
+                </span>
+
+                <div class="info">
+                    <span class="min-price">Min</span>
+                    <span class="max-price">Max</span>
+                </div>
+            </div>
+
+            <div class="status">
+                <strong>Status:</strong>
+                <span class="status-{{status}}">{{{status_name}}}</span>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="row">
+                <div class="date-range">
+                    <strong>Set Time:</strong>
+                    <div class="column">
+                        <input type="text" id="date_to" name="date_to" class="input datepicker required" value="{{formatDate datetime_to "edit"}}" data-disable="{{json disable}}" />
+                    </div>
+                    <div class="column">
+                        <select id="time_to" name="time_to" class="timepicker required">
+                            {{#times}}
+                                <option value="{{this}}" {{#ifCond this ../time_to}}selected{{/ifCond}}>{{this}}</option>
+                            {{/times}}
+                        </select>
+                    </div>
+                    <div class="column spacer">
+                        to
+                    </div>
+                    <div class="column">
+                        <select id="time_from" name="time_from" class="timepicker required">
+                            {{#times}}
+                                <option value="{{this}}" {{#ifCond this ../time_from}}selected{{/ifCond}}>{{this}}</option>
+                            {{/times}}
+                        </select>
+                    </div>
+                    <div class="column">
+                        <input type="text" id="date_from" name="date_from" class="input datepicker required" value="{{formatDate datetime_from "edit"}}" data-disable="{{json disable}}" />
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="tz-block dropdown">
+                    <input type="hidden" id="timezone" name="timezone" value="{{timezone.name}}" />
+                    <span class="error" id="datetime-error">
+                        {{#errors.datetime}}
+                            {{this}}
+                        {{/errors.datetime}}
+                    </span>
+                    <span id="tz-toggle" class="tz-toggle">
+                        {{timezone.canonical}}
+                    </span>
+                    <span id="tz-menu" class="hidden">
+                        <div class="tz-list">
+                            <ul>
+                                {{#tzInfo}}
+                                    <li class="tz-item" data-value="{{name}}" data-canonical="{{canonical}}"
+                                        data-target="timezone" data-label="tz-toggle">{{canonical}}</li>
+                                {{/tzInfo}}
+                            </ul>
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <div id="offer-revenue-calc">
+                <div class="row">
+                    <strong>Guaranteed Fee:</strong>
+                    <input type="text" id="price" name="price" class="input readonly" value="{{price}}" />
+                </div>
+                <div class="row">
+                    <strong>Potential Fee:</strong>
+                    <input type="text" id="potential_fee" name="potential_fee" class="input readonly" value="{{max_price}}" readonly />
+                </div>
+                <div class="row">
+                    <strong>Venue Capacity:</strong>
+                    <input type="text" id="capacity" name="capacity" class="input readonly" value="{{capacity}}" readonly /><br />
+                    <div class="notice">(Max Attendance)</div>
+                </div>
+                <div class="row">
+                    <strong>Potential Revenue:</strong>
+                    <input type="text" id="potential_revenue" name="potential_revenue" class="input readonly" value="{{potential_revenue}}" readonly />
+                </div>
+                <div class="row">
+                    <strong>Average Ticket Price:</strong>
+                    <input type="text" id="gig_price" name="gig_price" class="input readonly" value="{{gig_price}}" readonly />
+                </div>
+                <div class="row">
+                    <strong>Revenue Share, &percnt;:</strong>
+                    <input type="text" id="revenue_share" name="revenue_share" class="input" value="{{revenue_share}}" />
+                </div>
+                <span class="error" id="price-error">
+                    {{#errors.price}}
+                        {{this}}
+                    {{/errors.price}}
+                </span>
+            </div>
+
+            {{#with venueAttrs}}
+                <div class="row">
+                    <strong>Transfer type:</strong>
+                    <select id="transfer" name="transfer" class="option">
+                    <option selected="selected" disabled="disabled">Select</option>
+                        {{#transfertypes}}
+                            {{#ifCond id ../../transfer_id}}
+                            <option value="{{id}}" selected>{{name}}</option>
+                            {{else}}
+                            <option value="{{id}}">{{name}}</option>
+                            {{/ifCond}}
+                        {{/transfertypes}}
+                    </select>
+                    <div class="error" data-id="transfer">
+                        {{#errors.transfer}}
+                            {{this}}
+                        {{/errors.transfer}}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <strong>Accommodation:</strong>
+                    <select id="accommodation" name="accommodation" class="option">
+                        <option selected="selected" disabled="disabled">Select</option>
+                        {{#accommodations}}
+                            {{#ifCond id ../../accommodation_id}}
+                                <option value="{{id}}" selected>{{name}}</option>
+                            {{else}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/ifCond}}
+                        {{/accommodations}}
+                    </select>
+                    <div class="error" data-id="accommodation">
+                        {{#errors.accommodation}}
+                            {{this}}
+                        {{/errors.accommodation}}
+                    </div>
+                </div>
+            {{/with}}
+
+            <div class="buttons">
+                <input type="button" class="button update-artist-gig" value="Update" />
+                <a href="#" class="cancel-update status-5 no-image" data-rel="{{gig_id}}-{{artist_id}}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-messages">
+    <h3>Booking Messages</h3>
+
+    <div class="wrap scrollable">
+        <form action="#/message/add" class="booking-message form">
+            <input type="hidden" class="gig_id" name="gig_id" value="{{gig_id}}" />
+            <input type="hidden" class="artist_id" name="artist_id" value="{{artist_id}}" />
+            <input type="hidden" class="type" name="type" value="1" />
+            <div id="message-list">
+                {{#listWithHeaders messages}}
+                    <div class="{{type}}-message">
+                        <div class="time">{{time}}</div>
+                        <div class="content rounded">{{message}}</div>
+                    </div>
+                {{else}}
+                    <div class="empty">
+                        Type "Hello" to start conversation.
+                    </div>
+                {{/listWithHeaders}}
+                <div class="clear"></div>
+            </div>
+            {{#unless is_past}}
+                <textarea class="message" name="message"></textarea>
+                <div class="row buttons">
+                    <input type="button" class="add-message button" name="add" value="Add message" />
+                </div>
+            {{else}}
+                <div class="notice">Messaging is not available for past gigs</div>
+            {{/unless}}
+        </form>
+    </div>
+</script>

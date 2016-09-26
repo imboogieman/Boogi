@@ -1,0 +1,191 @@
+#promoter-profile {
+  margin-top: 65px;
+  font-family: 'Open Sans',sans-serif;
+  color: @black;
+
+  h1,
+  h3 {
+    margin: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: @black;
+  }
+
+  h3 {
+    margin: 15px 0;
+  }
+
+  .shadow {
+    background: @white;
+    margin: 5px 10px;
+  }
+
+  #promoter-profile-menu {
+    float: left;
+    width: 30%;
+    margin: 0;
+    min-height: 505px;
+
+    ul {
+      margin: 0;
+      padding: 0;
+
+      li {
+        padding: 12px;
+        list-style: none;
+        cursor: pointer;
+        border-bottom: 1px solid @light-grey;
+
+        &:last-child {
+          border:none;
+        }
+
+        &:hover,
+        &.active {
+          background: @light-navi;
+        }
+      }
+    }
+  }
+
+  #profile-form {
+    float: left;
+    width: 69%;
+    margin: 0;
+    border-left: 1px solid @light-grey;
+
+    .wrap {
+      min-height: 505px;
+      padding: 0 20px 20px 20px;
+    }
+
+    #info,
+    #credentials,
+    #location,
+    #social,
+    #payment {
+      margin: 0;
+      padding: 0;
+    }
+
+    label {
+      position: relative;
+      top: -6px;
+      float: left;
+      text-align: right;
+      margin: 15px;
+      width: 25%;
+      max-width: 150px;
+    }
+
+    fieldset {
+      float: left;
+      margin: 0 15px 10px 0;
+      padding: 0;
+      width: 65%;
+      border: none;
+    }
+
+    input[type=text],
+    input[type=password] {
+      width: 50%;
+      max-width: 300px;
+    }
+    textarea {
+      width: 70%;
+      max-width: 500px;
+    }
+
+    #info {
+      #plan {
+        margin: 13px 0 3px 0;
+        font-size: 18px;
+        color: @black;
+
+        .upgrade {
+        }
+      }
+
+      #file_image {
+        margin-bottom: 5px;
+        border: 1px solid @light-grey;
+      }
+
+      #image {
+        .yui3-widget {
+          display: inline-block;
+          margin-right: 10px;
+
+          input {
+            display: none;
+          }
+        }
+
+        #file_cancel {
+          color: @grey;
+        }
+      }
+    }
+
+    #credentials {
+    }
+
+    #location {
+      label {
+        margin-left: 0;
+        width: auto;
+      }
+
+      .column {
+        width: 30%;
+        max-width: 180px;
+
+        input {
+          width: 90%;
+        }
+      }
+
+      #profile-map {
+        width: 553px;
+        height: 320px;
+      }
+    }
+
+    #payment {
+      label {
+        top: 0;
+      }
+
+      fieldset {
+        margin-top: 13px;
+        font-size: 18px;
+        color: @black;
+      }
+
+      #pricing {
+        .row {
+          border-left: 1px solid @navi;
+          border-right: 1px solid @navi;
+
+          &.footer {
+            border-bottom: 1px solid @navi;
+          }
+        }
+
+        #switch-price .button {
+          color: @black;
+
+          &.active,
+          &:hover {
+            color: @white;
+          }
+        }
+      }
+    }
+
+    .buttons {
+      padding: 0 0 20px 20px;
+    }
+  }
+}

@@ -1,0 +1,220 @@
+<?php
+
+/**
+ * Wrapper class to perform global operation.
+ */
+class Model extends CActiveRecord
+{
+    const DEFAULT_LATITUDE = 53.9;
+    const DEFAULT_LONGITUDE = 27.6;
+    const DEFAULT_RADIUS = 300000;
+
+    /**
+     * @var array $character_replace_table replace table for strict symbols
+     */
+    public static $character_replace_table = array(
+         ' '  => '-', '.' => '-', '?' => '-', '/' => '-',
+        '\\' => '-', '*' => '-', ':' => '-', '*' => '-',
+        '\'' => '-', '<' => '-', '>' => '-', '|' => '-',
+        '+'  => '-', ',' => '-', '"' => '-'
+    );
+
+    /**
+     * Related params
+     * @var array
+     */
+    protected $_related_params = array();
+
+    /**
+     * Return current location by client ip
+     * @return mixed
+     */
+    public static function getCurrentLocation()
+    {
+        return self::getLocationByIp(self::getCurrentIp());
+    }
+
+    /**
+     * Return location by ip
+     * @param string $ip
+     * @return mixed
+     */
+    public static function getLocationByIp($ip)
+    {
+        $link = 'http://www.iptolatlng.com?ip=' . urlencode($ip);
+        return CJSON::decode(file_get_contents($link));
+    }
+
+    /**
+     * Return client ip
+     * @return string
+     */
+    public static function getCurrentIp()
+    {
+        if (Yii::app()->params['isDebug']) {
+            return '178.126.63.149';
+        }
+
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+    }
+
+    /**
+     * Bind params for related models
+     * @param array $post
+     */
+    public function bindRelatedParams($post)
+    {
+        if (count($this->_related_params)) {
+            foreach ($this->_related_params as $key => $value) {
+                if (isset($post[$key])) $this->_related_params[$key] = $post[$key];
+            }
+        }
+    }
+
+    /**
+     * Return main entity image
+     * @return string
+     */
+    public function getMainImage()
+    {
+        $entity = $this->tableName() . 'Files';
+
+        if ($this->$entity) {
+            $images = $this->$entity;
+            $image = end($images);
+            return '/' . $image->file->path;
+        }
+
+        if (isset($this->fb_id) && $this->fb_id > 0) {
+            return 'https://graph.facebook.com/' . $this->fb_id . '/picture?type=large';
+        }
+
+        if (isset($this->ds_id) && $this->ds_id > 0 && $this->ds_type == DataSource::FACEBOOK) {
+            return 'https://graph.facebook.com/' . $this->ds_id . '/picture?type=large';
+        }
+
+        return '/images/default.png';
+    }
+
+    /**
+     * Fix timestamp format
+     * @return bool
+     */
+    protected function beforeValidate()
+    {
+        $timestamp = CDateTimeParser::parse($this->timestamp, 'dd/MM/yyyy');
+        if ($timestamp === false) {
+            $this->timestamp = date('Y-m-d H:i:s');
+        } else {
+            $this->timestamp = date('Y-m-d H:i:s', $timestamp);
+        }
+
+        return parent::beforeValidate();
+    }
+
+    /**
+     * Convert models array to select list
+     * @param array $array
+     * @return array
+     */
+    public static function arrayToList($array)
+    {
+        $result = array();
+
+        foreach ($array as $id => $name) {
+            $result[] = array(
+                'id'    => $id,
+                'name'  => $name,
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return default site latitude
+     * @return float
+     */
+    public static function getDefaultLatitude()
+    {
+        return self::DEFAULT_LATITUDE;
+    }
+
+    /**
+     * Return default site longitude
+     * @return float
+     */
+    public static function getDefaultLongitude()
+    {
+        return self::DEFAULT_LONGITUDE;
+    }
+
+    /**
+     * Return default site radius
+     * @return int
+     */
+    public static function getDefaultRadius()
+    {
+        return self::DEFAULT_RADIUS;
+    }
+
+    /**
+     * Generate alias from name
+     */
+    public function generateAlias()
+    {
+        if (empty($this->alias)) {
+            $alias = Model::createAlias($this->name);
+            $alias = $this->id . ($alias ? '-' . $alias : '');
+            $this->alias = substr($alias, 0, 64);
+            return $this->save();
+        }
+    }
+
+    /**
+     * Create alias from input string
+     * @param string $string
+     * @return string $string
+     */
+    public static function createAlias($string)
+    {
+        // Replace non english characters
+        $string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+
+        // Convert to lowercase and replace illegal characters
+        $string = strtr(strtolower($string), self::$character_replace_table);
+
+        // Remove duplicates
+        $string = preg_replace("/-+/", "-", $string);
+
+        // Trim length and return
+        return $string != '-' ? $string : '';
+    }
+
+    /**
+     * Create event for current object
+     * @param string $type
+     * @param Model $target
+     * @return bool $result
+     */
+    public function createEvent($type, $target)
+    {
+        $event = new Event;
+        $event->type = $type;
+
+        $event->init_id = $this->id;
+        $event->init_type = get_class($this);
+
+        $event->target_id = $target->id;
+        $event->target_type = get_class($target);
+
+        return $event->save();
+    }
+}
+

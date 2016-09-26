@@ -1,0 +1,52 @@
+<script type="text/x-handlebars-template" id="t-promoter-events">
+    <div id="promoter-events" class="container">
+        <div id="events" class="shadow rounded">
+            <h1>Latest Events</h1>
+            {{#listWithHeaders events}}
+                <div class="event" data-id="{{id}}">
+                    {{prefix}}
+                    {{#if status}}
+                        <a href="{{init.link}}" data-id="{{init.id}}">{{init.name}}</a>
+                         {{{type}}}
+                        <a href="{{target.link}}" data-id="{{target.id}}">{{target.name}}</a>
+                    {{else}}
+                        <span class="deleted">
+                            {{init.name}}
+                            {{{type}}}
+                            {{target.name}}
+                        </span>
+                    {{/if}}
+                </div>
+            {{else}}
+                <div class="empty">Events not found</div>
+            {{/listWithHeaders}}
+
+            {{#if events}}
+                <div id="load-more-events">
+                    <a href="#load-more" data-offset="30">Load more</a>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-raw-event-list">
+    {{#listWithHeaders events}}
+        <div class="event" data-id="{{id}}">
+            {{prefix}}
+            {{#if status}}
+                <a href="{{init.link}}" data-id="{{init.id}}">{{init.name}}</a>
+            {{{type}}}
+                <a href="{{target.link}}" data-id="{{target.id}}">{{target.name}}</a>
+            {{else}}
+                <span class="deleted">
+                    {{init.name}}
+                    {{{type}}}
+                    {{target.name}}
+                </span>
+            {{/if}}
+        </div>
+    {{else}}
+        <div class="empty">There are no more events</div>
+    {{/listWithHeaders}}
+</script>

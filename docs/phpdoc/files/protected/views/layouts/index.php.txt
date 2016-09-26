@@ -1,0 +1,106 @@
+<?php
+$promoter = Promoter::getLogged();
+$config = array(
+    'user'                  => $promoter ? $promoter->getNormalizedData() : null,
+    'venues'                => Venue::getArray(),
+    'venueAttributesList'   => Gig::getAttributesList(),
+    'params' => array(
+        'fbLoginUrl' => $this->fbLoginUrl,
+        'ipinfoKey' => Yii::app()->params['ipinfoKey'],
+        'googleApiKey' => Yii::app()->params['googleApiKey'],
+        'defaultPosition' => array(
+            'latitude'  => Model::getDefaultLatitude(),
+            'longitude' => Model::getDefaultLongitude(),
+            'radius'    => Model::getDefaultRadius()
+        )
+    ),
+    'isDebug' => Yii::app()->params['isDebug']
+);
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="language" content="en"/>
+
+        <!-- blueprint CSS framework -->
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css"
+              media="screen, projection"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css"
+              media="print"/>
+        <!--[if lt IE 8]>
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css"
+              media="screen, projection"/>
+        <![endif]-->
+
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css"/>
+
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/yui.css"/>
+
+        <script type="text/javascript">
+            window.appConfig = <?php echo \CJSON::encode($config); ?>;
+        </script>
+
+        <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/scripts/index.js"></script>
+
+        <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-36308334-2', 'starway.pro');
+            ga('send', 'pageview');
+        </script>
+        <script type='text/javascript'>
+
+            var _ues = {
+                host:'starway.userecho.com',
+                forum:'28783',
+                lang:'ru',
+                tab_corner_radius:5,
+                tab_font_size:20,
+                tab_image_hash:'0L7RgdGC0LDQstC40YLRjCDQvtGC0LfRi9Cy',
+                tab_chat_hash:'0YfQsNGC',
+                tab_alignment:'right',
+                tab_text_color:'#FFFFFF',
+                tab_text_shadow_color:'#00000055',
+                tab_bg_color:'#57A957',
+                tab_hover_color:'#F45C5c'
+            };
+
+            (function() {
+                var _ue = document.createElement('script'); _ue.type = 'text/javascript'; _ue.async = true;
+                _ue.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
+            })();
+
+        </script>
+    </head>
+    <?php
+        $messages = Yii::app()->user->getFlashes();
+        if (count($messages)) {
+            echo '<div class="messages">';
+            foreach ($messages as $key => $message) {
+                echo '<div class="flash-' . $key . '">' . $message . "</div>\n";
+            }
+            echo '</div>';
+        }
+    ?>
+    <body class="yui3-skin-sam">
+        <?php echo $content; ?>
+    </body>
+</html>
+

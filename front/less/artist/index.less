@@ -1,0 +1,226 @@
+#artist-list {
+
+  #items {
+    position: relative;
+    left: 10px;
+    padding: 5px;
+    width: 380px;
+    height: 545px;
+    color: @grey;
+    background: @white;
+    overflow-y: scroll;
+    z-index: 20;
+  }
+
+  #map {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  #load-more-artists {
+    margin: 5px 0;
+    text-align: center;
+
+    a {
+      display: inline-block;
+      padding: 2px 10px;
+      font-size: 9pt;
+      text-decoration: none;
+      color: @grey;
+      border: 1px solid @light-grey;
+      background: @extra-light-grey;
+    }
+  }
+}
+
+#artist {
+  min-height: 520px;
+
+  #artist-page-block {
+    position: relative;
+    margin: 0;
+    padding: 10px;
+    width: 390px;
+    height: 530px;
+    color: @grey;
+    background: @white;
+    overflow: hidden;
+    z-index: 20;
+
+    .notice {
+      padding: 0 10px;
+    }
+  }
+
+  #artist-calendar {
+    float: left;
+    margin: 5px 0;
+    padding: 5px;
+    width: 380px;
+    height: 500px;
+    color: @grey;
+    background: @white;
+    overflow-y: hidden;
+  }
+
+  #map {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  #artist-calendar-block {
+    height: 360px;
+    width: 370px;
+    padding: 0 10px;
+    overflow: hidden;
+    border: none !important;
+    border-top: 1px solid @light-grey !important;
+    background: white !important;
+    border-radius: 0;
+
+    .yui3-calendar-prevmonth-day,
+    .yui3-calendar-nextmonth-day {
+      padding: 3px 0 30px 5px;
+      color: @light-grey;
+    }
+
+    .yui3-calendarnav-prevmonth,
+    .yui3-calendarnav-nextmonth {
+      position: relative;
+      top: -6px;
+      left: 14px;
+      margin: 5px 0 !important;
+      text-decoration: none;
+      width: 13px;
+      border-width: 8px;
+    }
+
+    .yui3-calendarnav-prevmonth {
+      float: left;
+    }
+
+    .yui3-calendarnav-nextmonth {
+      float: right;
+      clear: right;
+      text-align: right;
+    }
+
+    .yui3-calendar-header-label {
+      float: left;
+      text-align: center;
+      width: 290px;
+    }
+
+    .yui3-calendar-header {
+      padding: 10px 0;
+      height: 30px;
+    }
+
+    .yui3-calendar-grid {
+      font-size: 10pt;
+    }
+
+    .yui3-calendar-day {
+      padding: 3px 0 30px 5px;
+    }
+
+    table {
+      border-collapse: collapse;
+
+      th {
+        width: 50px;
+        padding: 3px 0 5px 5px;
+        text-align: center;
+        color: white;
+        border: 1px solid @light-grey;
+        background: @black;
+      }
+
+      td {
+        width: 50px;
+        border: 1px solid @light-grey;
+      }
+
+      td.yui3-calendar-day-selected,
+      td.artist-date-selected {
+        background: @light-green !important;
+      }
+
+      td.artist-date-disabled {
+        background: @light-grey;
+        color: @grey;
+      }
+
+      td.artist-gig {
+        background: @yellow !important;
+      }
+
+      td.artist-gig-in-radius {
+        background: @red !important;
+        color: @white !important;
+      }
+
+      td.artist-past-gig {
+        background: @light-grey;
+        color: @grey;
+      }
+
+      td.artist-gig-from {
+        background: #003bb3 !important;
+        color: white;
+      }
+
+      td.current-date {
+        border: 2px solid #060;
+      }
+    }
+  }
+
+  #book-artist {
+    display: block;
+    position: relative;
+    top: 10px;
+    width: 390px;
+    text-align: center;
+    margin: 5px 0 0 0;
+    padding: 12px 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    background: @light-grey;
+    color: @black;
+    text-transform: uppercase;
+  }
+
+  #book-artist.active {
+    background: @yellow;
+  }
+
+  #book-artist.ready {
+    background: @light-green;
+  }
+
+  #artist-calendar-container {
+    float: left;
+  }
+}
+
+.gigLabel {
+  color: @black;
+  width: 30px;
+  font-weight: bold !important;
+  text-align: center;
+}
+
+.gigInRadiusLabel {
+  color: @red;
+  width: 30px;
+  font-weight: bold !important;
+  text-align: center;
+}

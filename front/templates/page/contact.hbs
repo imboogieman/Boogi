@@ -1,0 +1,52 @@
+<script type="text/x-handlebars-template" id="t-contact">
+    <div id="home" class="container">
+        <div class="shadow rounded">
+            <form id="contact-form" action="/contact" class="page">
+                <input type="hidden" name="source" value="contact" />
+
+                <div id="sidebar" class="column">
+                    <ul>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/team">Our Team</a></li>
+                        <li><a href="/contact" class="active">Contacts</a></li>
+                    </ul>
+                </div>
+
+                <div class="column">
+                    <h1>Contact Us</h1>
+
+                    <div class="row description">
+                        If you have any question - please contact us at <a href="mailto:info@boogi.co">info@boogi.co</a>
+                        <br />or by using the form below.
+                    </div>
+
+                    <div class="row">
+                        <label for="contact-name">Name <span class="red">*</span></label><br />
+                        <input type="text" id="contact-name" name="name" class="input" value="" />
+                        <span class="error" data-id="contact-name"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="contact-email">Email <span class="red">*</span></label><br />
+                        <input type="text" id="contact-email" name="email" class="input" value="" />
+                        <span class="error" data-id="contact-email"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="contact-message">Message <span class="red">*</span></label><br />
+                        <textarea id="contact-message" name="message"></textarea>
+                        <span class="error" data-id="contact-message"></span>
+                    </div>
+
+                    <div class="row buttons">
+                        <input type="button" id="contact" class="button" name="send" value="Submit" />
+                    </div>
+                </div>
+
+                <div class="clear"></div>
+            </form>
+        </div>
+    </div>
+
+    {{> footer }}
+</script>

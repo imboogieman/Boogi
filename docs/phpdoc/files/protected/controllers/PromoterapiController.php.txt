@@ -1,0 +1,202 @@
+<?php
+
+class PromoterAPIController extends Controller
+{
+    public function actionList()
+    {
+        // Get promoters
+        $promoters = Promoter::getList();
+
+        // Validate user input and redirect to the previous page if valid
+        if ($promoters) {
+            $result = array(
+                'result' => 'success',
+                'data'   => $promoters
+            );
+        } else {
+            $result = array(
+                'result'  => 'error',
+                'message' => 'Could not find any records, please check filter.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionLogin()
+    {
+        // Create user
+        $user = new User;
+        $user->attributes = $_POST;
+
+        // Validate user input and redirect to the previous page if valid
+        if ($user->login()) {
+            $promoter = Promoter::getLogged();
+            $result = array(
+                'result' => 'success',
+                'data'   => $promoter->getNormalizedData()
+            );
+        } else {
+            $result = array(
+                'result' => 'error',
+                'message' => 'Could not find user with given credentials.',
+                'error' => $user->loginError
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionLogout()
+    {
+        Yii::app()->user->logout();
+        $result = array('result' => 'success');
+
+        $this->renderJSON($result);
+    }
+
+    public function actionProfile()
+    {
+        if ($promoter = Promoter::getLogged()) {
+            $result = array(
+                'result' => 'success',
+                'data'   => $promoter->getNormalizedData()
+            );
+        } else {
+            $result = array(
+                'result' => 'error',
+                'message' => 'Could not find current user profile.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionUpdateProfile()
+    {
+        if (!$promoter = Promoter::getLogged()) {
+            $promoter = new Promoter;
+            $promoter->bindRelatedParams(array(
+                'email'    => $_POST['email'],
+                'password' => $_POST['password'],
+            ));
+        }
+
+        if ($promoter) {
+            $transaction = $promoter->dbConnection->beginTransaction();
+
+            try {
+                $user_id = Yii::app()->user->getId();
+                if ($user_id) {
+                    // Added check for DB unique key
+                    if (isset($_POST['email']) && !empty($_POST['email'])) {
+                        $promoter->user->email = $_POST['email'];
+                    }
+
+                    if (isset($_POST['password']) && !empty($_POST['password'])) {
+                        //$promoter->user->password = CPasswordHelper::hashPassword($_POST['password']);
+                    }
+
+                    $promoter->user->save();
+                }
+
+                if (isset($_POST['name']) && !empty($_POST['name'])) {
+                    $promoter->name = $_POST['name'];
+                }
+                if (isset($_POST['description']) && !empty($_POST['description'])) {
+                    $promoter->description = $_POST['description'];
+                }
+                if (isset($_POST['latitude']) && !empty($_POST['latitude'])) {
+                    $promoter->latitude = (float)$_POST['latitude'];
+                }
+                if (isset($_POST['longitude']) && !empty($_POST['longitude'])) {
+                    $promoter->longitude = (float)$_POST['longitude'];
+                }
+                if (isset($_POST['radius']) && !empty($_POST['radius'])) {
+                    $promoter->radius = (int)$_POST['radius'];
+                }
+
+                if ($promoter->save()) {
+                    $transaction->commit();
+
+                    if (isset($_POST['file_id']) && !empty($_POST['file_id'])) {
+                        $promoterFile = new PromoterFile();
+                        $promoterFile->file_id = (int)$_POST['file_id'];
+                        $promoterFile->promoter_id = (int)$promoter->id;
+                        $promoterFile->save();
+                    }
+
+                    $result = array(
+                        'result' => 'success',
+                        'data'   => $promoter->getNormalizedData()
+                    );
+                } else {
+                    $result = array(
+                        'result' => 'error',
+                        'message' => 'Could not update current user profile.'
+                    );
+                }
+            } catch (Exception $e) {
+                $transaction->rollback();
+
+                $result = array(
+                    'result'  => 'error',
+                    'message' => $e->getMessage()
+                );
+            }
+        } else {
+            $result = array(
+                'result' => 'error',
+                'message' => 'Could not find current user profile.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionRegister()
+    {
+        $result = array('result' => 'success');
+
+        $this->renderJSON($result);
+    }
+
+    public function actionRestore()
+    {
+        // Create user
+        $user = User::model()->find('email = :email', array(':email' => $_POST['email']));
+
+        // Validate user input and redirect to the previous page if valid
+        if ($user && $user->restorePassword()) {
+            $result = array(
+                'result' => 'success',
+                'message' => 'Please check your email.'
+            );
+        } else {
+            $result = array(
+                'result' => 'error',
+                'message' => 'Could not find user with given credentials.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionDashboard()
+    {
+        if ($promoter = Promoter::getLogged()) {
+            $result = array(
+                'result' => 'success',
+                'data'   => $promoter->getDashboardData()
+            );
+        } else {
+            $result = array(
+                'result' => 'error',
+                'message' => 'Could not find current user profile.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+}
+

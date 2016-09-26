@@ -1,0 +1,433 @@
+<script type="text/x-handlebars-template" id="t-gig-book-form">
+    <div id="gig-book" class="container">
+        <div class="shadow rounded">
+            <div class="wrapper">
+                <h1>Add new booking: <span id="booking-artist">{{name}}</span></h1>
+
+                <ul id="booking-tabs">
+                    <li class="booking-gig active booking-tab" data-target="booking-gig">1. Gig Info</li>
+                    <li class="booking-offer booking-tab" data-target="booking-offer">2. Booking Offer</li>
+                    <li class="booking-confirmation booking-tab" data-target="booking-confirmation">3. Confirmation</li>
+                </ul>
+
+                <form id="booking-form">
+                    <input type="hidden" id="artist_id" name="artist_id" value="{{id}}" />
+                    <input type="hidden" id="gig_id" name="gig_id" value="" />
+                    <input type="hidden" id="venue_id" name="venue_id" value="" />
+                    <input type="hidden" id="venue_data" name="venue_data" value="" />
+
+                    <div id="booking-block"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-booking-gig">
+    <div id="booking-gig" {{#ifNotCond show_block 'booking-gig'}}class="hidden"{{/ifNotCond}}>
+        <div class="row">
+            <label for="name">Name <span class="red">*</span></label><br />
+            <input type="text" id="name" name="name" class="input iselect required" value="{{name}}" autocomplete="off" />
+            <input type="button" id="ac-all" name="ac-all" value="" />
+            <span class="error" id="name-error">
+                {{#errors.name}}
+                    {{this}}
+                {{/errors.name}}
+            </span>
+        </div>
+
+        <div class="row">
+            <label for="type">Type <span class="red">*</span></label><br />
+            <select id="type" name="type" class="option required">
+                <option selected="selected" disabled="disabled">Select</option>
+                {{#venueAttrs.types}}
+                    <option value="{{id}}" {{#ifCond id ../type}}selected{{/ifCond}}>{{name}}</option>
+                {{/venueAttrs.types}}
+            </select>
+            <span class="error" id="type-error">
+                {{#errors.type}}
+                    {{this}}
+                {{/errors.type}}
+            </span>
+        </div>
+
+        <div class="row datetime">
+            <label for="datetime">Date <span class="red">*</span></label>
+            <div class="row date-range">
+                <div class="column">
+                    <input type="text" id="gig_date_from" name="gig_date_from" class="input datepicker required" value="{{gig_date_from}}" data-disable="{{json disable}}" />
+                </div>
+                <div class="column">
+                    <select id="gig_time_from" name="gig_time_from" class="timepicker">
+                        {{#times}}
+                            <option value="{{this}}" {{#ifCond this ../gig_time_from}}selected{{/ifCond}}>{{this}}</option>
+                        {{/times}}
+                    </select>
+                </div>
+                <div class="column spacer">
+                    to
+                </div>
+                <div class="column">
+                    <select id="gig_time_to" name="gig_time_to" class="timepicker">
+                        {{#times}}
+                            <option value="{{this}}" {{#ifCond this ../gig_time_to}}selected{{/ifCond}}>{{this}}</option>
+                        {{/times}}
+                    </select>
+                </div>
+                <div class="column">
+                    <input type="text" id="gig_date_to" name="gig_date_to" class="input datepicker required" value="{{gig_date_to}}" data-disable="{{json disable}}" />
+                </div>
+                <div class="column">
+                    <img id="help" src="/images/icon/i-help.png" />
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="row tz-block dropdown">
+                <input type="hidden" id="gig_timezone" name="gig_timezone" value="{{gig_timezone.name}}" />
+                <span class="error" id="gig_datetime-error">
+                    {{#errors.gig_datetime}}
+                        {{this}}
+                    {{/errors.gig_datetime}}
+                </span>
+                <span id="gig-tz-toggle" class="tz-toggle">
+                    {{gig_timezone.canonical}}
+                </span>
+                <span id="gig-tz-menu" class="hidden">
+                    <div class="tz-list">
+                        <ul>
+                            {{#tzInfo}}
+                                <li class="tz-item" data-value="{{name}}" data-canonical="{{canonical}}"
+                                    data-target="gig_timezone" data-label="gig-tz-toggle">{{canonical}}</li>
+                            {{/tzInfo}}
+                        </ul>
+                    </div>
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="venue">Venue <span class="red">*</span></label><br />
+            <input type="text" id="venue" name="venue" class="input venue required" value="{{venue}}" autocomplete="off"  /><br />
+            <span class="error" id="venue-error">
+                {{#errors.venue}}
+                    {{this}}
+                {{/errors.venue}}
+            </span>
+            <label for="venue">Address:</label><br />
+            <input type="text" id="address" name="address" class="input address" value="{{address}}" />
+            <span class="error" id="address-error">
+                {{#errors.address}}
+                    {{this}}
+                {{/errors.address}}
+            </span>
+        </div>
+
+        <div id="revenue-calc" class="row">
+            <div class="column">
+                <label for="capacity">Venue Capacity <span class="red">*</span></label><br />
+                <input type="text" id="capacity" name="capacity" class="input required" value="{{capacity}}" />
+                <span class="error" id="capacity-error">
+                    {{#errors.capacity}}
+                        {{this}}
+                    {{/errors.capacity}}
+                </span>
+            </div>
+
+            <div class="column spacer">
+                x
+            </div>
+
+            <div class="column">
+                <label for="gig_price">Average Ticket Price <span class="red">*</span></label><br />
+                <input type="text" id="gig_price" name="gig_price" class="input required" value="{{gig_price}}" />
+                <span class="error" id="gig_price-error">
+                    {{#errors.gig_price}}
+                        {{this}}
+                    {{/errors.gig_price}}
+                </span>
+            </div>
+
+            <div class="column spacer">
+                =
+            </div>
+
+            <div class="column">
+                <label for="revenue">Potential Revenue Net</label><br />
+                <input type="text" id="revenue" name="revenue" class="input required readonly" value="{{revenue}}" readonly />
+            </div>
+
+            <div class="column">
+                <label for="gig_currency">&nbsp;</label><br />
+                <select id="gig_currency" name="gig_currency">
+                    {{#venueAttrs.currencies}}
+                        <option value="{{id}}" {{#ifCond id ../gig_currency}}selected{{/ifCond}}>{{name}}</option>
+                    {{/venueAttrs.currencies}}
+                </select>
+                <span class="error" id="gig_currency-error">
+                    {{#errors.gig_currency}}
+                        {{this}}
+                    {{/errors.gig_currency}}
+                </span>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+
+        <div class="row">
+            <label for="description">Description</label><br />
+            <textarea id="description" name="description">{{description}}</textarea>
+            <span class="error" id="description-error">
+                {{#errors.description}}
+                    {{this}}
+                {{/errors.description}}
+            </span>
+        </div>
+
+        <div class="buttons">
+            <a id="return" href="{{link}}" class="cancel">Return</a>
+            <a href="#offer" class="booking-tab button" data-target="booking-offer">Next</a>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-booking-offer">
+    <div id="booking-offer" {{#ifNotCond show_block 'booking-offer'}}class="hidden"{{/ifNotCond}}>
+        <div class="row">
+            <label for="set_time">Set Time <span class="red">*</span></label>
+            <div class="row date-range">
+                <div class="column">
+                    <input type="text" id="book_date_from" name="book_date_from" class="input datepicker required" value="{{book_date_from}}" data-disable="{{json disable}}" />
+                </div>
+                <div class="column">
+                    <select id="book_time_from" name="book_time_from" class="timepicker">
+                        {{#times}}
+                            <option value="{{this}}" {{#ifCond this ../book_time_from}}selected{{/ifCond}}>{{this}}</option>
+                        {{/times}}
+                    </select>
+                </div>
+                <div class="column spacer">
+                    to
+                </div>
+                <div class="column">
+                    <select id="book_time_to" name="book_time_to" class="timepicker">
+                        {{#times}}
+                            <option value="{{this}}" {{#ifCond this ../book_time_to}}selected{{/ifCond}}>{{this}}</option>
+                        {{/times}}
+                    </select>
+                </div>
+                <div class="column">
+                    <input type="text" id="book_date_to" name="book_date_to" class="input datepicker required" value="{{book_date_to}}" data-disable="{{json disable}}" />
+                </div>
+                <div class="column">
+                    <img id="help" src="/images/icon/i-help.png" />
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="row tz-block dropdown">
+                <input type="hidden" id="book_timezone" name="book_timezone" value="{{book_timezone.name}}" />
+                <span class="error" id="book_datetime-error">
+                    {{#errors.book_datetime}}
+                        {{this}}
+                    {{/errors.book_datetime}}
+                </span>
+                <span id="book-tz-toggle" class="tz-toggle">
+                    {{book_timezone.canonical}}
+                </span>
+                <span id="book-tz-menu" class="hidden">
+                    <div class="tz-list">
+                        <ul>
+                            {{#tzInfo}}
+                                <li class="tz-item" data-value="{{name}}" data-canonical="{{canonical}}"
+                                    data-target="book_timezone" data-label="book-tz-toggle">{{canonical}}</li>
+                            {{/tzInfo}}
+                        </ul>
+                    </div>
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="price">Guaranteed Fee <span class="red">*</span></label>
+            <div class="row">
+                <input type="text" id="book_price" name="book_price" class="input" value="{{book_price}}" />
+                <select id="book_currency" name="book_currency" class="required">
+                    {{#venueAttrs.currencies}}
+                        <option value="{{id}}" {{#ifCond id ../book_currency}}selected{{/ifCond}}>{{name}}</option>
+                    {{/venueAttrs.currencies}}
+                </select>
+                <span class="error" id="book_price-error">
+                    {{#errors.book_price}}
+                        {{this}}
+                    {{/errors.book_price}}
+                </span>
+            </div>
+        </div>
+
+        <div id="offer-revenue-calc">
+            <div class="row">
+                <label for="price">Potential Fee</label><br />
+                <input type="text" id="potential_fee" name="potential_fee" class="input readonly" value="{{potential_fee}}" readonly />
+            </div>
+
+            <div class="row">
+                <div class="column">
+                    <label for="max_attendance">Max.Attendance</label><br />
+                    <input type="text" id="max_attendance" name="max_attendance" class="input readonly" value="{{capacity}}" readonly />
+                </div>
+                <div class="column">
+                    <label for="price">Potential Revenue</label><br />
+                    <input type="text" id="potential_revenue" name="potential_revenue" class="input readonly" value="{{revenue}}" readonly />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="column">
+                    <label for="price">Average Ticket Price</label><br />
+                    <input type="text" id="average_ticket_price" name="average_ticket_price" class="input readonly" value="{{gig_price}}" readonly />
+                </div>
+                <div class="column">
+                    <label for="price">Revenue Share, &percnt;</label><br />
+                    <input type="text" id="revenue_share" name="revenue_share" class="input" value="{{revenue_share}}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="transfer">Travel <span class="red">*</span>:</label><br />
+            <select id="transfer" name="transfer" class="option required">
+                <option selected="selected" disabled="disabled">Select</option>
+                {{#venueAttrs.transfertypes}}
+                    <option value="{{id}}" {{#ifCond id ../transfer}}selected{{/ifCond}}>{{name}}</option>
+                {{/venueAttrs.transfertypes}}
+            </select>
+            <span class="error" id="transfer-error">
+                {{#errors.transfer}}
+                    {{this}}
+                {{/errors.transfer}}
+            </span>
+        </div>
+
+        <div class="row">
+            <label for="accommodation">Accommodation <span class="red">*</span>:</label><br />
+            <select id="accommodation" name="accommodation" class="option required">
+                <option selected="selected" disabled="disabled">Select</option>
+                {{#venueAttrs.accommodations}}
+                    <option value="{{id}}" {{#ifCond id ../accommodation}}selected{{/ifCond}}>{{name}}</option>
+                {{/venueAttrs.accommodations}}
+            </select>
+            <span class="error" id="accommodation-error">
+                {{#errors.accommodation}}
+                    {{this}}
+                {{/errors.accommodation}}
+            </span>
+        </div>
+
+        <div class="row">
+            <label for="message">Message:</label><br />
+            <textarea id="message" name="message">{{message}}</textarea>
+            <span class="error" id="message-error">
+                {{#errors.message}}
+                    {{this}}
+                {{/errors.message}}
+            </span>
+        </div>
+
+        <div class="buttons">
+            <a href="#offer" class="booking-tab cancel" data-target="booking-gig">Return</a>
+            <a href="#confirmation" class="booking-tab button" data-target="booking-confirmation">Next</a>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-booking-confirmation">
+    <div id="booking-confirmation" {{#ifNotCond show_block 'booking-confirmation'}}class="hidden"{{/ifNotCond}}>
+        <h2>1. Gig info</h2>
+        <div class="row">
+            <div class="column left-column">Name:</div>
+            <div class="column">{{name}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Type:</div>
+            <div class="column">{{type_string}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Date:</div>
+            <div class="column right-column">
+                {{#ifCond gig_date_from gig_date_to}}
+                    {{gig_date_from}} {{gig_time_from}} - {{gig_time_to}}
+                {{else}}
+                    {{gig_date_from}} {{gig_time_from}} - {{gig_date_to}} {{gig_time_to}}
+                {{/ifCond}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Venue:</div>
+            <div class="column right-column">{{venue}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Address:</div>
+            <div class="column right-column">{{address}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Average Ticket Price:</div>
+            <div class="column">{{{gig_currency_symbol}}}{{gig_price}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Venue Capacity:</div>
+            <div class="column">{{capacity}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Potential Revenue Net:</div>
+            <div class="column">{{{book_currency_symbol}}}{{revenue}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Description:</div>
+            <div class="column right-column">{{description}}</div>
+        </div>
+
+        <h2>2. Booking Offer</h2>
+        <div class="row">
+            <div class="column left-column">Set Time:</div>
+            <div class="column">
+                {{#ifCond book_time_from book_time_to}}
+                    {{gig_date_from}} {{book_time_from}} - {{book_time_to}}
+                {{else}}
+                    {{book_date_from}} {{book_time_from}} - {{book_date_to}} {{book_time_to}}
+                {{/ifCond}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Revenue Share:</div>
+            <div class="column">{{revenue_share}}&percnt;</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Fee:</div>
+            <div class="column">
+                {{#ifCond book_price price_max}}
+                    {{{book_currency_symbol}}}{{book_price}}
+                {{else}}
+                    {{{book_currency_symbol}}}{{book_price}} (Min) - {{{gig_currency_symbol}}}{{price_max}} (Max)
+                {{/ifCond}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Travel:</div>
+            <div class="column">{{transfer_string}}</div>
+        </div>
+        <div class="row">
+            <div class="column left-column">Accommodation:</div>
+            <div class="column">{{accommodation_string}}</div>
+        </div>
+
+        <div class="buttons">
+            <a href="#offer" class="booking-tab cancel" data-target="booking-offer">Return</a>
+            <input type="button" id="book" name="book" class="button" value="Confirm" />
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-booking-ac-item">
+    <div class="booking-ac-item" data-id="{{id}}">
+        {{name}}
+    </div>
+</script>

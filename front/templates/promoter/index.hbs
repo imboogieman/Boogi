@@ -1,0 +1,166 @@
+<script type="text/x-handlebars-template" id="t-promoter-list">
+    <div id="items" class="container">
+        <div class="wrap">
+            <div id="map"></div>
+
+            <div id="promoter-list" class="shadow rounded">
+                {{#promoters}}
+                    <div class="item clear" data-id="{{id}}">
+                        <div class="image"><img src="{{image}}" alt="{{name}}" /></div>
+                        <div class="name">
+                            <a href="{{link}}" data-id="{{id}}" class="promoter">{{name}}</a>
+                        </div>
+                        <div class="description">{{description}}</div>
+                        <div class="info">
+                            <span class="{{#if following}}following bg-orange{{else}}follow bg-blue{{/if}}">
+                                <a href="{{link}}#follow" data-id="{{id}}" data-type="promoter" class="follow-item">
+                                    {{#if following}}unfollow{{else}}follow{{/if}}
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                {{else}}
+                    <div class="empty">No records found</div>
+                {{/promoters}}
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-iw-block">
+    <div class="item item-iw-block" data-id="{{id}}">
+        <div class="image"><img src="{{image}}" alt="{{name}}" /></div>
+        <div class="name">{{name}}</div>
+        <div class="description">{{description}}</div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter">
+    <div id="promoter" class="container">
+        <div class="wrap shadow rounded">
+            <div id="profile">
+                <div class="column left-column">
+                    <div class="wrap">
+                        <div id="image">
+                            <img id="file_image" src="{{promoter.crop}}" alt="{{promoter.name}}" />
+                        </div>
+
+                        {{#if promoter.is_approved}}
+                            <div id="status" class="push">Approved</div>
+                        {{/if}}
+
+                        {{#if promoter.address}}
+                            <div id="address" class="push">
+                                <h3>Location</h3>
+
+                                {{promoter.address}}
+                            </div>
+                        {{/if}}
+
+                        {{#if promoter.social}}
+                            <div id="social" class="push">
+                                <h3>Social</h3>
+
+                                {{#if promoter.facebook}}
+                                    <div id="facebook">
+                                        <a href="{{promoter.facebook}}" class="external">{{promoter.facebook_name}}</a>
+                                    </div>
+                                {{/if}}
+
+                                {{#if promoter.twitter}}
+                                    <div id="twitter">
+                                        <a href="{{promoter.twitter}}" class="external">{{promoter.twitter_name}}</a>
+                                    </div>
+                                {{/if}}
+
+                                {{#if promoter.homepage}}
+                                    <div id="homepage">
+                                        <a href="{{promoter.homepage}}" class="external">{{promoter.homepage_name}}</a>
+                                    </div>
+                                {{/if}}
+                            </div>
+                        {{/if}}
+
+                        <div id="abuse" class="push">
+                            <a href="/user/report/{{promoter.id}}">Report this user</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column right-column">
+                    <div class="wrap">
+                        <h1>
+                            {{promoter.name}}
+                            {{# if promoter.is_current }}<a href="/promoter/profile" class="back">Back to profile settings</a>{{/if}}
+                        </h1>
+
+                        <div id="type">Promoter</div>
+
+                        <div id="info">
+                            <h2>About</h2>
+
+                            <div id="description">
+                                {{{promoter.description}}}
+                            </div>
+
+                            <h2 class="spacer">Activity</h2>
+
+                            <h3>Upcoming Events</h3>
+                            <div id="promoter-active-gigs">
+                                {{#promoter.gigs.active}}
+                                    {{> promoter-profile-booking }}
+                                {{else}}
+                                    <div class="empty">
+                                        There are no upcoming events for this promoter.
+                                    </div>
+                                {{/promoter.gigs.active}}
+                            </div>
+
+                            <h3>Booking History</h3>
+                            <div id="promoter-past-gigs">
+                                {{#promoter.gigs.past}}
+                                    {{> promoter-profile-booking }}
+                                {{else}}
+                                    <div class="empty">
+                                        There are no past events for this promoter.
+                                    </div>
+                                {{/promoter.gigs.past}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-profile-booking-partial">
+    <div class="booking" data-id="{{id}}">
+        {{#bookings}}
+            <div class="image">
+                <img src="{{artist_thumb}}" />
+            </div>
+            <div class="name">
+                <h3>{{artist_name}}</h3>
+                <span class="description">{{artist_description}}</span>
+            </div>
+            <div class="date">{{../date}}</div>
+
+            <br />
+
+            <div class="gig">
+                Event: &laquo;{{../name}}&raquo;
+                <span class="venue">
+                Place: &laquo;{{../venue.name}}&raquo;
+                {{#if ../venue.city}}
+                    ({{../../venue.city}}{{#if ../../venue.country}}, {{../../../venue.country}}{{/if}})
+                {{/if}}
+                </span>
+            </div>
+
+            <div class="clear"></div>
+        {{/bookings}}
+    </div>
+</script>

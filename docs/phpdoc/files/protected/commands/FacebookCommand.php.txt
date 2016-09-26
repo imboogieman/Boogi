@@ -1,0 +1,170 @@
+<?php
+
+class FacebookCommand extends CConsoleCommand
+{
+    public function actionUpdateArtists()
+    {
+        $updated = 0;
+        $artists = Artist::model()->findAll('fb_id > 0');
+
+        // Check all artist in DB
+        foreach ($artists as $artist) {
+            $data = file_get_contents('https://graph.facebook.com/' . $artist->fb_id);
+            $data = \CJSON::decode($data);
+            
+            if ($data) {
+                // Try to get location from google
+                if (empty($artist->latitude) && empty($artist->longitude)) {
+                    if (!empty($data['hometown'])) {
+                        $artist->description = $data['hometown'];
+                    }
+                    
+                    if ($artist->description) {
+                        $data = file_get_contents('http://maps.google.com/maps/api/geocode/json?sensor=false&address=' . urlencode($data['hometown']));
+                        $data = \CJSON::decode($data);
+                        if ($data['status'] == 'OK') {
+                            $artist->description = $data['results'][0]['formatted_address'];
+                            
+                            $geometry = $data['results'][0]['geometry'];
+                            $artist->latitude = $geometry['location']['lat'];
+                            $artist->longitude = $geometry['location']['lng'];
+                        }
+                    }
+                }
+                
+                $artist->save();
+                $updated++;
+            }
+        }
+
+        echo  'Update counters: a = ' . $updated . PHP_EOL;
+        return 0;
+    }
+
+    public function actionUpdateEvents()
+    {
+        $access_token = $this->getAccesstoken();
+
+        $artistCounter = $eventCounter = $venueCounter = $gigCounter = $artistGigCounter = $updatedCounter = 0;
+        $artists = Artist::model()->findAll('fb_id > 0');
+
+        // Check all artist in DB
+        foreach ($artists as $artist) {
+            $artistCounter++;
+            $data = file_get_contents('https://graph.facebook.com/' . $artist->fb_id . '/events?' . $access_token);
+            $data = \CJSON::decode($data);
+
+            if (isset($data['data']) && count($data['data'])) {
+                foreach($data['data'] as $event) {
+                    $eventCounter++;
+                    if (isset($event['id'])) {
+                        $data = file_get_contents('https://graph.facebook.com/' . $event['id'] . '?' . $access_token);
+                        $data = \CJSON::decode($data);
+
+                        if ($data && isset($data['name']) && isset($data['location']) && isset($data['venue'])) {
+                            $transaction = $artist->dbConnection->beginTransaction();
+
+                            // Create new venue
+                            $venue = null;
+                            if (isset($data['venue']['id'])) {
+                                $venue = Venue::model()->find('ds_id = :ds_id', array(':ds_id' => $data['venue']['id']));
+                                if (!$venue) {
+                                    $venue = new Venue;
+                                    $venue->ds_id = $data['venue']['id'];
+                                    $venue->ds_type = DataSource::FACEBOOK;
+                                }
+                            } else {
+                                $venue = new Venue;
+                            }
+
+                            if (isset($data['venue']['country'])) {
+                                if ($country = Country::getByName($data['venue']['country'])) {
+                                    $venue->country_id  = $country->id;
+                                }
+                            }
+
+                            $venue->name        = isset($data['venue']['name']) ? $data['venue']['name'] : '';
+                            $venue->city        = isset($data['venue']['city']) ? $data['venue']['city'] : '';
+                            $venue->address     = isset($data['venue']['street']) ? $data['venue']['street'] : '';
+                            $venue->latitude    = isset($data['venue']['latitude']) ? $data['venue']['latitude'] : '';
+                            $venue->longitude   = isset($data['venue']['longitude']) ? $data['venue']['longitude'] : '';
+
+                            if (empty($venue->name)) {
+                                if ($country) {
+                                    $venue->name .= $country;
+                                }
+                                if ($venue->city) {
+                                    $venue->name .= $venue->city;
+                                }
+                            }
+
+                            if (!$venue->save()) {
+                                var_dump($venue->getErrors());
+                                echo PHP_EOL;
+
+                                $transaction->rollback();
+                                continue;
+                            }
+                            $venueCounter++;
+
+                            // Create new gig
+                            $gig = Gig::model()->find('ds_id = :ds_id AND ds_id IS NOT NULL', array(':ds_id' => $event['id']));
+                            if (!$gig) {
+                                $gig = new Gig;
+                                $gig->name = $data['name'];
+                            }
+
+                            $gig->ds_id     = $event['id'];
+                            $gig->ds_type   = DataSource::FACEBOOK;
+                            $gig->venue_id  = $venue->id;
+                            $gig->datetime  = date('Y-m-d H:i:s', strtotime($data['start_time']));
+                            $gig->status    = Gig::STATUS_ACCEPTED;
+
+                            if (!$gig->save()) {
+                                var_dump($gig->getErrors());
+                                echo PHP_EOL;
+
+                                $transaction->rollback();
+                                continue;
+                            }
+                            $gigCounter++;
+
+                            // Link gig to artist
+                            $artistGig = new ArtistGig;
+                            $artistGig->artist_id = $artist->id;
+                            $artistGig->gig_id = $gig->id;
+
+                            if (!$artistGig->save()) {
+                                var_dump($artistGig->getErrors());
+                                echo PHP_EOL;
+
+                                $transaction->rollback();
+                                continue;
+                            }
+                            $artistGigCounter++;
+
+                            $transaction->commit();
+                            $updatedCounter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        echo 'Update counters: ac = ' . $artistCounter .
+            '; ec = ' . $eventCounter .
+            '; vc = ' . $venueCounter .
+            '; gc = ' . $gigCounter .
+            '; ag = ' . $artistGigCounter .
+            '; uc = ' .  $updatedCounter . PHP_EOL;
+
+        return 0;
+    }
+
+    protected function getAccesstoken() {
+        $fbAppId = Yii::app()->params['fbAppId'];
+        $fbSecret = Yii::app()->params['fbSecret'];
+        return file_get_contents('https://graph.facebook.com/oauth/access_token?client_id=' . $fbAppId . '&client_secret=' . $fbSecret . '&grant_type=client_credentials');
+    }
+}
+

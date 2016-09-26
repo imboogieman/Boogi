@@ -1,0 +1,28 @@
+<?php
+
+// This is the main Web application configuration. Any writable
+// CWebApplication properties can be configured here.
+return array(
+    // Application components
+    'components' => array(
+        'db' => array(
+            'connectionString'  => 'mysql:host=localhost:3306;dbname=boogi.local',
+            'emulatePrepare'    => true,
+            'username'          => 'root',
+            'password'          => 'password',
+            'charset'           => 'utf8',
+        ),
+    ),
+
+    // Application-level parameters that can be accessed
+    // Using Yii::app()->params['paramName']
+    'params' => array(
+        'isDebug'               => true,
+        'baseUrl'               => 'http://boogi.local',
+        'adminUrl'              => 'http://admin.boogi.local',
+        'smtpAuth'              => true,
+        'smtpHost'              => 'localhost',
+        'smtpPort'              => 25,
+        'smtpSecure'            => 'none'
+    ),
+);

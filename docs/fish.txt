@@ -1,0 +1,37 @@
+container.one('#pricing').all('.column').on('hover',
+    Y.bind(function(event) {
+        var active = this._getHoverPriceColumn(event);
+        container.one('#pricing').all('.c2, .c3, .c4, .c5').removeClass('active');
+        container.one('#pricing').all(active).addClass('active');
+    }, this),
+    Y.bind(function() {
+        container.one('#pricing').all('.c2, .c3, .c4, .c5').removeClass('active');
+        container.one('#pricing').all(previous).addClass('active');
+    }, this)
+);
+
+_getHoverPriceColumn: function (event) {
+    if (event.target.hasClass('c2')) {
+        return '.c2';
+    }
+    if (event.target.hasClass('c3')) {
+        return '.c3';
+    }
+    if (event.target.hasClass('c5')) {
+        return '.c5';
+    }
+    return '.c4';
+},
+
+_getActivePriceColumn: function (container) {
+    if (container.one('#pricing .active').hasClass('c2')) {
+        return '.c2';
+    }
+    if (container.one('#pricing .active').hasClass('c3')) {
+        return '.c3';
+    }
+    if (container.one('#pricing .active').hasClass('c5')) {
+        return '.c5';
+    }
+    return '.c4';
+},

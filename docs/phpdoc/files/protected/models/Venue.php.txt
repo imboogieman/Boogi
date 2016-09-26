@@ -1,0 +1,204 @@
+<?php
+
+/**
+ * This is the model class for table "venue".
+ *
+ * The followings are the available columns in table 'venue':
+ * @property integer $id
+ * @property string $name
+ * @property string $alias
+ * @property string $description
+ * @property integer $country_id
+ * @property string $city
+ * @property string $address
+ * @property double $latitude
+ * @property double $longitude
+ * @property string $timestamp
+ * @property string $ds_id
+ * @property integer $ds_type
+ *
+ * The followings are the available model relations:
+ * @property Gig[] $gigs
+ * @property Country $country
+ */
+class Venue extends Model
+{
+    public $image;
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'venue';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('country_id', 'numerical', 'integerOnly' => true),
+            array('latitude, longitude', 'numerical'),
+            array('name, city', 'length', 'max' => 64),
+            array('description, address, timestamp', 'safe'),
+            array('id, name, description, country_id, city, address, latitude, longitude, timestamp', 'safe', 'on' => 'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'gigs' => array(self::HAS_MANY, 'Gig', 'venue_id'),
+            'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
+            'venueFiles' => array(self::HAS_MANY, 'VenueFile', 'venue_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'name' => 'Venue Name',
+            'description' => 'Description',
+            'country_id' => 'Country',
+            'city' => 'City',
+            'address' => 'Address',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
+            'timestamp' => 'Timestamp',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
+
+        $criteria = new CDbCriteria;
+
+        $criteria->compare('id', $this->id);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('description', $this->description, true);
+        $criteria->compare('country_id', $this->country_id);
+        $criteria->compare('city', $this->city, true);
+        $criteria->compare('address', $this->address, true);
+        $criteria->compare('latitude', $this->latitude);
+        $criteria->compare('longitude', $this->longitude);
+        $criteria->compare('timestamp', $this->timestamp, true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Venue the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * Get venues assoc array
+     * @return array
+     */
+    public static function getArray()
+    {
+        $result = array();
+
+        $venues = Venue::model()->findAll();
+        foreach($venues as $venue) {
+            $result[] = array(
+                'id' => $venue->id,
+                'name' => $venue->name,
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Save action with related User creation
+     * @return bool|void
+     */
+    public function save()
+    {
+        if (empty($this->name) && empty($this->city) && empty($this->address) &&
+            empty($this->latitude) && empty($this->longitude))
+        {
+            $this->addError('address', 'Empty all address fields.');
+            return false;
+        }
+
+        // Call parent save
+        if (parent::save()) {
+            // Generates alias
+            $this->generateAlias();
+
+            return true;
+        }
+    }
+
+    /**
+     * Return venue list
+     * @return array
+     */
+    public static function getList()
+    {
+        $result = array();
+        $venues = self::model()->findAll();
+
+        if ($venues) {
+            foreach ($venues as $venue) {
+                $result[] = $venue->getNormalizedData();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return Venue normalized data
+     * @return array
+     */
+    public function getNormalizedData()
+    {
+        return array(
+            'id'            => $this->id,
+            'name'          => $this->name,
+            'alias'         => $this->alias,
+            'description'   => $this->description,
+            'latitude'      => $this->latitude,
+            'longitude'     => $this->longitude,
+            'image'         => $this->getMainImage()
+        );
+    }
+}
+

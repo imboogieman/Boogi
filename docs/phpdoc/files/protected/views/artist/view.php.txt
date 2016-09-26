@@ -1,0 +1,99 @@
+<?php
+    /* @var $this ArtistController */
+    /* @var $model Artist */
+
+    $this->breadcrumbs = array(
+        'Artists' => array('index'),
+        $model->name,
+    );
+
+    $this->menu = array(
+        array('label' => 'List Artist', 'url' => array('index')),
+        array('label' => 'Create Artist', 'url' => array('create')),
+        array('label' => 'Update Artist', 'url' => array('update', 'id' => $model->id)),
+        array('label' => 'Delete Artist', 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'confirm' => 'Are you sure you want to delete this item?')),
+        array('label' => 'Manage Artist', 'url' => array('admin')),
+    );
+
+    $current_ip = Model::getCurrentIp();
+    $config = Yii::app()->params;
+
+    $mapData = $model->getMapData();
+?>
+
+<h1><?php echo $model->name; ?></h1>
+
+<?php
+    $this->widget('zii.widgets.CDetailView', array(
+        'data' => $model,
+        'attributes' => array(
+            'name',
+            'email',
+            'description',
+            'images' => array(
+                'label' => 'Image link',
+                'type' => 'raw',
+                'value' => CHtml::link($model->getMainImage(), $model->getMainImage()),
+            ),
+            'followers' => array(
+                'label' => 'Followers',
+                'value' => $mapData['followCount'],
+            ),
+            'gigs' => array(
+                'label' => 'Gigs',
+                'value' => $mapData['gigCount'],
+            ),
+            'latitude',
+            'longitude'
+        ),
+    ));
+
+    $latitude = $model->latitude ? $model->latitude : Model::getDefaultLatitude();
+    $longitude = $model->longitude ? $model->longitude : Model::getDefaultLongitude();
+?>
+
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['googleApiKey']; ?>&sensor=true"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var mapData = <?php echo \CJSON::encode($mapData); ?>,
+            mapOptions = {
+                center: new google.maps.LatLng(<?php echo $latitude; ?>, <?php echo $longitude; ?>),
+                zoom: 4,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+        // Init map
+        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+        // Artist marker
+        var marker = new google.maps.Marker({
+            position    : new google.maps.LatLng(<?php echo $latitude; ?>, <?php echo $longitude; ?>),
+            map         : map,
+            title       : '<?php echo $model->name; ?>',
+            icon        : '/images/m-artist.png'
+        });
+
+        // Set gig markers
+        for (var i = 0; i < mapData.mapData.length; i++) {
+            var content = '<div id="gmap-iw-content">' + mapData.mapData[i].gig + '<br />' + mapData.mapData[i].venue + '</div>';
+            var infowindow = new google.maps.InfoWindow({
+                content: content
+            });
+
+            var marker = new google.maps.Marker({
+                position    : new google.maps.LatLng(mapData.mapData[i].latitude, mapData.mapData[i].longitude),
+                map         : map,
+                title       : mapData.mapData[i].date,
+                icon        : '/images/m-gig.png'
+            });
+
+            google.maps.event.addListener(marker, 'click', function () {
+                infowindow.open(map, marker);
+            });
+        }
+    });
+</script>
+
+<div id="map-canvas"></div>
+

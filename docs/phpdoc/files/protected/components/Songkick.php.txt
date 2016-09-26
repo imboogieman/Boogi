@@ -1,0 +1,68 @@
+<?php
+class Songkick
+{
+
+    private $_apiKey;
+    private $_error;
+
+    function __construct($apiKey)
+    {
+        $this->_apiKey = $apiKey;
+    }
+
+    public function searchArtistId($query)
+    {
+        $artist = $this->searchArtist($query);
+
+        if ($artist) {
+            return $artist['id'];
+        }
+    }
+
+    public function searchArtist($query)
+    {
+        $uri = 'http://api.songkick.com/api/3.0/search/artists.json?query=' . urlencode($query) . '&apikey=' . $this->_apiKey;
+        $data = $this->_getData($uri);
+
+        if (isset($data['resultsPage']) &&
+            isset($data['resultsPage']['totalEntries']) &&
+            $data['resultsPage']['totalEntries'] > 0
+        ) {
+            return current($data['resultsPage']['results']);
+        }
+    }
+
+    public function getArtistEvents($artistId)
+    {
+        $uri = 'http://api.songkick.com/api/3.0/artists/' . (int)$artistId . '/calendar.json?apikey=' . $this->_apiKey;
+        $data = $this->_getData($uri);
+
+        if (isset($data['resultsPage']) &&
+            isset($data['resultsPage']['totalEntries']) &&
+            $data['resultsPage']['totalEntries'] > 0
+        ) {
+            return $data['resultsPage']['results'];
+        }
+    }
+
+    public function getError()
+    {
+        return $this->_error;
+    }
+
+    private function _getData($uri)
+    {
+        try {
+            $data = file_get_contents($uri);
+            $this->_error = null;
+
+            return json_decode($data);
+        } catch (Exception $e) {
+            $this->_error = $e;
+
+            return false;
+        }
+    }
+
+}
+

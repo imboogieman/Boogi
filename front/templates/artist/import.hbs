@@ -1,0 +1,81 @@
+<script type="text/x-handlebars-template" id="t-artist-import">
+    <div id="artist-import" class="container">
+        <div class="wrap">
+            <div id="artist-import-list" class="page">
+                <div class="wrapper">
+                    <h1>Add New Artist</h1>
+
+                    {{#if show_extended }}
+                        <div id="extended-search">
+                            <p>
+                                Sorry, but we can't find any artist related to your search query.
+                            </p>
+                            {{#if mild }}
+                                <p>
+                                    Please <a href="/contact">contact us</a> so we can import your artist manually.
+                                    Or <a href="/">try to find</a> other artist you wish.
+                                </p>
+                            {{ else }}
+                                <p>
+                                    You can try to use more mild search <a href="/artist/add/{{{query}}}/mild">with this link</a>.
+                                    Or <a href="/">try to find</a> other artist you wish.
+                                </p>
+                            {{/if}}
+                        </div>
+                    {{else}}
+                        <p>
+                            The Artist You are seeking is not in our database yet.
+                        </p>
+                        <p>
+                            Please, identify the artist via Facebook profile below and press "Add" to invite
+                            the artist to our service immediately.
+                        </p>
+
+                        <div id="imported-items" class="hidden">
+                            <h3>Imported artists</h3>
+                            <div class="result"></div>
+                            <div class="clear"></div>
+                            <h3>Found artists</h3>
+                        </div>
+
+                        <div id="found-items">
+                            {{#artists}}
+                                <div id="artist-import-item-{{id}}" class="artist-import-item">
+                                    <input type="button" class="button import-artist" name="import-artist" value="Add" data-id="{{id}}" />
+
+                                    <div class="artist-import-avatar">
+                                        <img src="{{image}}" alt="{{name}}" height="60" />
+                                    </div>
+
+                                    <div class="artist-import-profile">
+                                        <h3>{{name}}</h3>
+                                        <a href="{{link}}" title="{{name}}">Facebook profile link</a>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            {{/artists}}
+
+                            <div class="clear"></div>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-artist-import-result">
+    <div id="artist-import-item-{{ artist.fb_id }}" class="artist-import-item imported">
+        <div class="artist-import-avatar">
+            <img src="{{ artist.image }}" alt="{{ artist.name }}" height="60" />
+        </div>
+        <div class="artist-import-profile">
+            <p><a href="{{ artist.link }}">{{ artist.name }}</a> imported to our system.</p>
+            <p>Now you <a href="{{ artist.link }}">can book</a> this artist.</p>
+            <div class="import-progress hidden">
+                Checking artist events and then import it to our system.
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</script>

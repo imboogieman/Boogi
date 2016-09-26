@@ -1,0 +1,78 @@
+<?php
+
+// uncomment the following to define a path alias
+// Yii::setPathOfAlias('local','path/to/local-folder');
+
+// This is the main Web application configuration. Any writable
+// CWebApplication properties can be configured here.
+return array(
+    'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
+    'name' => 'Starway',
+
+    // preloading 'log' component
+    'preload' => array('log'),
+
+    // autoloading model and component classes
+    'import' => array(
+        'application.models.*',
+        'application.components.*',
+    ),
+
+    'modules' => array(),
+
+    // application components
+    'components' => array(
+        'user' => array(
+            // enable cookie-based authentication
+            'allowAutoLogin' => true
+        ),
+        'urlManager' => array(
+            'urlFormat' => 'path',
+            'showScriptName' => false,
+            'rules' => array(
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ),
+        ),
+        'db' => array(
+            'connectionString' => 'mysql:host=localhost;dbname=starway',
+            'emulatePrepare' => true,
+            'username' => 'root',
+            'password' => 'Dalt0nik',
+            'charset' => 'utf8',
+        ),
+        'errorHandler' => array(
+            // use 'site/error' action to display errors
+            'errorAction' => 'site/error',
+        ),
+        'log' => array(
+            'class' => 'CLogRouter',
+            'routes' => array(
+                array(
+                    'class' => 'CFileLogRoute',
+                    'levels' => 'error, warning',
+                ),
+            ),
+        ),
+        'email' => array(
+            'class' => 'application.extensions.email.Email',
+            'delivery' => 'php',
+            'from' => 'info@starway.pro'
+        )
+    ),
+
+    // application-level parameters that can be accessed
+    // using Yii::app()->params['paramName']
+    'params' => array(
+        // this is used in contact page
+        'adminEmail' => 'webmaster@example.com',
+        'ipinfoKey' => '8067b473e90dd43d4db06cc5dfd490dfd2bf201086fb166fa33e39c9b2d45fb5',
+        'googleApiKey' => 'AIzaSyDwABveJ-O5F0i5fUSo3dHWKkkpfzx2Po4',
+
+        'fbAppId' => '177857332412297',
+        'fbSecret' => 'de369485628908e74b2c3396ceb6dcb3',
+
+        'gtApiKey' => '03767f2fec2f5ef4a1'
+    ),
+);

@@ -1,0 +1,44 @@
+<script type="text/x-handlebars-template" id="t-404">
+    <div id="home" class="container">
+        <div class="shadow rounded">
+            <div id="not-found" class="page">
+
+                <div class="num">4<img src="/images/favicon/114.png" />4</div>
+                <div class="text">The page you are looking for<br />cannot be found.</div>
+
+                <form id="not-found-form" action="/not-found">
+                    <input type="hidden" name="source" value="404" />
+
+                    <div class="row description">
+                        Please, describe what you were doing so we can quickly<br />
+                        fix the bug(s) and let you boogi without hassle.
+                    </div>
+                    <div class="row">
+                        <label for="name">Name <span class="red">*</span></label><br />
+                        <input type="text" id="name" name="name" class="input" value="" />
+                        <span class="error" data-id="name"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="email">Email <span class="red">*</span></label><br />
+                        <input type="text" id="email" name="email" class="input" value="" />
+                        <span class="error" data-id="email"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="message">Message <span class="red">*</span></label><br />
+                        <textarea id="message" name="message" placeholder="Hi,
+I was trying..."></textarea>
+                        <span class="error" data-id="message"></span>
+                    </div>
+
+                    <div class="row buttons">
+                        <input type="button" id="not-found-submit" class="button" name="send" value="Submit" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{> footer }}
+</script>

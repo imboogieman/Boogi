@@ -1,0 +1,223 @@
+<?php
+
+class SiteController extends Controller
+{
+    public $fbId = null;
+
+    public $fbLoginUrl = null;
+
+    /**
+     * Declares class-based actions.
+     */
+    public function actions()
+    {
+        return array(
+            // captcha action renders the CAPTCHA image displayed on the contact page
+            'captcha' => array(
+                'class' => 'CCaptchaAction',
+                'backColor' => 0xFFFFFF,
+            ),
+            // page action renders "static" pages stored under 'protected/views/site/pages'
+            // They can be accessed via: index.php?r=site/page&view=FileName
+            'page' => array(
+                'class' => 'CViewAction',
+            ),
+        );
+    }
+
+    /**
+     * This is the action to handle external exceptions.
+     */
+    public function actionIndex()
+    {
+        $config = array(
+            'appId' => Yii::app()->params['fbAppId'],
+            'secret' => Yii::app()->params['fbSecret'],
+            'fileUpload' => false, // optional
+            'allowSignedRequest' => false, // optional, but should be set to false for non-canvas apps
+        );
+
+        $facebook = new Facebook($config);
+        $this->fbId = $facebook->getUser();
+        if ($this->fbId) {
+            if (Yii::app()->user->isGuest) {
+                $promoter = Promoter::model()->find('fb_id = :fb_id', array(':fb_id' => $this->fbId));
+            } else {
+                $promoter = Promoter::model()->find('user_id = :user_id  AND fb_id = :fb_id', array(
+                    ':user_id' => Yii::app()->user->getId(),
+                    ':fb_id'   => $this->fbId
+                ));
+            }
+
+            if (!$promoter) {
+                try {
+                    // Create user and begin transaction
+                    $user = new User;
+                    $transaction = $user->dbConnection->beginTransaction();
+
+                    // Create user record
+                    $fbUser = $facebook->api('/me');
+                    if (isset($fbUser['email'])) {
+                        $user = User::model()->find('email = :email', array(':email' => $fbUser['email']));
+                    }
+
+                    if (!$user) {
+                        $user = new User;
+                        $user->email = $fbUser['email'];
+                        $user->setRandomPass();
+                        if (!$user->save()) {
+                            throw new Exception('Could not create user record');
+                        }
+                    }
+
+                    // Promoter info
+                    if (!$promoter = Promoter::model()->find('user_id = :user_id', array(':user_id' => $user->id))) {
+                        $promoter = new Promoter;
+                    }
+                    $promoter->user_id = $user->id;
+                    $promoter->fb_id = $this->fbId;
+                    $promoter->name = $fbUser['name'];
+                    $promoter->description = isset($fbUser['bio']) ? $fbUser['bio'] : $fbUser['link'];
+
+                    // Check return url for lat/lng
+                    if (isset($_GET['lat']) && !empty($_GET['lat']) && isset($_GET['lng']) && !empty($_GET['lng'])) {
+                        $promoter->latitude = $_GET['lat'];
+                        $promoter->longitude = $_GET['lng'];
+                    } else if (isset($fbUser['location']) && isset($fbUser['location']['name'])) {
+                        $data = file_get_contents('http://maps.google.com/maps/api/geocode/json?sensor=false&address=' . urlencode($fbUser['location']['name']));
+                        $data = \CJSON::decode($data);
+                        if ($data['status'] == 'OK') {
+                            $geometry = $data['results'][0]['geometry'];
+                            $promoter->latitude = $geometry['location']['lat'];
+                            $promoter->longitude = $geometry['location']['lng'];
+                        }
+                    }
+
+                    if (!$promoter->save()) {
+                        throw new Exception('Could not create promoter record');
+                    }
+
+                    // Copy facebook picture
+                    $pictureName = 'images/promoter/' . substr(md5(time()), 0, 10) . '.jpg';
+                    $fileData = file_get_contents('https://graph.facebook.com/' . $this->fbId . '/picture?type=large');
+                    $newFile = DOC_ROOT . DS . $pictureName;
+                    if (!file_put_contents($newFile, $fileData)) {
+                        throw new Exception('Could not copy image');
+                    }
+
+                    // Create file record
+                    $file = new File;
+                    $file->path = $pictureName;
+                    if (!$file->save()) {
+                        throw new Exception('Could not create file record');
+                    }
+
+                    // Link image to promoter
+                    $promoterFile = new PromoterFile;
+                    $promoterFile->promoter_id = $promoter->id;
+                    $promoterFile->file_id = $file->id;
+                    if (!$promoterFile->save()) {
+                        throw new Exception('Could not save promoter file link');
+                    }
+
+                    // Finally run transaction
+                    $transaction->commit();
+
+                    // Login user
+                    $user->login();
+                } catch(Exception $e) {
+                    $transaction->rollback();
+                    Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
+                }
+            } else {
+                if (!$promoter->fb_id) {
+                    $promoter->fb_id = $this->fbId;
+                    $promoter->save();
+                }
+
+                $promoter->user->login();
+            }
+        } else {
+            $params = array(
+                'scope' => 'email, read_stream, friends_likes',
+                'redirect_uri' => Yii::app()->request->getBaseUrl(true)
+            );
+            $this->fbLoginUrl = $facebook->getLoginUrl($params);
+        }
+
+        if (isset($_GET['code']) && !empty($_GET['code']) && isset($_GET['state']) && !empty($_GET['state'])) {
+            $this->redirect(Yii::app()->homeUrl);
+        }
+
+        $this->layout = 'index';
+        $this->render('index');
+    }
+
+    /**
+     * This is the action to handle external exceptions.
+     */
+    public function actionError()
+    {
+        if ($error = Yii::app()->errorHandler->error) {
+            if (Yii::app()->request->isAjaxRequest)
+                echo $error['message'];
+            else
+                $this->render('error', $error);
+        }
+    }
+
+    /**
+     * This is the action to handle external exceptions.
+     */
+    public function actionNewpass()
+    {
+        $this->layout = 'site';
+
+        if (isset($_POST['password']) && isset($_POST['repeat_password'])) {
+            if ($_POST['password'] == $_POST['repeat_password']) {
+                $user = User::model()->find('reset_hash = :reset_hash', array(':reset_hash' => $_POST['reset_hash']));
+                if ($user) {
+                    if ($user->setNewPass($_POST['password'])) {
+                        Yii::app()->user->setFlash('notification', 'Now you can login with new password');
+                        $this->redirect(Yii::app()->homeUrl);
+                    } else {
+                        $this->render('error', array(
+                            'code'      => '0x0002',
+                            'message'   => 'Your reset link expired, please try again'
+                        ));
+                    }
+                } else {
+                    $this->render('error', array(
+                        'code'      => '0x0004',
+                        'message'   => 'Could not find user with given credentials'
+                    ));
+                }
+            } else {
+                $this->render('error', array(
+                    'code'      => '0x0003',
+                    'message'   => 'Passwords did not match'
+                ));
+            }
+        } else {
+            $user = User::model()->find('reset_hash = :hash', array(':hash' => $_GET['hash']));
+            if ($user) {
+                if ($user->reset_datetime >= date('Y-m-d H:i:s')) {
+                    $this->render('reset', array(
+                        'hash' => $_GET['hash']
+                    ));
+                } else {
+                    $this->render('error', array(
+                        'code'      => '0x0002',
+                        'message'   => 'Your reset link expired, please try again'
+                    ));
+                }
+            } else {
+                $this->render('error', array(
+                    'code'      => '0x0001',
+                    'message'   => 'Could not find user with given credentials'
+                ));
+            }
+        }
+    }
+}
+

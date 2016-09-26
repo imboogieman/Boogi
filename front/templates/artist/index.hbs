@@ -1,0 +1,128 @@
+
+<script type="text/x-handlebars-template" id="t-artist-list">
+    <div id="artist-list" class="container">
+        <div id="map" class="mobile-hidden"></div>
+
+        <div id="items" class="shadow rounded">
+            {{#artists}}
+                <div class="item" data-id="{{id}}">
+                    <div class="image"><img src="{{image}}" alt="{{name}}" /></div>
+                    <div class="name">
+                        <a href="{{link}}">{{name}}</a>
+                    </div>
+                    <div class="description">{{description}}</div>
+                    <div class="info">
+                        <span class="gig-count">
+                            <img src="/images/icon/i-gig.png" />
+                            {{gig_count}}
+                        </span>
+                        <span class="venue-count">
+                            <img src="/images/icon/i-user.png" />
+                            {{promoter_count}}
+                        </span>
+                        <span class="{{#if following}}following bg-orange{{else}}follow bg-blue{{/if}}">
+                            <a href="{{link}}#follow" data-id="{{id}}" data-type="artist" class="follow-item">
+                                {{#if following}}Unfollow{{else}}Follow{{/if}}
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            {{else}}
+                <div class="empty">No records found</div>
+            {{/artists}}
+
+            {{#if artists}}
+                <div class="clear"></div>
+
+                <div id="load-more-artists">
+                    <a href="#load-more" data-offset="30">Load more</a>
+                </div>
+            {{/if}}
+        </div>
+
+        <div class="clear"></div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-raw-artist-list">
+    {{#artists}}
+        <div class="item clear" data-id="{{id}}">
+            <div class="image"><img src="{{image}}" alt="{{name}}" /></div>
+            <div class="name">
+                <a href="{{link}}">{{name}}</a>
+            </div>
+            <div class="description">{{description}}</div>
+            <div class="info">
+                    <span class="gig-count">
+                        <img src="/images/icon/i-gig.png" />
+                        {{gig_count}}
+                    </span>
+                    <span class="venue-count">
+                        <img src="/images/icon/i-user.png" />
+                        {{promoter_count}}
+                    </span>
+                    <span class="{{#if following}}following bg-orange{{else}}follow bg-blue{{/if}}">
+                        <a href="{{link}}#follow" data-id="{{id}}" data-type="artist" class="follow-item">
+                            {{#if following}}unfollow{{else}}follow{{/if}}
+                        </a>
+                    </span>
+            </div>
+        </div>
+    {{/artists}}
+</script>
+
+<script type="text/x-handlebars-template" id="t-artist">
+    <div id="artist" class="container">
+        <div class="wrap">
+            <div id="map" class="mobile-hidden"></div>
+
+            <div id="artist-page-block" class="item shadow rounded" data-id="{{artist.id}}">
+                <div class="image"><img src="{{artist.image}}" alt="{{artist.name}}" /></div>
+                <div class="name">{{artist.name}}</div>
+                <div class="description">{{artist.description}}</div>
+                <div class="info">
+                    <span class="gig-count">
+                        <img src="/images/icon/i-gig.png" />
+                        {{artist.gig_count}}
+                    </span>
+                    <span class="venue-count">
+                        <img src="/images/icon/i-user.png" />
+                        {{artist.promoter_count}}
+                    </span>
+                    <span class="{{#if artist.following}}following bg-orange{{else}}follow bg-blue{{/if}}">
+                        <a href="{{artist.link}}#follow" data-id="{{artist.id}}" data-type="artist" class="follow-item">follow</a>
+                    </span>
+                </div>
+
+                <div id="artist-calendar-container">
+                    <div id="artist-calendar-block"></div>
+                </div>
+
+                <div class="clear"></div>
+
+                <div class="notice">
+                    Not all booked dates may be displayed on the Calendar.<br />
+                    We work hard to provide you with updated information.<br />
+                    Feel free to use our service, as you will be able to
+                    change date in your booking offer before final confirmation.
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <a href="{{artist.link}}/book" id="book-artist" class="shadow">Book Now</a>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-artist-iw-block">
+    <div class="item-iw-block" data-id="{{id}}">
+        <div class="image"><img src="{{image}}" /></div>
+        <div class="name">
+            <a href="{{link}}">{{name}}</a>
+        </div>
+        <div class="description">{{description}}</div>
+    </div>
+</script>

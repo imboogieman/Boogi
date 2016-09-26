@@ -1,0 +1,27 @@
+<?php
+
+class GigatoolsCommand extends CConsoleCommand
+{
+    public function actionUpdateEvents()
+    {
+        $updated = 0;
+        $key = Yii::app()->params['gtApiKey'];
+
+        // Check all artist in DB
+        $artists = Artist::model()->findAll('sc_name <> NULL');
+        foreach ($artists as $artist) {
+            $data = file_get_contents('http://api.gigatools.com/search.json?api_key=' . $key . '&soundcloud_username=' . $artist->sc_name);
+            $data = \CJSON::decode($data);
+
+            if ($data) {
+                $artists->gt_name = $data[1][0]->username;
+                $artist->save();
+                $updated++;
+            }
+        }
+
+        echo $updated . ' artists updated' . PHP_EOL;
+        return 0;
+    }
+}
+

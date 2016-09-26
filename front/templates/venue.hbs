@@ -1,0 +1,45 @@
+
+<script type="text/x-handlebars-template" id="t-venue-list">
+    <div id="venue-list" class="container">
+        <div class="wrap">
+            <div id="map"></div>
+
+            <div id="items" class="shadow rounded">
+                {{#venues}}
+                    <div class="item clear" data-id="{{id}}">
+                        <div class="image"><img src="{{image}}" /></div>
+                        <div class="name">
+                            <a href="{{link}}" data-id="{{id}}" class="venue">{{name}}</a>
+                        </div>
+                        <div class="address">
+                            {{country}}
+                            {{#if country}}, {{/if}}
+                            {{city}}
+                            {{#if city}}, {{/if}}
+                            {{address}}
+                        </div>
+                        <div class="description">{{description}}</div>
+                    </div>
+                {{else}}
+                    <div class="empty">No records found</div>
+                {{/venues}}
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-venue-iw-block">
+    <div class="item item-iw-block" data-id="{{id}}">
+        {{#if image}}
+            <div class="image"><img src="{{image}}" /></div>
+        {{/if}}
+        <div class="name">{{name}}</div>
+        <div class="address">
+            {{country}}
+            {{#if country}}, {{/if}}
+            {{city}}
+            {{#if city}}, {{/if}}
+            {{address}}
+        </div>
+    </div>
+</script>

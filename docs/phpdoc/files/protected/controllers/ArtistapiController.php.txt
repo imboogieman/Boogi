@@ -1,0 +1,151 @@
+<?php
+
+class ArtistApiController extends Controller
+{
+    public function actionList()
+    {
+        // Get artists
+        $artists = Artist::getList();
+
+        // Validate user input and redirect to the previous page if valid
+        if ($artists) {
+            $result = array(
+                'result' => 'success',
+                'data' => $artists
+            );
+        } else {
+            $result = array(
+                'result' => 'error',
+                'message' => 'Could not find any records, please check filter.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionGet()
+    {
+        // Get artists
+        if (isset($_POST['id']) && $_POST['id'] > 0) {
+            $artist = Artist::getForMap($_POST['id']);
+        }
+
+        // Validate user input and redirect to the previous page if valid
+        if ($artist) {
+            $result = array(
+                'result' => 'success',
+                'data' => $artist
+            );
+        } else {
+            $result = array(
+                'result' => 'error',
+                'message' => 'Could not find artist with such id.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionBook()
+    {
+        if (!Yii::app()->user->getId()) {
+            $this->renderJSON(array(
+                'result'  => 'error',
+                'message' => 'Please login first'
+            ));
+
+            return;
+        }
+
+        // Create venue
+        $venue = new Venue;
+        $transaction = $venue->dbConnection->beginTransaction();
+
+        $venue_data = \CJSON::decode($_POST['venue_data']);
+        $venue->ds_id = $venue_data['id'];
+        $venue->ds_type = DataSource::GOOGLE;
+
+        $venue->name = isset($venue_data['name']) ? $venue_data['name'] : null;
+        $venue->description = isset($venue_data['website']) ? $venue_data['website'] : null;
+
+        if ($country = DataSource::getGoogleGCResponseValue('country', $venue_data)) {
+            if ($country = Country::getByISO2($country)) {
+                $venue->country_id  = $country->id;
+            }
+        }
+
+        $venue->city = DataSource::getGoogleGCResponseValue('locality', $venue_data);
+
+        $venue->address = DataSource::getGoogleGCResponseValue('route', $venue_data);
+        $street_number = DataSource::getGoogleGCResponseValue('street_number', $venue_data);
+        $venue->address .= $street_number ? ', ' . $street_number : '';
+
+        $venue->latitude = DataSource::getGoogleGCResponseValue('latitude', $venue_data);
+        $venue->longitude = DataSource::getGoogleGCResponseValue('longitude', $venue_data);
+
+        if (!$venue->save()) {
+            $transaction->rollback();
+
+            $this->renderJSON(array(
+                'result'  => 'error',
+                'message' => var_export($venue->getErrors(), true)
+            ));
+
+            return;
+        }
+
+        // Create gig
+        $gig = new Gig;
+        $gig->user_id = Yii::app()->user->getId();
+
+        $gig->name = $_POST['name'];
+        $gig->venue_id = $venue->id;
+        $gig->status = Gig::STATUS_PREBOOKING;
+        $gig->datetime = $_POST['date'];
+
+        $gig->capacity = $_POST['capacity'];
+        $gig->type = $_POST['type'];
+        $gig->accommodation = $_POST['accommodation'];
+        $gig->transfer = $_POST['transfer'];
+
+        if (!$gig->save()) {
+            $transaction->rollback();
+
+            $this->renderJSON(array(
+                'result'  => 'error',
+                'message' => var_export($gig->getErrors(), true)
+            ));
+
+            return;
+        }
+
+        // Link artist to gig
+        $artistGig = new ArtistGig;
+        $artistGig->gig_id = $gig->id;
+        $artistGig->artist_id = $_POST['artist_id'];
+
+        if (!$artistGig->save()) {
+            $transaction->rollback();
+
+            $this->renderJSON(array(
+                'result'  => 'error',
+                'message' => var_export($artistGig->getErrors(), true)
+            ));
+
+            return;
+        }
+
+        // Create event
+        if ($promoter = Promoter::getLogged()) {
+            $promoter->createEvent(Event::BOOK, $artistGig->artist);
+        }
+
+        // Save all data in transaction
+        $transaction->commit();
+        $this->renderJSON(array(
+            'result'    => 'success',
+            'message'   => 'Your booking created successfully',
+            'artist_id' => $_POST['artist_id']
+        ));
+    }
+}

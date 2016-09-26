@@ -1,0 +1,24 @@
+<?php
+
+class SongkickCommand extends CConsoleCommand
+{
+    public function actionUpdateArtists() {
+        $apiKey = Yii::app()->params['skApiKey'];
+        $songkick = new Songkick($apiKey);
+        $updated = 0;
+
+        // Check all artist in DB
+        $artists = Artist::model()->findAll('sk_id = 0');
+        foreach($artists as $artist) {
+            $sk_id = $songkick->searchArtistId($artist->name);
+            if ($sk_id) {
+                $artist->sk_id = $sk_id;
+                $artist->save();
+                $updated++;
+            }
+        }
+
+        echo $updated . ' artists updated' . PHP_EOL;
+        return 0;
+    }
+}

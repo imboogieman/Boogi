@@ -1,0 +1,44 @@
+<?php
+
+class SystemCommand extends CConsoleCommand
+{
+    public function actionUpdateAliases()
+    {
+        $artists = $promoters = $gigs = $venues = 0;
+
+        // Update artists
+        $records = Artist::model()->findAll();
+        foreach($records as $record) {
+            if ($record->generateAlias()) {
+                $artists++;
+            }
+        }
+
+        // Update promoters
+        $records = Promoter::model()->findAll();
+        foreach($records as $record) {
+            if ($record->generateAlias()) {
+                $promoters++;
+            }
+        }
+
+        // Update artists
+        $records = Gig::model()->findAll();
+        foreach($records as $record) {
+            if ($record->generateAlias()) {
+                $gigs++;
+            }
+        }
+
+        // Update artists
+        $records = Venue::model()->findAll();
+        foreach($records as $record) {
+            if ($record->generateAlias()) {
+                $venues++;
+            }
+        }
+
+        echo 'Updated a:' . $artists . '; p:' . $promoters . '; g:' . $gigs . '; v:' . $venues . PHP_EOL;
+        return 0;
+    }
+}

@@ -1,0 +1,152 @@
+<script type="text/x-handlebars-template" id="t-artist-profile">
+    <div id="artist-profile" class="container">
+        <div class="shadow rounded">
+
+            <div id="artist-profile-menu">
+                <h1>Artist profile</h1>
+                <ul>
+                    <li data-target="info" class="tab active">General Info</li>
+                    <li data-target="credentials" class="tab">Email and Password</li>
+                    <li data-target="social" class="tab">Location and Social Links</li>
+                    <li><a href="{{artist.link}}">View profile</a></li>
+                </ul>
+            </div>
+
+            <form id="profile-form">
+                <div class="wrap">
+                    <div id="info" class="tab-pane">
+                        <h3>General Info</h3>
+                        <div>
+                            <label for="name">Name</label>
+                            <fieldset>
+                                <input type="text" id="name" name="name" class="input" value="{{artist.name}}" />
+                                <span id="name-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="file_image">Avatar</label>
+                            <fieldset>
+                                 {{#if artist.image}}
+                                    <img id="file_image" src="{{artist.image}}" data-original="{{artist.image}}" alt="{{artist.name}}" width="200" />
+                                {{else}}
+                                    <img id="file_image" src="/images/default.png" data-original="" alt="{{promoter.name}}" width="200" />
+                                {{/if}}
+                                <br />
+                                <span id="image"></span>
+                                <a id="file_cancel" href="#cancel" class="hidden">Cancel</a>
+                                <input type="hidden" id="file_id" name="file_id" value="" />
+                                <span id="image-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="description">Description</label>
+                            <fieldset>
+                                <textarea id="description" name="description">{{artist.description}}</textarea>
+                                <span id="description-error" class="error"></span>
+                                <div class="notice">
+                                    Allowed tags:
+                                    {{#allowedTags}}{{this}} {{/allowedTags}}
+                                </div>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div id="credentials" class="tab-pane hidden">
+                        <h3>Email and Password</h3>
+
+                        <div>
+                            <label for="email">Email</label>
+                            <fieldset>
+                                <input type="text" id="email" name="email" class="input" value="{{artist.email}}" />
+                                <span id="email-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="old_password">Old Password</label>
+                            <fieldset>
+                                <input type="password" id="old_password" name="old_password" class="input" value="" />
+                                <span id="old_password-error" class="error"></span>
+                                <span class="notice">If you forgot yor password, please follow <a href="/user/restore">this link</a> to restore it.</span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="new_password">New Password</label>
+                            <fieldset>
+                                <input type="password" id="new_password" name="new_password" class="input" value="" />
+                                <span id="new_password-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="retype_password">Retype Password</label>
+                            <fieldset>
+                                <input type="password" id="retype_password" name="retype_password" class="input" value="" />
+                                <span id="retype_password-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div id="social" class="tab-pane hidden">
+                        <h3>Location and Social Info</h3>
+
+                        <div>
+                            <label for="fb_id">Facebook ID</label>
+                            <fieldset>
+                                <input type="text" id="fb_id" name="fb_id" class="input" value="{{artist.fb_id}}" />
+                                <span id="facebook_id-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <label for="address">Location</label>
+                            <fieldset>
+                                <input type="text" id="address" name="address" class="input" value="{{promoter.address}}" />
+                                <span id="address-error" class="error"></span>
+                            </fieldset>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div>
+                            <div class="column">
+                                Latitude<br />
+                                <input type="text" id="latitude" name="latitude" class="input" value="{{artist.latitude}}" />
+                                <span id="latitude-error" class="error"></span>
+                            </div>
+                            <div class="column">
+                                Longitude<br />
+                                <input type="text" id="longitude" name="longitude" class="input" value="{{artist.longitude}}" />
+                                <span id="longitude-error" class="error"></span>
+                            </div>
+
+                            <div class="clear"></div>
+
+                            <div class="notice">You can drag points on map to change your location info</div>
+
+                            <div id="profile-map"></div>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <input type="button" id="update" name="update" class="button" value="Update info" />
+                </div>
+            </form>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</script>

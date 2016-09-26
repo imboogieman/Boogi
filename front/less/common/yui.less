@@ -1,0 +1,122 @@
+.yui3-g {
+  font-family: 'Open Sans',sans-serif, Arial, Helvetica;
+}
+
+.yui3-app-views {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.yui3-skin-sam .messages {
+  margin: 40px auto 0 auto;
+  width: 950px;
+}
+
+.yui3-widget-hd {
+  padding: 5px !important;
+  background: @white !important;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.yui3-widget-ft {
+  padding: 5px !important;
+  background: @extra-light-grey !important;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+
+  .yui3-widget-buttons {
+    button {
+      font-size: 16px;
+      padding: 8px 18px;
+      margin: 5px;
+      background: @blue;
+      color: white;
+      border: none;
+      cursor: pointer;
+      text-shadow: none;
+    }
+    .cancel {
+      background: @light-grey !important;
+    }
+  }
+}
+
+.yui3-aclist-content {
+  padding: 0 !important;
+  text-align: left;
+  background: @white !important;
+  border: 1px solid @light-grey !important;
+  box-shadow: @shadow !important;
+
+  .yui3-aclist-item {
+    padding: 0 !important;
+    a {
+      color: @blue !important;
+    }
+  }
+
+  .yui3-aclist-item-active {
+    background: @blue !important;
+
+    a {
+      color: @white !important;
+    }
+  }
+}
+.yui3-button {
+  background: @blue !important;
+  color: @white !important;
+  border: none !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+
+.yui3-calendarwidget {
+  width: 210px;
+}
+
+.yui3-iselectwidget {
+  width: 340px;
+}
+
+.popover {
+  padding: 0;
+  border-radius: 2px;
+  border-color: @light-grey;
+  box-shadow: @shadow;
+
+  .popover-title,
+  .popover-footer {
+    font-size: 9pt;
+    text-align: center;
+
+    a {
+      color: @grey;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &.user-menu {
+    margin-top: 26px;
+
+    .arrow {
+      left: 95%;
+    }
+  }
+}
+
+.datepicker-popover,
+.timepicker-popover {
+  font: normal 9pt 'Open Sans', sans-serif, Arial, Helvetica;
+
+  .arrow {
+    display: none;
+  }
+}

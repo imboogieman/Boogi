@@ -1,0 +1,256 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: @dark-grey;
+  background: @light-grey;
+  font: normal 12pt 'Open Sans', sans-serif, Arial, Helvetica;
+  min-width: 800px;
+  max-width: 1600px;
+  overflow-x: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  line-height: normal;
+  color: @black;
+}
+
+a {
+  text-decoration: underline;
+  color: @blue;
+}
+
+p {
+  margin: 1em 0;
+}
+
+label {
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+input,
+select,
+textarea {
+  font-size: 12pt;
+  margin: 5px 0;
+  padding: 6px 10px;
+  color: @black;
+  background: @white;
+  border: 1px solid @light-grey;
+}
+
+select {
+  option {
+    padding: 0;
+  }
+}
+
+textarea {
+  width: 100%;
+  height: 130px;
+  font: normal 12pt 'Open Sans',sans-serif, Arial, Helvetica;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.notice {
+  padding: 5px 0;
+  font-style: italic;
+  font-size: 9pt;
+  color: @grey;
+}
+
+.column {
+  float: left;
+  margin-right: 10px;
+}
+.clear {
+  clear: both;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.shadow {
+  margin: 5px;
+  box-shadow: @shadow;
+}
+
+.rounded {
+  border-radius: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 1530px;
+  min-width: 940px;
+  margin: 65px auto 50px auto;
+  padding: 0;
+
+  .wrap {
+    padding: 0 35px;
+  }
+}
+
+.page {
+  margin: 20px auto 0 auto;
+  max-width: 80%;
+  padding: 30px;
+}
+
+.row {
+  margin: 0;
+}
+
+.input {
+  width: 247px;
+  margin: 5px 0;
+  padding: 7px 10px;
+  font-size: 12pt;
+  color: @black;
+  background: @white;
+  border: 1px solid @light-grey;
+
+  &:disabled {
+    color: @grey;
+  }
+}
+
+.button {
+  display: inline-block;
+  min-width: 60px;
+  margin: 5px 0;
+  padding: 8px 22px 7px 22px;
+  font-size: 12pt;
+  text-align: center;
+  text-decoration: none;
+  color: @white;
+  background: @blue;
+  border: transparent;
+  border-radius: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+    color: @white;
+    box-shadow: rgba(0,0,0,0.2) 1px 2px 1px 0;
+  }
+}
+
+input.datepicker {
+  background: url(@images + 'icon/i-calendar.png') no-repeat 97% center;
+  padding-right: 30px;
+}
+
+input.iselect {
+  background: url(@images + 'icon/i-iselect.png') no-repeat 97% center;
+  padding-right: 30px;
+}
+
+input.venue {
+  background: url(@images + 'icon/i-venue.png') no-repeat 97% center;
+  padding-right: 30px;
+}
+
+input.search {
+  position: relative;
+  top: 5px;
+  left: -25px;
+  margin: 0;
+  padding: 3px 15px;
+  background: url(@images + 'icon/i-search.png') no-repeat center center;
+
+  &:hover {
+    box-shadow: none;
+  }
+}
+
+.empty {
+  font-style: italic;
+  color: @grey;
+}
+
+
+input.error,
+select.error,
+textarea.error {
+  margin-bottom: 2px;
+  border-color: @red;
+}
+
+span.error {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 10pt;
+  color: @red;
+}
+
+.time-input {
+
+  select {
+    width: 55px;
+  }
+
+  .minutes-select {
+    margin-left: 10px;
+  }
+}
+
+.buttons {
+  padding: 10px 0 20px 0;
+
+  .cancel {
+    margin-left: 5px;
+    color: @grey;
+  }
+}
+
+.bg-tooltip {
+  padding-right: 16px;
+  background: url(@images + 'icon/i-tooltip.png') no-repeat center right;
+}
+
+.tooltip-inner {
+  margin-left: 180px;
+  font-size: 10pt;
+  text-align: left;
+  color: @black;
+  background: @white;
+  border-radius: 2px;
+
+  h3 {
+    margin: 0;
+    font-size: 10pt;
+    font-weight: 600;
+  }
+}
+
+.tooltip-arrow {
+  display: none;
+}
+
+.tz-item,
+.tz-toggle {
+  color: @blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tz-list {
+  height: 200px;
+  overflow-y: scroll;
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      list-style: none;
+      font-size: 10pt;
+    }
+  }
+}

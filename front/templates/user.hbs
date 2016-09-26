@@ -1,0 +1,121 @@
+
+<script type="text/x-handlebars-template" id="t-user">
+    <div id="user" class="container">
+        <div class="wrap">
+            <div class="wrapper">
+                <form id="login-form" action="/user/login" class="form shadow rounded">
+                    <div class="row">
+                        <label for="email">Email</label><br />
+                        <input type="text" id="email" name="email" class="input" value="" />
+                        <span class="error" id="email-error"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="password">Password</label><br />
+                        <input type="password" id="password" name="password" class="input" value="" />
+                        <span class="error" id="password-error"></span>
+                    </div>
+
+                    <div class="row buttons">
+                        <input type="button" id="login" name="login" class="button" value="Let Me In" />
+                        <a href="/user/signup" id="show-register-form">Sign Up</a>
+                    </div>
+
+                    <div class="row or-spacer hidden">
+                        <div class="or-spacer-left"></div>or<div class="or-spacer-right"></div>
+                    </div>
+
+                    <div class="row buttons hidden">
+                        <a href="{{fbLoginUrl}}"><img src="/images/fb-login.png" /></a>
+                    </div>
+
+                    <div class="row help-spacer">
+                        <div class="help-spacer-left"></div>need help ?<div class="help-spacer-right"></div>
+                    </div>
+
+                    <div class="row buttons">
+                        <a href="/user/restore" id="show-restore-form">Restore password</a>
+                    </div>
+                </form>
+
+                <form id="restore-form" action="/user/restore" class="form hidden shadow rounded">
+                    <div class="row">
+                        <label for="restore-email">Enter your email to restore password</label>
+                        <input type="text" id="restore-email" name="restore-email" class="input" value="" />
+                        <span class="error" id="restore-email-error"></span>
+                        <div class="notice">Email with reset link will be sent in next 5 minutes</div>
+                    </div>
+
+                    <div class="row buttons">
+                        <input type="button" id="restore" name="restore" class="button" value="Send Reset Link" />
+                        <a href="/user/login" class="cancel">Cancel</a>
+                    </div>
+                </form>
+
+                <form id="newpass-form" action="/user/newpass" class="form hidden shadow rounded">
+                    <div class="row">
+                        <label for="newpass-password">New password</label>
+                        <input type="password" id="newpass-password" name="newpass-password" class="input" value="" />
+                        <span class="error" id="newpass-password-error"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="newpass-password2">Retype password</label>
+                        <input type="password" id="newpass-password2" name="newpass-password2" class="input" value="" />
+                        <span class="error" id="newpass-password2-error"></span>
+                    </div>
+
+                    <div class="row buttons">
+                        <input type="button" id="newpass" name="newpass" class="button" value="Set New Password" />
+                        <a href="/user/login" class="cancel">Cancel</a>
+                    </div>
+                </form>
+
+                <form id="register-form" action="/user/register" class="form hidden shadow rounded">
+                    <input type="hidden" id="register-latitude" name="register-latitude" value="{{latitude}}" />
+                    <input type="hidden" id="register-longitude" name="register-longitude" value="{{longitude}}" />
+                    <input type="hidden" id="register-radius" name="register-radius" value="{{radius}}" />
+
+                    <div class="row">
+                        <label for="email">Name</label><br />
+                        <input type="text" id="register-name" name="name" class="input" value="" />
+                        <span class="error" id="register-name-error"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="email">Email</label><br />
+                        <input type="text" id="register-email" name="email" class="input" value="" />
+                        <span class="error" id="register-email-error"></span>
+                    </div>
+
+                    <div class="row">
+                        <label for="password">Password</label><br />
+                        <input type="password" id="register-password" name="password" class="input" value="" />
+                        <span class="error" id="register-password-error"></span>
+                    </div>
+
+                    <div class="row roles hidden">
+                        <input type="radio" class="role" name="role" value="1" checked="checked" /> Promoter
+                        <input type="radio" class="role" name="role" value="2" /> Artist
+                        <span class="error" id="register-role-error"></span>
+                    </div>
+
+                    <div class="row buttons">
+                        <div class="terms">
+                            <input type="checkbox" checked disabled />
+                            I agree to the <a href="/terms">Terms & Conditions</a>
+                        </div>
+
+                        <input type="button" id="register" name="register" class="button" value="Register" />
+                        <a href="/user/login" class="cancel">Cancel</a>
+                    </div>
+
+                    <div class="row already">
+                        Already signed up? <a href="/user/login">Login</a>.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+

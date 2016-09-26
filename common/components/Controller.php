@@ -1,0 +1,57 @@
+<?php
+/**
+ * Controller is the customized base controller class.
+ * All controller classes for this application should extend from this base class.
+ */
+class Controller extends CController
+{
+    /**
+     * @var string the default layout for the controller view. Defaults to '//layouts/column1',
+     * meaning using a single column layout. See 'protected/views/layouts/column1.php'.
+     */
+    public $layout = '//layouts/admin';
+
+    /**
+     * @var array context menu items. This property will be assigned to {@link CMenu::items}.
+     */
+    public $menu = array();
+
+    /**
+     * @var array the breadcrumbs of the current page. The value of this property will
+     * be assigned to {@link CBreadcrumbs::links}. Please refer to {@link CBreadcrumbs::links}
+     * for more details on how to specify this property.
+     */
+    public $breadcrumbs = array();
+
+    /**
+     * @var string default url on error
+     */
+    public $loginUrl = 'promoter/login';
+
+    /**
+     * Performs the AJAX validation.
+     * @param CActiveRecord $model the model to be validated
+     */
+    protected function performAjaxValidation($model)
+    {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === $model->tableName() . '-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+    }
+
+    /**
+     * Render json response and send it
+     * @param array $data
+     */
+    public function renderJSON($data)
+    {
+        // Attach live data
+        $data['live'] = LiveData::get();
+
+        // Return response
+        header('Content-type: application/json');
+        echo json_encode($data);
+        Yii::app()->end();
+    }
+}

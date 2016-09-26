@@ -1,0 +1,814 @@
+#promoter-trackings {
+  margin-top: 65px;
+
+  h1 {
+    margin: 15px 0;
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: @black;
+  }
+
+  #trackings {
+    margin: 15px 10px;
+    min-height: 500px;
+    background: @white;
+
+    .wrapper {
+      padding: 20px 30px 30px 30px;
+    }
+
+    .item {
+      width: 32%;
+      height: 94px;
+      border: 1px solid @light-grey;
+      clear: none;
+
+      .wrap {
+        padding: 0;
+        margin: 10px;
+
+        .name {
+          white-space: nowrap;
+          height: 18px;
+          overflow: hidden;
+          margin-right: 16px;
+        }
+
+        .info {
+          height: 20px;
+        }
+
+        .description {
+          width: auto;
+        }
+      }
+    }
+
+    .in-radius {
+      background: url(@images + 'icon/i-in-radius.png') no-repeat 99% 3%;
+    }
+
+    #tracked-artists {
+      min-height: 395px;
+    }
+  }
+}
+
+#promoter-bookings,
+#promoter-events {
+  position: relative;
+  margin: 65px auto 0 auto;
+  font-family: 'Open Sans',sans-serif;
+  color: @black;
+  background: transparent;
+
+  h1,
+  h3 {
+    margin: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: @black;
+
+    &.past {
+      margin-top: 20px;
+    }
+
+    #gig-filter {
+      position: relative;
+      top: -3px;
+      float: right;
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  .shadow {
+    background: @white;
+    margin: 5px 10px;
+  }
+
+  #events {
+    padding: 20px;
+    background: @white;
+    min-height: 410px;
+
+    .event {
+      margin: 0 0 5px 20px;
+
+      .deleted {
+        color: @grey;
+      }
+    }
+
+    #load-more-events {
+      text-align: center;
+      a {
+        display: inline-block;
+        margin: 10px;
+        padding: 1px 15px;
+        font-size: 14px;
+        text-decoration: none;
+        color: @grey;
+        border: 1px solid @light-grey;
+        background: @extra-light-grey;
+
+        &:hover {
+          background: @white;
+        }
+      }
+    }
+  }
+
+  #bookings {
+    float: left;
+    width: 30%;
+    margin: 0;
+
+    .wrap {
+      padding: 0;
+    }
+
+    .empty {
+      margin: 0 15px 30px 15px;
+      font-size: 14px;
+    }
+
+    .gig  {
+      padding: 10px 0 0 0;
+      border-bottom: 1px solid @light-grey;
+      font-size: 13px;
+
+      &.updated {
+      }
+
+      &.past {
+        background: @white;
+      }
+
+      &:hover,
+      &.active {
+        background: @light-blue;
+        cursor: pointer;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .date {
+        float: left;
+        width: 50px;
+        margin: 8px 15px 10px 15px;
+        text-align: center;
+
+        .month {
+          color: #fff;
+          border: 1px solid @navi;
+          background: @navi;
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .day {
+          font-size: 16px;
+          padding: 3px 0;
+          border: 1px solid @light-navi;
+          border-top: none;
+          background: @white;
+        }
+      }
+
+      .name {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .updates {
+        position: relative;
+        top: 6px;
+        right: 16px;
+        float: right;
+        min-width: 15px;
+        height: 15px;
+        font-size: 11px;
+        text-align: center;
+        border-radius: 3px;
+        color: @white;
+        background: @orange;
+      }
+
+      &.past {
+        .updates {
+          display: none;
+        }
+      }
+
+      .venue {
+        font-size: 13px;
+        color: @grey;
+      }
+
+      .statuses {
+        padding-bottom: 5px;
+
+        .ag-counter {
+          display: inline-block;
+          min-width: 15px;
+          height: 15px;
+          font-size: 11px;
+          text-align: center;
+          border-radius: 3px;
+        }
+      }
+
+      .bookings {
+        background: @white;
+
+        .booking {
+          padding: 10px 0 5px 0;
+          border-bottom: 1px solid @light-grey;
+
+          &.updated {
+            background: @light-yellow;
+          }
+
+          &.past {
+            background: @white;
+          }
+
+          &:hover,
+          &.active {
+            background: @light-yellow;
+            cursor: pointer;
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .pointer {
+            float: left;
+            width: 10px;
+            height: 40px;
+            margin: 10px;
+            background: url(@images + 'icon/p-right.png') no-repeat center center;
+
+            &.opened {
+              background-image: url(@images + 'icon/p-down.png');
+            }
+          }
+
+          .image {
+            float: left;
+            margin: 8px 15px 10px 0;
+
+            img {
+              width: 40px;
+            }
+          }
+
+          .time {
+            font-size: 11px;
+            font-weight: 600;
+            color: @grey;
+          }
+
+          .status {
+            font-size: 13px;
+            font-weight: 400;
+          }
+
+          .actions {
+            margin: 0 0 0 10px;
+            padding: 0;
+            border: 1px solid @light-grey;
+            border-right: none;
+            background: @extra-light-grey;
+
+            li {
+              padding: 5px 20px;
+              color: @grey;
+              list-style: none;
+              border-bottom: 1px solid @light-grey;
+
+              &.active {
+                background: @light-blue url(@images + 'icon/p-right.png') no-repeat center left;
+              }
+
+              &:last-child {
+                border: none;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .gig-block {
+      padding: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      color: @grey;
+
+      .type,
+      .capacity,
+      .description {
+        color: @dark-grey;
+        padding-right: 10px;
+      }
+    }
+  }
+
+  #details {
+    float: left;
+    width: 69%;
+    margin: 0;
+    border-left: 1px solid @light-grey;
+
+    .wrap {
+      padding: 0 20px 30px 20px;
+      font-size: 11pt;
+    }
+
+    h3 {
+      margin: 15px 20px;
+    }
+
+    .edit {
+      float: right;
+      width: 12px;
+      background: url(@images + 'icon/i-edit.png') no-repeat center center;
+      cursor: pointer;
+
+      &.disabled {
+        cursor: default;
+        opacity: 0.5;
+      }
+    }
+
+    .name {
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .type {
+      color: @grey;
+      margin-bottom: 15px;
+    }
+
+    .details-log {
+      margin-top: 30px;
+      font-size: 14px;
+
+      strong {
+        border-bottom: 1px dotted @black;
+      }
+
+      .wrap {
+        margin-top: 5px;
+        padding: 10px;
+        color: @grey;
+        background: @extra-light-grey;
+
+        .small {
+          font-size: 12px;
+        }
+      }
+    }
+
+    #map {
+      margin: 15px 0;
+      width: 100%;
+      height: 250px;
+    }
+
+    #booking-details {
+
+      .image {
+        float: left;
+        width: 120px;
+        height: 133px;
+        margin: 0 30px 15px 0;
+        overflow: hidden;
+
+        img {
+          position: relative;
+          top: 8px;
+          width: 120px;
+          border-bottom: 5px solid transparent;
+
+          &:hover {
+            border-color: @blue;
+          }
+        }
+      }
+
+      .name {
+        font-size: 24pt;
+        font-weight: 600;
+
+        a {
+          color: @black;
+          text-decoration: none;
+
+          &:hover {
+            color: @blue;
+          }
+        }
+      }
+
+      .price {
+        font-size: 20pt;
+
+        .info {
+          font-size: 10pt;
+
+          span {
+            display: inline-block;
+            margin-right: 57px;
+          }
+        }
+      }
+
+      .status {
+        margin-top: 10px;
+      }
+
+      .row {
+        width: 90%;
+        padding: 8px 0;
+        text-align: right;
+
+        strong {
+          float: left;
+        }
+
+        &:last-child {
+          border: none;
+        }
+      }
+
+      #revenue-calc {
+        margin-left: 10px;
+
+        .row {
+          width: 102%;
+          padding: 8px 2%;
+          background: @light-grey;
+
+          .notice {
+            padding: 0;
+            text-align: left;
+            font-style: normal;
+          }
+        }
+      }
+    }
+
+    .form {
+      width: 100%;
+      padding: 0;
+      font-size: 12px;
+    }
+
+    .message {
+      width: 98%;
+      height: 42px;
+      margin: 5px 0;
+      padding: 5px 1%;
+      font-size: 12px;
+    }
+
+    .add-message {
+      margin: 0;
+      padding: 5px 20px;
+      font-size: 11pt;
+      border: none;
+      cursor: pointer;
+    }
+
+    #message-list {
+      overflow-y: auto;
+
+      h3 {
+        margin: 0 0 4px 0;
+        padding: 2px 0;
+        font-size: 12px;
+        font-weight: bold;
+        color: @black;
+        border-bottom: 1px dotted @light-grey;
+      }
+
+      .artist-message,
+      .promoter-message,
+      .artist-update-message,
+      .promoter-update-message {
+        width: 88%;
+        margin: 5px 0;
+
+        .time {
+          float: left;
+          width: 8%;
+          padding-top: 7px;
+          color: @dark-grey;
+        }
+
+        .content {
+          float: left;
+          width: 81%;
+          padding: 5px;
+          border: 1px solid @light-grey;
+          white-space: pre-line;
+        }
+      }
+
+      .artist-message,
+      .artist-update-message {
+        float: left;
+        .time {
+          text-align: right;
+        }
+        .content {
+          background: @white;
+          margin-left: 1%;
+        }
+      }
+
+      .artist-update-message {
+        .content {
+          background: @light-yellow;
+        }
+      }
+      .promoter-message,
+      .promoter-update-message {
+        float: right;
+
+        .content {
+          background: @extra-light-grey;
+        }
+      }
+      .promoter-update-message {
+        .content {
+          background: @pink;
+        }
+      }
+    }
+    .booking-message {
+      .notice {
+        margin-top: 100px;
+      }
+
+      .buttons {
+        padding: 10px 0 0 0;
+      }
+    }
+  }
+
+  #artists {
+    right: 2%;
+  }
+
+  #details {
+    right: 2%;
+  }
+
+  #gig-form {
+
+    .input,
+    .calendar,
+    select {
+      position: relative;
+      top: -2px;
+      float: right;
+      margin: 0;
+      padding: 3px 7px;
+      font-size: 11pt;
+      border: 1px solid #dcdcdc;
+      border-radius: 2px;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+    }
+
+    .input {
+      width: 340px;
+
+      &:read-only {
+        background: @extra-light-grey;
+      }
+    }
+
+    .calendar {
+      width: 318px;
+    }
+
+    select {
+      top: -4px;
+      width: 340px;
+    }
+
+    .row {
+      width: 90%;
+      padding: 10px 0 8px 0;
+
+      .column {
+        float: right;
+        padding: 0;
+      }
+    }
+
+    .buttons {
+      width: 90%;
+      margin: 15px 0;
+      text-align: center;
+
+      .update-gig {
+        display: block;
+        width: 100%;
+        font-size: 12pt;
+      }
+    }
+  }
+
+  #book-form {
+
+    .image {
+      float: left;
+      width: 120px;
+      height: 133px;
+      margin: 0 30px 15px 0;
+      overflow: hidden;
+
+      img {
+        position: relative;
+        top: 8px;
+        width: 120px;
+        border-bottom: 5px solid transparent;
+
+        &:hover {
+          border-color: @blue;
+        }
+      }
+    }
+
+    .name {
+      font-size: 24pt;
+      font-weight: 600;
+
+      a {
+        color: @black;
+        text-decoration: none;
+
+        &:hover {
+          color: @blue;
+        }
+      }
+    }
+
+    .price {
+      width: 90%;
+      padding: 0;
+      font-size: 20pt;
+
+      .column {
+        float: right;
+        margin-right: 0;
+
+        select {
+          top: 8px;
+        }
+      }
+
+      .info {
+        font-size: 10pt;
+
+        span {
+          display: inline-block;
+          margin-right: 57px;
+        }
+      }
+    }
+
+    .status {
+      margin-top: 10px;
+    }
+
+    .input,
+    select {
+      position: relative;
+      top: -2px;
+      float: right;
+      margin: 0;
+      padding: 3px 7px;
+      font-size: 11pt;
+      border: 1px solid @light-grey;
+      border-radius: 2px;
+    }
+
+    select {
+      top: -4px;
+      width: 200px;
+    }
+
+    .input {
+      text-align: right;
+      width: 100px;
+
+      &:read-only {
+        background: @extra-light-grey;
+      }
+    }
+
+    #currency {
+      width: 120px;
+    }
+
+    .row {
+      width: 90%;
+      padding: 7px 0 5px 0;
+
+      .column {
+        float: right;
+        padding: 0;
+      }
+    }
+
+    .notice {
+      padding: 0;
+      text-align: left;
+      font-style: normal;
+    }
+
+    .buttons {
+      width: 90%;
+      margin: 15px 0;
+      text-align: center;
+
+      .update-artist-gig {
+        display: block;
+        width: 100%;
+        font-size: 12pt;
+      }
+    }
+  }
+
+  .red {
+    color: red;
+  }
+
+  .date-range {
+    padding-bottom: 0;
+
+    .column {
+      margin: 0 0 0 10px;
+
+      .datepicker {
+        text-align: left !important;
+        width: 112px !important;
+      }
+
+      .timepicker {
+        text-align: left !important;
+        width: 85px !important;
+      }
+
+      &.spacer {
+        padding-top:2px !important;
+      }
+    }
+  }
+
+  .tz-block {
+    padding-top: 0;
+    text-align: right;
+  }
+
+  .scrollable {
+    overflow-y: auto;
+  }
+
+}
+
+#promoter-events {
+  h1 {
+    margin: 15px;
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #000;
+  }
+}
+
+#last-30 {
+  padding: 25px 0 15px 0;
+  font-size: 14px;
+}

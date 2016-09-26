@@ -1,0 +1,294 @@
+<?php
+
+/**
+ * This is the model class for table "promoter".
+ *
+ * The followings are the available columns in table 'promoter':
+ * @property integer $id
+ * @property integer $user_id
+ * @property string $name
+ * @property string $alias
+ * @property string $description
+ * @property string $timestamp
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $radius
+ * @property int $fb_id
+ *
+ * The followings are the available model relations:
+ * @property User $user
+ * @property PromoterFile[] $promoterFiles
+ * @property ArtistPromoter[] $promoterArtist
+ */
+class Promoter extends Model
+{
+    public $image;
+
+    protected $_related_params = array(
+        'email' => null,
+        'password' => null
+    );
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'promoter';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('user_id, name', 'required'),
+            array('user_id', 'numerical', 'integerOnly' => true),
+            array('name', 'length', 'max' => 64),
+            array('description, timestamp', 'safe'),
+            array('latitude, longitude', 'numerical'),
+            array('radius', 'numerical'),
+            array('fb_id', 'length', 'max' => 64),
+            array('id, user_id, name, description, timestamp, latitude, longitude, radius, fb_id', 'safe', 'on' => 'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+            'promoterFiles' => array(self::HAS_MANY, 'PromoterFile', 'promoter_id'),
+            'promoterArtists' => array(self::HAS_MANY, 'ArtistPromoter', 'promoter_id'),
+            'promoterPromoters' => array(self::HAS_MANY, 'PromoterPromoter', 'promoter_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'user_id' => 'User',
+            'name' => 'Name',
+            'description' => 'Description',
+            'timestamp' => 'Timestamp',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
+            'radius' => 'Radius',
+            'fb_id' => 'Facebook ID'
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
+
+        $criteria = new CDbCriteria;
+
+        $criteria->compare('id', $this->id);
+        $criteria->compare('user_id', $this->user_id);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('description', $this->description, true);
+        $criteria->compare('timestamp', $this->timestamp, true);
+        $criteria->compare('latitude', $this->latitude);
+        $criteria->compare('longitude', $this->longitude);
+        $criteria->compare('radius', $this->radius);
+        $criteria->compare('fb_id', $this->fb_id);
+
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Promoter the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * Save action with related User creation
+     * @return bool|void
+     */
+    public function save()
+    {
+        // Update related user params
+        if (isset($this->_related_params['email']) && isset($this->_related_params['password'])) {
+            if ($this->user_id) {
+                $this->user->email = $this->_related_params['email'];
+                $this->user->password = $this->_related_params['password'];
+
+                if (!$this->user->save()) return false;
+            } else {
+                $user = new User;
+                $user->email = $this->_related_params['email'];
+                $user->password = CPasswordHelper::hashPassword($this->_related_params['password']);
+
+                if ($user->save()) {
+                    $this->setAttribute('user_id', $user->id);
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        // Call parent save
+        if (parent::save()) {
+            // Generates alias
+            $this->generateAlias();
+
+            return true;
+        }
+    }
+
+    /**
+     * Return Promoter normalized data
+     * @return array
+     */
+    public function getNormalizedData()
+    {
+        return array(
+            'id'            => $this->id,
+            'user_id'       => $this->user_id,
+            'name'          => $this->name,
+            'alias'         => $this->alias,
+            'email'         => $this->user->email,
+            'description'   => $this->description,
+            'latitude'      => $this->latitude,
+            'longitude'     => $this->longitude,
+            'radius'        => $this->radius,
+            'image'         => $this->getMainImage(),
+            'following'     => $this->isCurrentUserFollowing(),
+            'date'          => date('Y-m-d', strtotime($this->timestamp))
+        );
+    }
+
+    /**
+     * Check if logged promoter follow current promoter
+     * @return bool
+     */
+    public function isCurrentUserFollowing()
+    {
+        if (!Yii::app()->user->isGuest) {
+            $user_id = Yii::app()->user->getId();
+            $promoter = Promoter::getLogged();
+            foreach ($promoter->promoterPromoters as $promoterPromoter) {
+                if ($promoterPromoter->follow_id == $this->id) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Return Promoter list with normalized data
+     * @return array
+     */
+    public static function getList()
+    {
+        $result = array();
+        $promoters = self::model()->findAll();
+
+        if ($promoters) {
+            foreach ($promoters as $promoter) {
+                $result[] = $promoter->getNormalizedData();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return Promoters dashboard data
+     * @return array
+     */
+    public function getDashboardData()
+    {
+        $events = array();
+        foreach ($this->promoterPromoters as $item) {
+            if ($item->follow) {
+                $events += $item->follow->getEvents();
+            }
+        }
+
+        $artists = array();
+        foreach ($this->promoterArtists as $item) {
+            if ($item->artist) {
+                $artists[] = $item->artist->getNormalizedData();
+            }
+        }
+
+        $promoters = array();
+        foreach ($this->promoterPromoters as $item) {
+            if ($item->follow) {
+                $promoters[] = $item->follow->getNormalizedData();
+            }
+        }
+
+        $bookings = array();
+        $gigs = Gig::model()->findAll('user_id = :user_id', array(':user_id' => $this->user_id));
+        foreach ($gigs as $item) {
+            $bookings[] = $item->getNormalizedData();
+        }
+
+        return array(
+            'events'    => $events,
+            'artists'   => $artists,
+            'promoters' => $promoters,
+            'bookings'  => $bookings,
+        );
+    }
+
+    /**
+     * Return logged promoter
+     * @return Promoter $promoter
+     */
+    public static function getLogged()
+    {
+        if ($user_id = Yii::app()->user->getId()) {
+            return Promoter::model()->find('user_id = :user_id', array(':user_id' => $user_id));
+        }
+    }
+
+    /**
+     * Return all promoter events
+     * @return Event[]
+     */
+    public function getEvents()
+    {
+        $result = array();
+        $events = Event::model()->findAll('init_id = :init_id', array(':init_id' => $this->id));
+        foreach ($events as $event) {
+            $result[] = $event->getNormalizedData();
+        }
+
+        return $result;
+    }
+}
+

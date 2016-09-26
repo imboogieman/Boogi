@@ -1,0 +1,25 @@
+<?php
+
+class VenueApiController extends Controller
+{
+    public function actionList()
+    {
+        // Get artists
+        $venues = Venue::getList();
+
+        // Validate user input and redirect to the previous page if valid
+        if ($venues) {
+            $result = array(
+                'result' => 'success',
+                'data'   => $venues
+            );
+        } else {
+            $result = array(
+                'result'  => 'error',
+                'message' => 'Could not find any records, please check filter.'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+}

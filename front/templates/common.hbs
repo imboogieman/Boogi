@@ -1,0 +1,235 @@
+<script type="text/x-handlebars-template" id="t-menu">
+    <div id="menu" class="shadow">
+        <div class="wrapper">
+            <div id="menu-logo">
+                <a href="/artist/list">
+                    <img src="/images/logo-medium.png" alt="Boogi" class="mobile-hidden" />
+                    <img src="/images/logo-small.png" alt="Boogi" class="mobile-visible" />
+                </a>
+            </div>
+
+            <ul id="menu-site">
+                {{#if is_user}}
+                    {{#ifCond user_role role_artist}}
+                        <li id="menu-artist-bookings" class="link">
+                            <a href="/artist/bookings">
+                                <img src="/images/icon/i-booking.png" alt="Bookings" class="icon" />Bookings
+                            </a>
+                        </li>
+                    {{/ifCond}}
+
+                    {{#ifCond user_role role_promoter}}
+                        <li id="menu-promoter-bookings" class="link">
+                            <a href="/promoter/bookings">
+                                <img src="/images/icon/i-booking.png" alt="Bookings" class="icon" />Bookings
+                            </a>
+                        </li>
+                        <li id="menu-promoter-events" class="link">
+                            <a href="/promoter/events">
+                                <img src="/images/icon/i-event.png" alt="Events" class="icon" />Events
+                            </a>
+                        </li>
+                        <li id="menu-promoter-trackings" class="link">
+                            <a href="/promoter/trackings">
+                                <img src="/images/icon/i-favorite.png" alt="Trackings" class="icon" />Trackings
+                            </a>
+                        </li>
+                    {{/ifCond}}
+
+                    <li id="menu-updates">
+                        <img src="/images/icon/i-update.png" alt="Updates" class="icon" />
+                        {{#ifCond user_role role_artist}}
+                            <div id="artist-booking-updates" class="booking-updates hidden"></div>
+                        {{/ifCond}}
+
+                        {{#ifCond user_role role_promoter}}
+                            <div id="promoter-booking-updates" class="booking-updates hidden"></div>
+                        {{/ifCond}}
+                    </li>
+
+                    <li id="menu-button">
+                        <a id="show-user-menu" href="#">
+                            <span id="user-image-wrap">
+                                <img src="{{user_image}}" alt="{{user_type}}" class="user" />
+                            </span>
+                            <span class="user-name">
+                                {{user_name}}
+                                <span class="user-type">{{user_type}}</span>
+                            </span>
+                            <img src="/images/icon/i-down.png" alt="Profile" class="icon" />
+                        </a>
+                    </li>
+                {{else}}
+                    <li id="menu-login">
+                        <a href="/user/signup">Sign Up</a>
+                        <a href="/user/login">Login</a>
+                    </li>
+                {{/if}}
+            </ul>
+
+            <div id="menu-search">
+                <input type="text" id="toolbar-ac-input" name="toolbar-ac-input" value="" placeholder="Search artist..." />
+                <input type="button" name="toolbar-ac-submit" value="" class="button search" />
+            </div>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-user-menu">
+    <ul id="menu-user">
+        {{#ifCond user_role role_artist}}
+            <li id="menu-artist-profile">
+                <a href="/artist/profile">
+                    <img src="/images/icon/i-user.png" alt="Profile" />
+                    Your Profile
+                </a>
+            </li>
+            <li id="menu-switch-promoter">
+                <a href="/user/switch/promoter">
+                    <img src="/images/icon/i-switch.png" alt="switch" />
+                    Switch to Promoter profile
+                </a>
+            </li>
+        {{/ifCond}}
+
+        {{#ifCond user_role role_promoter}}
+            <li id="menu-promoter-profile">
+                <a href="/promoter/profile">
+                    <img src="/images/icon/i-user.png" alt="Profile" />
+                    Your Profile
+                </a>
+            </li>
+            <li id="menu-switch-artist">
+                <a href="/user/switch/artist">
+                    <img src="/images/icon/i-switch.png" alt="switch" />
+                    Switch to Artist profile
+                </a>
+            </li>
+        {{/ifCond}}
+
+        {{#if is_admin}}
+            <li id="menu-admin-site">
+                <a href="{{admin_url}}" class="external" target="_blank">
+                    <img src="/images/icon/i-admin.png" alt="Admin" />
+                    Admin Site
+                </a>
+            </li>
+        {{/if}}
+
+        <li id="menu-logout">
+            <a href="/user/logout">
+                <img src="/images/icon/i-logout.png" alt="Logout" />
+                Logout
+            </a>
+        </li>
+    </ul>
+</script>
+
+<script type="text/x-handlebars-template" id="t-footer-partial">
+    <div id="footer">
+        <div class="wrap">
+            <ul id="footer-menu">
+                <li>
+                    <a href="/about">About</a>
+                </li>
+                <li>
+                    <a href="/pricing">Pricing</a>
+                </li>
+                <li>
+                    <a href="http://blog.boogi.co" class="external">Blog</a>
+                </li>
+                <li>
+                    <a href="/terms">Terms and Conditions</a>
+                </li>
+            </ul>
+
+            <ul id="social-links">
+                <li>
+                    <a href="https://facebook.com/boogi.co" rel="publisher" class="external"><img src="/images/icon/s-facebook.png" alt="Facebook" /></a>
+                </li>
+                <li>
+                    <a href="https://plus.google.com/+BoogiCo" rel="publisher" class="external"><img src="/images/icon/s-gplus.png" alt="Google+" /></a>
+                </li>
+                <li>
+                    <a href="https://twitter.com/Boogi_booking" rel="publisher" class="external"><img src="/images/icon/s-twitter.png" alt="Twitter" /></a>
+                </li>
+            </ul>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-event-list">
+    <div id="event-list">
+        {{#if events}}
+            <ul>
+                {{#events}}
+                    <li>
+                        <div class="content">
+                            <a href="{{init_link}}">{{init_name}}</a>
+                            {{type_string}}
+                            <a href="{{target_link}}">{{target_name}}</a>
+                        </div>
+                        <div class="notice">
+                            {{datetime}}
+                        </div>
+                    </li>
+                {{/events}}
+            </ul>
+        {{else}}
+            <div class="notice">There are no new events</div>
+        {{/if}}
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-statuses-partial">
+    <div class="statuses">
+        <ul>
+            {{#available_statuses}}
+                {{#ifCond id ../status}}
+                    {{! Do not show current status }}
+                {{else}}
+                    {{#ifCond id ../../status_edit}}
+                        {{#ifCond ../../../status ../../../status_rejected}}
+                            {{#if ../../../../is_promoter}}
+                                <li><a href="/{{../../../../../artist_alias}}/book/{{../../../../../book_date}}" class="book-again">Book again</a></li>
+                            {{else}}
+                                <li class="notice">Booking closed</li>
+                            {{/if}}
+                        {{else}}
+                            <li><a href="#" class="edit-booking" data-id="{{../../../../id}}">Edit</a></li>
+                        {{/ifCond}}
+                    {{else}}
+                        {{! Do not show Open status link }}
+                        {{#if id}}
+                            <li>
+                                <a href="#" class="update-status status-{{id}} no-image"
+                                   data-status="{{id}}"
+                                   data-gig-id="{{../../../../gig_id}}"
+                                   data-artist-id="{{../../../../artist_id}}">
+                                    {{name}}
+                                </a>
+                            </li>
+                        {{/if}}
+                    {{/ifCond}}
+                {{/ifCond}}
+            {{else}}
+                <li class="notice">Editing is not available for past gigs</li>
+            {{/available_statuses}}
+        </ul>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-ac-item">
+    <div class="ac-item">
+        <div class="image">
+            <a href="/{{link}}"><img src="{{image}}" /></a>
+        </div>
+        <div class="name"><a href="/{{link}}">{{name}}</a></div>
+        <div class="description">{{description}}</div>
+        <div class="clear"></div>
+    </div>
+</script>

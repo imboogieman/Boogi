@@ -1,0 +1,143 @@
+.status-0,
+.status-1,
+.status-2,
+.status-3,
+.status-4,
+.status-5 {
+  display: inline-block;
+  padding-right: 14px;
+  background: url(@images + 'icon/s-open.png') no-repeat 100% 55%;
+
+  &.no-image {
+    padding-right: 0;
+    background: none;
+  }
+}
+
+.status-0 {
+  color: @blue;
+  background-image: url(@images + 'icon/s-open.png');
+}
+.status-1 {
+  color: @green;
+  background-image: url(@images + 'icon/s-confirmed.png');
+}
+.status-2 {
+  color: @green;
+  background-image: url(@images + 'icon/s-confirmed.png');
+}
+.status-3,
+.status-4 {
+  color: @blue;
+  background-image: url(@images + 'icon/s-open.png');
+}
+.status-5 {
+  color: @black;
+  background-image: url(@images + 'icon/s-close.png');
+}
+.status-100 {
+  color: @blue;
+  padding-right: 0;
+  background: none;
+}
+
+.status-bg-0 {
+  color: @white;
+  background-color: @blue;
+}
+.status-bg-1 {
+  color: @white;
+  background-color: @green;
+}
+.status-bg-2 {
+  color: @white;
+  background-color: @green;
+}
+.status-bg-3,
+.status-bg-4 {
+  color: @white;
+  background-color: @blue;
+}
+.status-bg-5 {
+  color: @white;
+  background-color: @grey;
+}
+
+.status-mark-0 {
+  color: @white;
+  background: @blue;
+}
+.status-mark-1 {
+  color: @white;
+  background: @green;
+}
+.status-mark-2 {
+  color: @white;
+  background: @green;
+}
+.status-mark-3,
+.status-mark-4 {
+  color: @white;
+  background: @blue;
+}
+.status-mark-5 {
+  color: @white;
+  background: @grey;
+}
+
+#booking-details {
+  .statuses {
+    text-align: center;
+
+    ul {
+      width: 90%;
+      margin: 5px 0;
+      padding: 0;
+      font-size: 12pt;
+
+      li {
+        display: inline-block;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+
+        a {
+          display: block;
+          padding: 3px 5px;
+          text-align: center;
+        }
+
+        &:first-child {
+          display: block;
+
+          a {
+            margin: 15px 0 5px 0;
+            padding: 5px 0;
+            font-size: 12pt;
+            text-decoration: none;
+            color: @white;
+
+            &.edit-booking,
+            &.book-again,
+            &.status-0
+            &.status-3,
+            &.status-4,
+            &.status-100 {
+              background: @blue;
+            }
+
+            &.status-1,
+            &.status-2 {
+              background: green;
+            }
+
+            &.status-5 {
+              background: @dark-grey;
+            }
+          }
+        }
+      }
+    }
+  }
+}

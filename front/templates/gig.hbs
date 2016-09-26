@@ -1,0 +1,45 @@
+
+<script type="text/x-handlebars-template" id="t-gig-list">
+    <div id="gig-list" class="container">
+        <div class="wrap">
+            <div id="map"></div>
+
+            <form id="gig-filter-form" action="#/filter" class="form shadow rounded">
+                <div>
+                    <label>From:</label>
+                    <span id="from_date"><input type="text" id="from_date" name="from_date" class="input calendar" value="{{params.from_date}}" /></span>
+                    <label>To:</label>
+                    <span id="to_date"><input type="text" id="to_date" name="to_date" class="input calendar" value="{{params.to_date}}" /></span>
+                    <input type="button" id="filter" name="filter" class="button" value="Filter" />
+                </div>
+            </form>
+
+            <div class="clear"></div>
+
+            <div id="gig-items" class="shadow rounded">
+                {{#gigs}}
+                    <div class="item clear" data-id="{{id}}">
+                        <div class="image"><img src="{{image}}" /></div>
+                        <div class="name">
+                            <a href="{{link}}" data-id="{{id}}" class="gig">{{name}}</a>
+                        </div>
+                        <div class="date">{{date}}</div>
+                        <div class="description">{{description}}</div>
+                    </div>
+                {{else}}
+                    <div class="empty">No records found</div>
+                {{/gigs}}
+            </div>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-gig-iw-block">
+    <div class="item-iw-block gig-iw-block {{#if is_multi}}is-multi{{/if}}" data-id="{{id}}">
+        {{#if is_ended}}<div class="notice">This gig has ended</div>{{/if}}
+        <div class="name">{{{name}}}</div>
+        <div class="venue">{{venue.name}}{{#if venue.city}}, {{venue.city}}{{/if}}{{#if venue.country}}, {{venue.country}}{{/if}}</div>
+    </div>
+</script>

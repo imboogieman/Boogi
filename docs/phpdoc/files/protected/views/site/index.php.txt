@@ -1,0 +1,32 @@
+<?php
+include DOC_ROOT . DS . 'templates' . DS . 'index.tpl';
+include DOC_ROOT . DS . 'templates' . DS . 'artist.tpl';
+include DOC_ROOT . DS . 'templates' . DS . 'promoter.tpl';
+include DOC_ROOT . DS . 'templates' . DS . 'venue.tpl';
+?>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo Yii::app()->params['googleApiKey']; ?>&sensor=true&libraries=places"></script>
+<script type="text/javascript">
+    // Set default map options
+    window.appConfig.mapOptions = {
+        center: new google.maps.LatLng(window.appConfig.params.defaultPosition.latitude, window.appConfig.params.defaultPosition.longitude),
+        zoom: 5,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+        },
+        panControl: false,
+        zoomControl: true,
+        zoomControlOptions: {
+            style: google.maps.ZoomControlStyle.LARGE,
+            position: google.maps.ControlPosition.RIGHT_CENTER
+        },
+        scaleControl: false,
+        streetViewControl: false
+    }
+</script>
+<script src="<?php echo Yii::app()->request->baseUrl; ?>/scripts/library/markerwithlabel.js"></script>
+<div id="loader">
+    <div></div>
+</div>

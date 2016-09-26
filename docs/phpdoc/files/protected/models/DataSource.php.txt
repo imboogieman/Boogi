@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * This is the model class helper for external data sources
+ */
+class DataSource
+{
+    const FACEBOOK = 1;
+    const GOOGLE = 2;
+
+    public static function getDSRealName($type)
+    {
+        switch ($type) {
+            case self::FACEBOOK:
+                return 'Facebook';
+            case self::GOOGLE:
+                return 'Google';
+        }
+    }
+
+    public static function getGoogleGCResponseValue($attr, $response)
+    {
+        if ($attr == 'latitude' || $attr == 'longitude') {
+            if (isset($response['geometry']) && isset($response['geometry']['location'])) {
+                $location = $response['geometry']['location'];
+                if (isset($location['nb']) && isset($location['ob'])) {
+                    if ($attr == 'latitude') {
+                        return (float) $location['nb'];
+                    } else {
+                        return (float) $location['ob'];
+                    }
+                }
+            }
+        } else {
+            if (isset($response['address_components'])) {
+                foreach ($response['address_components'] as $component) {
+                    if (isset($component['types']) && in_array($attr, $component['types'])) {
+                        return $component['long_name'];
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+}
+

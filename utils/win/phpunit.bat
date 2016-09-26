@@ -1,0 +1,1 @@
+php -f ../vendor/phpunit/phpunit/phpunit %1

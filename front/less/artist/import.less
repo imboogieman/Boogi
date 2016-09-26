@@ -1,0 +1,76 @@
+#artist-import {
+  margin-top: 47px;
+
+  .wrap {
+    margin: 0 20px;
+    padding: 0;
+    background: @white;
+    box-shadow: rgba(0,0,0,0.2) 1px 1px 1px 0;
+
+    #artist-import-list {
+
+      .artist-import-item {
+        position: relative;
+        float: left;
+        width: 46%;
+        margin: 10px 1% 0 0;
+        padding: 10px;
+        border: 1px solid @light-grey;
+
+        &.imported {
+          .artist-import-profile {
+            width: 83%;
+          }
+        }
+
+        h3 {
+          margin: 0 0 10px 0;
+          max-height: 32px;
+        }
+
+        p {
+          margin: 2px 0 12px 0;
+          font-size: 16px;
+        }
+
+        .artist-import-avatar {
+          float: left;
+          margin-right: 1%;
+          width: 15%;
+          min-width: 60px;
+          height: 60px;
+          text-align: center;
+          overflow: hidden;
+
+          img {
+            height: 60px;
+          }
+        }
+
+        .artist-import-profile {
+          float: left;
+          width: 69%;
+
+          .import-progress {
+            margin: 10px 0 5px 0;
+            padding: 10px 10px 10px 29px;
+            font-size: 13px;
+            background: @extra-light-grey;
+
+            &.loading {
+              background: @extra-light-grey url(@images + 'loader-small.gif') no-repeat 9px 9px;
+            }
+          }
+        }
+
+        .import-artist {
+          position: absolute;
+          top: 3px;
+          right: 10px;
+          min-width: 70px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
