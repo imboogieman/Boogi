@@ -1,0 +1,38 @@
+2016/11/10 12:33:59 [error] [exception.CDbException] SQLSTATE[HY000] [1045] Access denied for user 'boogi_dev'@'localhost' (using password: YES)
+2016/11/10 12:33:59 [error] [exception.CDbException] SQLSTATE[HY000] [1045] Access denied for user 'boogi_dev'@'localhost' (using password: YES)
+2016/11/10 12:33:59 [error] [exception.CDbException] CDbException: CDbConnection failed to open the DB connection. in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php:405
+Stack trace:
+#0 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(347): CDbConnection->open()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(325): CDbConnection->setActive(true)
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CModule.php(394): CDbConnection->init()
+#3 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(472): CModule->getComponent('db')
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(481): MigrateCommand->getDbConnection()
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(340): MigrateCommand->getMigrationHistory(-1)
+#6 [internal function]: MigrateCommand->actionHistory(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#9 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#10 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#11 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#12 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#13 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#14 {main}
+---
+2016/11/10 12:33:59 [error] [exception.CDbException] CDbException: CDbConnection failed to open the DB connection. in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php:405
+Stack trace:
+#0 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(347): CDbConnection->open()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(325): CDbConnection->setActive(true)
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CModule.php(394): CDbConnection->init()
+#3 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(472): CModule->getComponent('db')
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(481): MigrateCommand->getDbConnection()
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(340): MigrateCommand->getMigrationHistory(-1)
+#6 [internal function]: MigrateCommand->actionHistory(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#9 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#10 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#11 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#12 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#13 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#14 {main}
+---

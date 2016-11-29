@@ -109,11 +109,11 @@ class Mailer extends CApplicationComponent
 
         // Send copy to admins
         if ($params['isDebug']) {
-            $this->_mailer->addBCC('boogi.co@gmail.com', $this->toName);
+            $this->_mailer->addBCC('info@boogi.co', $this->toName);
 
             // Send booking copy to root
             if ($this->_data['template_id'] == MCMDBridge::PROMOTER_BOOKING_SEND) {
-                $this->_mailer->addBCC('manti.by@gmail.com', 'Booking Admin');
+                $this->_mailer->addBCC('info@boogi.co', 'Booking Admin');
             }
         }
 
@@ -617,7 +617,7 @@ class Mailer extends CApplicationComponent
 
     public static function sendGigInRadiusEmail($data)
     {
-        $data['content'] = self::_compileGigContent($data['gigs']);
+//        $data['content'] = self::_compileGigContent($data['gigs']);
 
         $data['template_id'] = MCMDBridge::PROMOTER_GIG_IN_RADIUS;
         $email = new Mailer($data);
@@ -627,7 +627,9 @@ class Mailer extends CApplicationComponent
 
         $email->to = $data['email'];
         $email->toName = $data['name'];
-        $email->subject = $data['gig_count'] > 1 ? 'Check Artists Dates' : 'Check Artist Dates';
+//        $email->subject = $data['gig_count'] > 1 ? 'Check Artists Dates' : 'Check Artist Dates';
+        $email->subject = 'Check Artist Dates';
+
 
         if ($email->delivery != Mailer::DELIVERY_MANDRILL) {
             $email->attachBehavior('emailRenderer', new EmailRenderer);
@@ -639,7 +641,7 @@ class Mailer extends CApplicationComponent
 
     public static function sendFollowedEmail($data)
     {
-        $data['content'] = self::_compileGigContent($data['gigs']);
+//        $data['content'] = self::_compileGigContent($data['gigs']);
 
         $data['template_id'] = MCMDBridge::PROMOTER_FOLLOWERS;
         $email = new Mailer($data);
@@ -649,7 +651,7 @@ class Mailer extends CApplicationComponent
 
         $email->to = $data['email'];
         $email->toName = $data['name'];
-        $email->subject = $data['gig_count'] > 1 ? 'Check Artists Dates' : 'Check Artist Dates';
+//        $email->subject = $data['gig_count'] > 1 ? 'Check Artists Dates' : 'Check Artist Dates';
 
         if ($email->delivery != Mailer::DELIVERY_MANDRILL) {
             $email->attachBehavior('emailRenderer', new EmailRenderer);
@@ -669,13 +671,17 @@ class Mailer extends CApplicationComponent
         )->queryAll();
 
         $result = array();
-        foreach ($logs as $log) {
-            $options = \CJSON::decode($log['options']);
-            foreach ($options['options'] as $gig_id => $artists) {
-                if (isset($result[$gig_id])) {
-                    $result[$gig_id] = array_unique(array_merge($result[$gig_id], $artists));
-                } else {
-                    $result[$gig_id] = array_unique($artists);
+        if (!empty($logs)) {
+            foreach ( $logs as $log ) {
+                $options = \CJSON::decode( $log['options'] );
+                if (isset($options['options'])) {
+                    foreach ( $options['options'] as $gig_id => $artists ) {
+                        if ( isset( $result[ $gig_id ] ) ) {
+                            $result[ $gig_id ] = array_unique( array_merge( $result[ $gig_id ], $artists ) );
+                        } else {
+                            $result[ $gig_id ] = array_unique( $artists );
+                        }
+                    }
                 }
             }
         }

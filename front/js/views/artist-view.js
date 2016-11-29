@@ -397,7 +397,7 @@ YUI.add('artist-view', function(Y) {
                 book_date = book_date ? book_date : Y.Date.format(new Date, { format: '%Y-%m-%d'});
 
                 // Fix dates
-                var datetime = Y.Date.parse(book_date + ' 19:00'),
+                var datetime = Y.Date.parse(new Date(book_date).getTime() + 3600 * 19 * 1000),
                     date_from = Y.Date.format(datetime, { format: '%d.%m.%Y'}),
                     time_from = Y.Date.format(datetime, { format: '%l:%M %P'}),
                     date_to, time_to;

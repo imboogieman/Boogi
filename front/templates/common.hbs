@@ -143,6 +143,9 @@
                 <li>
                     <a href="/terms">Terms and Conditions</a>
                 </li>
+                <li>
+										<a href="/privacy">Privacy Policy</a>
+								</li>
             </ul>
 
             <ul id="social-links">
@@ -231,5 +234,30 @@
         <div class="name"><a href="/{{link}}">{{name}}</a></div>
         <div class="description">{{description}}</div>
         <div class="clear"></div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-s-up-recom-art">
+	{{#each artists}}
+    <div class="artist-item col{{#ifNotEven @index}}-r-m{{/ifNotEven}}-50">
+			<img src="{{image}}" alt="artist"/>
+			<div class="description">
+				<h5>{{this.name}}</h5>
+				<p class="location">{{this.location}}</p>
+				<p class="genres">genres</p>
+			</div>
+			<i class="cross">&#10005;</i>
+		</div>
+	{{/each}}
+</script>
+
+<script type="text/x-handlebars-template" id="t-s-up-ac-item">
+    <div class="ac-item">
+        <img src="{{image}}" alt="artist"/>
+				<div class="description">
+					<h5>{{name}}</h5>
+					<p class="location">{{description}}</p>
+					<p class="genres">genres</p>
+				</div>
     </div>
 </script>

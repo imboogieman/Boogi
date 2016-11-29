@@ -1,4 +1,5 @@
 <?php
+require_once 'front/protected/tests/WebTestCase.php';
 
 class BaseTest extends WebTestCase
 {
@@ -52,16 +53,16 @@ class BaseTest extends WebTestCase
     /**
      * @group Pages
      */
-    public function testUpgrade()
-    {
-        // Go to Upgrade page
-        $this->url('/upgrade');
-        $this->timeout();
-
-        // Check Upgrade page title
-        $header = $this->byCssSelector('h1');
-        $this->stringContains('Upgrade Your Account', $header->text());
-    }
+//    public function testUpgrade()
+//    {
+//        // Go to Upgrade page
+//        $this->url('/upgrade');
+//        $this->timeout();
+//
+//        // Check Upgrade page title
+//        $header = $this->byCssSelector('h1');
+//        $this->stringContains('Upgrade Your Account', $header->text());
+//    }
 
     /**
      * @group Pages

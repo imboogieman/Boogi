@@ -17,7 +17,7 @@ class WebTestCase extends PHPUnit_Extensions_Selenium2TestCase
     protected function setUp()
     {
         $this->unique = time();
-        $this->uemail = $this->unique . '@test.com';
+        $this->uemail = 'mefodiykiril@ukr.net';
 
         $this->setBrowser('chrome');
         $this->setBrowserUrl(Yii::app()->params['baseUrl']);
@@ -36,6 +36,9 @@ class WebTestCase extends PHPUnit_Extensions_Selenium2TestCase
             case 'long':
                 $timeout = 10000;
                 break;
+            case 'veryLong':
+                $timeout = 30000;
+                break;
             default:
                 $timeout = 3000;
                 break;
@@ -46,35 +49,41 @@ class WebTestCase extends PHPUnit_Extensions_Selenium2TestCase
     public function register()
     {
         // Go to registration page
-        $this->url('/user/register');
-        $this->timeout();
+        $this->url('/user/signup');
+        $this->timeout('veryLong');
 
-        // Try to register
-        $this->byCssSelector('#register-name')->value($this->unique);
-        $this->byCssSelector('#register-email')->value($this->uemail);
-        $this->byCssSelector('#register-password')->value($this->unique);
-        $this->byCssSelector('#register')->click();
-        $this->timeout('long');
+        // Go to login page
+        $this->byCssSelector('#register-form a.fb-register-url')->click();
+        $this->timeout('veryLong');
+
+        // Try to login
+        $this->byCssSelector('#email')->value($this->uemail);
+        $this->byCssSelector('#pass')->value('qwe123Edc');
+        $this->byCssSelector('#loginbutton')->click();
+        $this->timeout('veryLong');
+
     }
 
     public function login()
     {
         // Go to login page
-        $this->byCssSelector('#menu-login a')->click();
-        $this->timeout();
+        $this->byCssSelector('#register-form a.fb-register-url')->click();
+        $this->timeout('veryLong');
 
         // Try to login
         $this->byCssSelector('#email')->value($this->uemail);
-        $this->byCssSelector('#password')->value($this->unique);
-        $this->byCssSelector('#login')->click();
-        $this->timeout();
+        $this->byCssSelector('#pass')->value('qwe123Edc');
+        $this->byCssSelector('#loginbutton')->click();
+        $this->timeout('veryLong');
     }
 
     public function logout()
     {
         // Simply click logout button
-        $this->byCssSelector('#menu-logout a')->click();
+        $this->byCssSelector('#show-user-menu')->click();
         $this->timeout();
+        $this->byCssSelector('#menu-logout a')->click();
+        $this->timeout('veryLong');
     }
 
     public function assertOnHomepage()

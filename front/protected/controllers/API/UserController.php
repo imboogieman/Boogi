@@ -189,6 +189,197 @@ class UserController extends Controller
         $this->renderJSON($result);
     }
 
+    /**
+     * Register new user
+     * @TODO: Decrease Cyclomatic complexity
+     * @TODO: Split method for submethods, decrease the number of lines
+     */
+    public function actionSubmitregister() {
+        $artist  = $promoter = $already_registered = null;
+        $request = Yii::app()->request;
+
+        // Get base params
+        $role = User::ROLE_PROMOTER;
+        $fbId = $request->getPost( 'fbId' );
+        $name = $request->getPost( 'name' );
+        $page = $request->getPost( 'page' );
+        $email = trim(strtolower($request->getPost( 'email' )));
+        $pass = $request->getPost( 'pass' );
+        $genres = $request->getPost( 'genres' );
+        $experience = $request->getPost( 'experience' );
+        $address = $request->getPost( 'address' );
+        $lat = $request->getPost( 'lat' );
+        $lng = $request->getPost( 'lng' );
+        $radius = $request->getPost( 'radius' );
+        $fArtists = $request->getPost( 'fArtists' );
+        $cName = $request->getPost( 'cName' );
+        $category = $request->getPost( 'category' );
+        $cAddress = $request->getPost( 'cAddress' );
+        $foundingDate = $request->getPost( 'foundingDate' );
+        $phone = $request->getPost( 'phone' );
+        $website = $request->getPost( 'website' );
+        $description = $request->getPost( 'description' );
+
+        $account = isset($request->cookies['account']) ? $request->cookies['account'] : null;
+
+        // Check already registered user
+        $user = User::model()->with('promoters')->find('email = :email or fb_id = :fb_id',
+            array(':email' => $email, ':fb_id' => $fbId));
+
+        // Check user role and create/update appropriate profile
+        try {
+            if ($role == User::ROLE_PROMOTER) {
+                if ($user) {
+                    $promoter = $user->promoter();
+                } else {
+                    $promoter = new Promoter;
+                }
+                $promoter->attributes = array(
+                    'name'      => $name,
+                    'latitude'  => $lat !== '' ? $lat : Model::getDefaultLatitude(),
+                    'longitude' => $lng !== '' ? $lng : Model::getDefaultLongitude(),
+                    'radius'    => $radius,
+                    'address'   => $address,
+                    'fb_id'     => $fbId,
+                    'homepage'  => $website,
+                    'description' => $description,
+                    'page'      => $page,
+                    'genres'   => $genres,
+                    'experience' => $experience,
+                    'f_artists' => $fArtists
+                );
+                $promoter->bindRelatedParams(array(
+                    'email'     => $email,
+                    'password'  => $pass,
+                    'role'      => $role,
+                    'create_date' => date('Y-m-d'),
+                    'c_name'      => $cName,
+                    'category'  => $category,
+                    'c_address'   => $cAddress,
+                    'founding_date' => date('Y-m-d', strtotime($foundingDate)),
+                    'phone' => $phone,
+                    'website' => $website,
+                    'description' => $description
+                ));
+
+                if ($promoter->save()) {
+                    $promoter->user->login();
+
+                    if ($account = Promoter::getByAccount($account)) {
+                        PromoterApi::updateByAccount($account);
+                    } else {
+                        Mailer::sendRegisterEmail(array('email' => $email, 'name' => $name));
+                    }
+
+                    $result = array(
+                        'result'    => ApiStatus::SUCCESS,
+                        'data'      => $promoter->user->getNormalizedData(true, true),
+                        'message'   => $account ?
+                            'Your booking request has just been send.<br />
+                             Booked artist will be likely to respond positively, if you fill up your profile
+                             with true and up-to-date information.<br />
+                             Please, take time to fill up your profile.' : ''
+                    );
+                } else {
+                    $result = array(
+                        'result'    => ApiStatus::INVALID,
+                        'errors'    => $promoter->getErrors()
+                    );
+                }
+            } else {
+                $artist = $artist ? $artist : new Artist;
+
+                $artist->attributes = array(
+                    'name'      => $request->getPost('name'),
+                    'latitude'  => $request->getPost('latitude'),
+                    'longitude' => $request->getPost('longitude')
+                );
+                $artist->bindRelatedParams(array(
+                    'email'     => $email,
+                    'password'  => $pass,
+                    'role'      => $request->getPost('role'),
+                ));
+
+                if ($artist->save()) {
+                    $artist->user->login();
+                    $result = array(
+                        'result'    => ApiStatus::SUCCESS,
+                        'data'      => $artist->user->getNormalizedData()
+                    );
+                } else {
+                    $result = array(
+                        'result'    => ApiStatus::INVALID,
+                        'errors'    => $artist->getErrors()
+                    );
+                }
+            }
+        } catch (CException $e) {
+            $result = array(
+                'result'    => ApiStatus::ERROR,
+                'message'   => $e->getMessage()
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    /**
+     * Set facebook access token to a session
+     * and redirect to register form
+     */
+    public function actionFbauth()
+    {
+        $session = new CHttpSession;
+        $session->open();
+        $domain = Yii::app()->params['baseUrl'];
+
+        $request = Yii::app()->request;
+        $code = $request->getQuery('code', null);
+        $profile = null;
+
+        if ($code) {
+            $data = Facebook::getAccessMarker($code);
+            $session["fbtoken"] = $data['access_token'];
+            $profile = Facebook::getProfile( $session['fbtoken'] );
+        }
+
+        if ($profile) {
+            $user = User::model()->with( 'promoters' )->find( 'email = :email or fb_id = :fb_id',
+                array( ':email' => $profile['email'], ':fb_id' => $profile['id'] ) );
+            if ( $user && $user->login()) {
+                    header( 'location: ' . $domain . 'promoter/profile' );
+            } else {
+                header('location: '. $domain. 'user/fb-register');
+            }
+        } else {
+            header('location: '. $domain);
+        }
+    }
+
+
+    /**
+     * Get details facebook account
+     */
+    public function actionFbregister()
+    {
+        $session=new CHttpSession;
+        $session->open();
+        if ($session['fbtoken']) {
+            $result = array(
+                'result'  => ApiStatus::SUCCESS,
+                'message' => 'Your account was succesfully switched',
+                'pages'   => Facebook::getPages( $session['fbtoken'] ),
+                'profile' => Facebook::getProfile( $session['fbtoken'] ),
+            );
+        } else {
+            $result = array(
+                'result'    => ApiStatus::INVALID,
+                'errors'    => 'Not registered by facebook'
+            );
+        }
+        $this->renderJSON($result);
+    }
+
     public function actionRestore()
     {
         // Get request
@@ -227,6 +418,67 @@ class UserController extends Controller
                 'result'    => ApiStatus::INVALID,
                 'errors'    => array('email' => 'Email could not be empty')
             );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    /**
+     * Search artists
+     */
+    function actionSearchartist() {
+        // Get request
+        $request = Yii::app()->request;
+
+        $query = $request->getQuery('q');
+        if ($query) {
+            $result = ArtistApi::searchByQuery($query);
+            if ($result) {
+                $result = array(
+                    'result' => ApiStatus::SUCCESS,
+                    'data'   => $result
+                );
+            } else {
+                $result = array(
+                    'result' => ApiStatus::SUCCESS,
+                    'data'   => array(array(
+                        'link'  => '',
+                        'image' => '',
+                        'name'  => 'Artist not finded',
+                        'description' => ''
+                    ))
+                );
+            }
+        } else {
+            $result = array();
+        }
+
+        $this->renderJSON($result);
+    }
+
+    /**
+     * Get recommended artists
+     */
+    function actionGetrecommendedart() {
+        // Get request
+        $request = Yii::app()->request;
+
+        $query = $request->getQuery('q');
+        if ($query) {
+            $result = ArtistApi::getRecomendedArtist($query);
+            if ($result) {
+                $result = array(
+                    'result' => ApiStatus::SUCCESS,
+                    'data'   => $result
+                );
+            } else {
+                $result = array(
+                    'result'    => ApiStatus::INVALID,
+                    'errors'    => array('er' => 'error')
+                );
+            }
+        } else {
+            $result = array();
         }
 
         $this->renderJSON($result);

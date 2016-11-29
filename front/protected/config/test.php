@@ -38,10 +38,10 @@ return array(
             ),
         ),
         'db' => array(
-            'connectionString'  => 'mysql:host=127.0.0.1;dbname=boogi.co',
+            'connectionString'  => 'mysql:host=127.0.0.1;dbname=boogi_dev',
             'emulatePrepare'    => true,
-            'username'          => 'root',
-            'password'          => 'password',
+            'username'          => 'r.gorbunou',
+            'password'          => 'R7_he#j+a',
             'charset'           => 'utf8',
         ),
         'errorHandler' => array(
@@ -76,13 +76,13 @@ return array(
     // Using Yii::app()->params['paramName']
     'params' => array(
         'isDebug'       => false,
-        'baseUrl'       => 'http://boogi.co',
-        'adminUrl'      => 'http://admin.boogi.co',
+        'baseUrl'       => 'http://boogi.app',
+        'adminUrl'      => 'http://admin.boogi.app',
 
-        'adminEmail'    => 'info@boogi.co',
+        'adminEmail'    => 'workpcv@localhost',
         'adminName'     => 'Boogi Admin',
 
-        'fromEmail'     => 'info@boogi.co',
+        'fromEmail'     => 'workpcv@localhost',
         'fromName'      => 'Boogi Notifications',
 
         'smtpAuth'      => true,

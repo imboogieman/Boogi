@@ -14,16 +14,24 @@ $config = array(
         'googleApiKey'  => Yii::app()->params['googleApiKey'],
 
         'defaultPosition' => array(
+            'address'       => Model::getDefaultAddress(),
             'latitude'      => Model::getDefaultLatitude(),
             'longitude'     => Model::getDefaultLongitude(),
             'radius'        => Model::getDefaultRadius()
+        ),
+        'currentPosition' => array(
+             'address'       => '',
+             'latitude'      => '',
+             'longitude'     => '',
+             'radius'        => ''
         ),
 
         'listMapZoom'   => 5,
         'itemMapZoom'   => 10,
         'gaCounter'     => Yii::app()->params['gaCounter'],
         'gaDomain'      => Yii::app()->params['gaDomain'],
-        'yaCounter'     => Yii::app()->params['yaCounter']
+        'yaCounter'     => Yii::app()->params['yaCounter'],
+        'fbLoginUrl'    => Facebook::generateFbUrl()
     ),
     'apiStatusDict'     => ApiStatus::getDict(),
     'featuredArtists'   => ArtistApi::getFeaturedArtists(),

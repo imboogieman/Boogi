@@ -40,11 +40,12 @@ return array(
             ),
         ),
         'db' => array(
-            'connectionString'  => 'mysql:host=127.0.0.1;dbname=local.boogi.co',
+            'connectionString'  => 'mysql:host=127.0.0.1;dbname=boogi_dev',
             'emulatePrepare'    => true,
-            'username'          => 'boogi',
-            'password'          => 'password',
+            'username'          => 'boogi_dev',
+            'password'          => 'R7_he#j+a',
             'charset'           => 'utf8',
+            'initSQLs' => array("SET SESSION sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';")
         ),
         'errorHandler' => array(
             // Use 'site/error' action to display errors
@@ -93,14 +94,14 @@ return array(
         'enableCache'   => true,
         'emailTestMode' => false,
 
-        'baseUrl'       => 'http://boogi.co',
-        'adminUrl'      => 'http://admin.boogi.co',
+        'baseUrl'       => 'http://dev.boogi.co/',
+        'adminUrl'      => 'http://admin.dev.boogi.co/',
 
-        'adminEmail'    => 'info@boogi.co',
+        'adminEmail'    => 'info@dev.boogi.co',
         'adminName'     => 'Boogi Admin',
 
         'sendEmail'     => true,
-        'fromEmail'     => 'info@boogi.co',
+        'fromEmail'     => 'info@dev.boogi.co',
         'fromName'      => 'Boogi Notifications',
 
         'smtpAuth'      => true,
@@ -111,10 +112,10 @@ return array(
         'smtpPassword'  => 'password',
 
         'ipinfoKey'     => '8067b473e90dd43d4db06cc5dfd490dfd2bf201086fb166fa33e39c9b2d45fb5',
-        'googleApiKey'  => 'AIzaSyA4124zZrcbE0GpcX3cZscWqlwjYDQCNzQ',
+        'googleApiKey'  => 'AIzaSyCLKqHXPHpSPf8FVqCK6Sn7Ki-wazch00Y',
 
-        'fbAppId'       => '177857332412297',
-        'fbSecret'      => 'de369485628908e74b2c3396ceb6dcb3',
+        'fbAppId'       => '1591226087852311',
+        'fbSecret'      => '3b8c698f5cc59b6fd3b22279221842bc',
 
         'gtApiKey'      => '03767f2fec2f5ef4a1',
         'bitApiKey'     => 'starway.pro',
@@ -128,6 +129,6 @@ return array(
         'metadesc'      => 'Boogi helps professional promoters and artists to optimize time, effort and cost on bookings and tour management.',
 
         'mcApiKey'      => '4e1dfc443ecc84c955570ad79523ccae-us3',
-        'mdApiKey'      => 'SZeRND7OpK6pjk5PlQxp-w',
+        'mdApiKey'      => 'hMxnW8-5BJAKzC7HHxSUdg',
     ),
 );

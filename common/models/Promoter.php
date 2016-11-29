@@ -36,7 +36,15 @@ class Promoter extends Model
     protected $_related_params = array(
         'email'     => null,
         'password'  => null,
-        'role'      => null
+        'role'      => null,
+        'create_date' => null,
+        'c_name'      => null,
+        'category'  => null,
+        'c_address'   => null,
+        'founding_date' => null,
+        'phone' => null,
+        'website' => null,
+        'description' => null
     );
 
     public function scopes()
@@ -73,6 +81,13 @@ class Promoter extends Model
             array('is_approved, fb_id', 'numerical', 'integerOnly' => true),
             array('fb_id', 'length', 'max' => 64),
             array('id, is_approved, name, latitude, longitude, radius, fb_id', 'safe', 'on' => 'search'),
+            array('address', 'length', 'max' => 255),
+            array('homepage', 'length', 'max' => 255),
+            array('description', 'type', 'type'=>'string'),
+            array('page', 'length', 'max' => 64),
+            array('genres', 'length', 'max' => 256),
+            array('experience', 'length', 'max' => 128),
+            array('f_artists', 'length', 'max' => 256),
         );
     }
 
@@ -88,6 +103,7 @@ class Promoter extends Model
             'promoterFiles' => array(self::HAS_MANY, 'PromoterFile', 'promoter_id'),
             'promoterArtists' => array(self::HAS_MANY, 'ArtistPromoter', 'promoter_id'),
             'promoterPromoters' => array(self::HAS_MANY, 'PromoterPromoter', 'promoter_id'),
+            'companies' => array(self::HAS_ONE, 'Companies', 'company_id'),
         );
     }
 
@@ -167,57 +183,84 @@ class Promoter extends Model
     public function save($runValidation = true, $attributes = null)
     {
         // Update related user params
-        if (isset($this->_related_params['email']) && isset($this->_related_params['password'])) {
-            if ($this->user_id) {
-                $this->user->email = $this->_related_params['email'];
-                $this->user->role = User::ROLE_PROMOTER;
-
-                // Check password update
-                if ($this->_related_params['password'] != '********') {
-                    $this->user->password = CPasswordHelper::hashPassword($this->_related_params['password']);
-                }
-
-                if (!$this->user->save()) {
-                    foreach($this->user->getErrors() as $attribute => $error) {
-                        foreach($error as $e) {
-                            $this->addError($attribute, $e);
-                        }
-                    }
-                    return false;
-                }
+        if ( isset( $this->_related_params['email'] ) && isset( $this->_related_params['password'] ) ) {
+            if ( $this->user_id ) {
+//                $this->user->email = $this->_related_params['email'];
+//                $this->user->role  = User::ROLE_PROMOTER;
+//
+//                // Check password update
+//                if ( $this->_related_params['password'] != '********' ) {
+//                    $this->user->password = CPasswordHelper::hashPassword( $this->_related_params['password'] );
+//                }
+//
+//                if ( ! $this->user->save() ) {
+//                    foreach ( $this->user->getErrors() as $attribute => $error ) {
+//                        foreach ( $error as $e ) {
+//                            $this->addError( $attribute, $e );
+//                        }
+//                    }
+//
+//                    return false;
+//                }
             } else {
-                $user = new User;
+                $user        = new User;
                 $user->email = $this->_related_params['email'];
-                $user->role = User::ROLE_PROMOTER;
+                $user->role  = User::ROLE_PROMOTER;
 
                 // Check password update
-                if ($this->_related_params['password'] != '********') {
-                    $user->password = CPasswordHelper::hashPassword($this->_related_params['password']);
+                if ( $this->_related_params['password'] != '********' ) {
+                    $user->password = CPasswordHelper::hashPassword( $this->_related_params['password'] );
                 }
 
-                if ($user->save()) {
-                    $this->setAttribute('user_id', $user->id);
+                if ( $user->save() ) {
+                    $this->user = $user;
+                    $this->setAttribute( 'user_id', $user->id );
                 } else {
-                    foreach($user->getErrors() as $attribute => $error) {
-                        foreach($error as $e) {
-                            $this->addError($attribute, $e);
+                    foreach ( $user->getErrors() as $attribute => $error ) {
+                        foreach ( $error as $e ) {
+                            $this->addError( $attribute, $e );
                         }
                     }
+
                     return false;
                 }
             }
         }
 
+
+
         // Call parent save and generates alias
-        if (parent::save($runValidation, $attributes)) {
+        if ( parent::save( $runValidation, $attributes ) ) {
             $this->generateAlias();
-            return true;
-        } else {
-            foreach(parent::getErrors() as $attribute => $error) {
-                foreach($error as $e) {
-                    $this->addError($attribute, $e);
+            if ( isset( $this->_related_params['c_name'] ) && $this->id ) {
+                $company                = new Companies;
+                $company->promoter_id   = $this->id;
+                $company->name          = $this->_related_params['c_name'];
+                $company->category      = $this->_related_params['category'];
+                $company->address       = $this->_related_params['c_address'];
+                $company->founding_date = $this->_related_params['founding_date'];
+                $company->phone         = $this->_related_params['phone'];
+                $company->website       = $this->_related_params['website'];
+                $company->description   = $this->_related_params['description'];
+
+                if ( !$company->save( false ) ) {
+                    foreach ( $company->getErrors() as $attribute => $error ) {
+                        foreach ( $error as $e ) {
+                            $this->addError( $attribute, $e );
+                        }
+                    }
+
+                    return false;
                 }
             }
+            return true;
+        } else {
+            foreach ( parent::getErrors() as $attribute => $error ) {
+                foreach ( $error as $e ) {
+                    $this->addError( $attribute, $e );
+                }
+            }
+
             return false;
         }
     }

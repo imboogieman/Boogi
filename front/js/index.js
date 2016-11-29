@@ -76,6 +76,9 @@ YUI({
         'bookings-promoter-extension': {
             fullpath: '/js/extensions/bookings-promoter-extension.js'
         },
+        'genres-extension': {
+            fullpath: '/js/extensions/genres-extension.js'
+        },
         'toolbar-extension': {
             fullpath: '/js/extensions/toolbar-extension.js'
         },

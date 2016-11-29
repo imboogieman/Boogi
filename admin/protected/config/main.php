@@ -36,10 +36,10 @@ return array(
             ),
         ),
         'db' => array(
-            'connectionString'  => 'mysql:host=127.0.0.1;dbname=local.boogi.co',
+            'connectionString'  => 'mysql:host=127.0.0.1;dbname=boogi_dev',
             'emulatePrepare'    => true,
-            'username'          => 'boogi',
-            'password'          => 'password',
+            'username'          => 'boogi_dev',
+            'password'          => 'R7_he#j+a',
             'charset'           => 'utf8',
         ),
         'errorHandler' => array(
@@ -76,12 +76,12 @@ return array(
         'isDebug'       => false,
         'sendEmail'     => true,
         'emailTestMode' => false,
-        'baseUrl'       => 'http://boogi.co',
+        'baseUrl'       => 'http://dev.boogi.co/',
 
-        'adminEmail'    => 'info@boogi.co',
+        'adminEmail'    => 'info@dev.boogi.co',
         'adminName'     => 'Boogi Admin',
 
-        'fromEmail'     => 'info@boogi.co',
+        'fromEmail'     => 'info@dev.boogi.co',
         'fromName'      => 'Boogi Notifications',
 
         'smtpAuth'      => true,
@@ -92,7 +92,7 @@ return array(
         'smtpPassword'  => 'password',
 
         'ipinfoKey'     => '8067b473e90dd43d4db06cc5dfd490dfd2bf201086fb166fa33e39c9b2d45fb5',
-        'googleApiKey'  => 'AIzaSyA4124zZrcbE0GpcX3cZscWqlwjYDQCNzQ',
+        'googleApiKey'  => 'AIzaSyCLKqHXPHpSPf8FVqCK6Sn7Ki-wazch00Y',
 
         'fbAppId'       => '177857332412297',
         'fbSecret'      => 'de369485628908e74b2c3396ceb6dcb3',

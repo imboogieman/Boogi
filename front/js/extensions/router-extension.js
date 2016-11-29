@@ -147,6 +147,16 @@ YUI.add('router-extension', function (Y) {
                         }, this)
                     },
                     {
+                        path: '/user/fb-register',
+                        target: 'fb-register',
+                        callbacks: Y.bind(function (request) {
+                            this._beforeRoute();
+                            this.log('Router facebook register form');
+                            this.showView('user', { action: 'fbRegister' });
+                            this._afterRoute(request);
+                        }, this)
+                    },
+                    {
                         path: '/user/restore',
                         target: 'restore',
                         callbacks: Y.bind(function (request) {
@@ -341,6 +351,11 @@ YUI.add('router-extension', function (Y) {
                     {
                         path: '/terms',
                         target: 'terms',
+                        callbacks: Y.bind(this.showPage, this)
+                    },
+                    {
+                        path: '/privacy',
+                        target: 'privacy',
                         callbacks: Y.bind(this.showPage, this)
                     },
                     {

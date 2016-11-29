@@ -10,7 +10,8 @@ class Model extends CActiveRecord
 {
     const DEFAULT_LATITUDE = 53.9;
     const DEFAULT_LONGITUDE = 27.6;
-    const DEFAULT_RADIUS = 300000;
+    const DEFAULT_RADIUS = 1000000;
+    const DEFAULT_ADDRESS = 'Minsk, Belarus';
 
     const STATUS_SKIPPED = 1;
     const STATUS_UPDATED = 2;
@@ -48,7 +49,8 @@ class Model extends CActiveRecord
     public static $admin_emails = array(
         'manti.by@gmail.com',
         'roman@wemade.biz',
-        'djchantcharmant@gmail.com'
+        'djchantcharmant@gmail.com',
+        'ivanovartem915@gmail.com'
     );
 
     /**
@@ -280,6 +282,15 @@ class Model extends CActiveRecord
     }
 
     /**
+     * Return default site address
+     * @return string
+     */
+    public static function getDefaultAddress()
+    {
+        return self::DEFAULT_ADDRESS;
+    }
+
+    /**
      * Generate alias from name
      * @param bool $force
      * @return bool
@@ -290,7 +301,7 @@ class Model extends CActiveRecord
             $alias = Model::createAlias($this->name);
             $alias = $this->id . ($alias ? '-' . $alias : '');
             $this->alias = substr($alias, 0, 64);
-            return $this->save();
+            return parent::save();
         }
         return true;
     }

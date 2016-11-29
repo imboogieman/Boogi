@@ -37,6 +37,26 @@ YUI.add('user-model', function(Y) {
             this.getData('/api/user/logout', data, callback, this, true);
         },
 
+        fbRegister: function (data) {
+            var callback = Y.bind(function (response) {
+                if (response.result == this.apiStatus.SUCCESS) {
+                    this.fire('user:fb-register', { response: response });
+                }
+            }, this);
+
+            this.getData('/api/user/fbregister', data, callback, this, true);
+        },
+
+        getRecommendedArtists: function (data) {
+            var callback = Y.bind(function (response) {
+                if (response.result == this.apiStatus.SUCCESS) {
+                    this.fire('user:get-artists', { response: response });
+                }
+            }, this);
+
+            this.getData('/api/user/getrecommendedart?q=a', data, callback, this, true);
+        },
+
         restore: function(data) {
             var callback = Y.bind(function (response) {
                 if (response.result == this.apiStatus.SUCCESS) {
@@ -47,7 +67,20 @@ YUI.add('user-model', function(Y) {
             this.getData('/api/user/restore', data, callback, this, true);
         },
 
-        register: function(data) {
+        //register: function(data) {
+        //    var callback = Y.bind(function (response) {
+        //        if (response.result == this.apiStatus.SUCCESS) {
+        //            window.appConfig.user = response.data;
+        //            this.fire('user:registered', { message: response.message });
+        //        } else if (response.result == this.apiStatus.INVALID) {
+        //            this.fire('user:register-invalid', { message: response.message, errors: response.errors });
+        //        }
+        //    }, this);
+        //
+        //    this.getData('/api/user/register', data, callback, this, true);
+        //},
+
+        submitRegister: function(data) {
             var callback = Y.bind(function (response) {
                 if (response.result == this.apiStatus.SUCCESS) {
                     window.appConfig.user = response.data;
@@ -57,7 +90,7 @@ YUI.add('user-model', function(Y) {
                 }
             }, this);
 
-            this.getData('/api/user/register', data, callback, this, true);
+            this.getData('/api/user/submitregister', data, callback, this, true);
         },
 
         checkhash: function(hash) {
