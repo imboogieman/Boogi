@@ -572,11 +572,15 @@ class Model extends CActiveRecord
     {
         $earth_radius = 6371;
 
-        $delta_lat = deg2rad($latitude2 - $latitude1);
-        $delta_lon = deg2rad($longitude2 - $longitude1);
-
-        $rad = sin($delta_lat/2) * sin($delta_lon/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($delta_lon/2) * sin($delta_lon/2);
-        $distance = $earth_radius * 2 * asin(sqrt($rad));
+//        $delta_lat = deg2rad($latitude2 - $latitude1);
+//        $delta_lon = deg2rad($longitude2 - $longitude1);
+//
+//        $rad = sin($delta_lat/2) * sin($delta_lon/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($delta_lon/2) * sin($delta_lon/2);
+//        $distance = $earth_radius * 2 * asin(sqrt($rad));
+        $rad = acos( cos( deg2rad($latitude1) ) * cos( deg2rad( $latitude2 ) )
+                     * cos( deg2rad( $longitude2 ) - deg2rad($longitude1) )
+                     + sin( deg2rad($latitude1) ) * sin( deg2rad( $latitude2 ) ) );
+        $distance = $rad * $earth_radius;
 
         return $distance;
     }

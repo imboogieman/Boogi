@@ -9,10 +9,12 @@ YUI.add('artist-model', function(Y) {
                     if (response.result == this.apiStatus.SUCCESS) {
                         this.set('list', response.data);
                         this.fire('artist:list');
+                    } else if (response.result == this.apiStatus.REQ_LOGIN) {
+                        this.showLoginOverlay(response.message);
                     }
                 }, this);
-
-            this.getData('/api/artist/list', { offset: offset }, callback, this, true);
+            var data = { offset: offset, load_more_count: sessionStorage.loadMoreCount };
+            this.getData('/api/artist/list', data, callback, this, true);
         },
 
         getItem: function(data) {
@@ -42,6 +44,9 @@ YUI.add('artist-model', function(Y) {
                         this.fire('artist:show');
                     } else if (response.result == this.apiStatus.NOT_FOUND) {
                         this.fire('artist:404');
+                    } else if (response.result == this.apiStatus.REQ_LOGIN) {
+                        this.redirect('/user/signup');
+                        this.showOverlay(response.message);
                     }
                 }, this);
 
@@ -148,6 +153,16 @@ YUI.add('artist-model', function(Y) {
             }, this);
 
             this.getData('/api/artist/bookings', {}, callback, this, true);
+        },
+
+        getGig: function (data) {
+            var callback = Y.bind(function (response) {
+                if (response.result == this.apiStatus.SUCCESS) {
+                    this.fire('artist:show-gig', { gig: response.data });
+                }
+            }, this);
+
+            this.getData('/api/artist/getgig', {'gig_id': data}, callback, this, true);
         },
 
         message: function (data) {

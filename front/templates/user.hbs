@@ -1,11 +1,9 @@
-
 <script type="text/x-handlebars-template" id="t-user">
     <div id="user" class="container">
         <div class="wrap">
             <div class="wrapper">
                 <form id="login-form" action="/user/login" class="form shadow rounded">
-                		<div class="top-tab"><span class="back" data-target="root"
-												data-current="choose-pages"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
+                		<div class="top-tab"><span>Get Started - FREE</span><i class="cross">&#10005;</i></div>
                     <!--<div class="row">
                         <label for="email">Email</label><br />
                         <input type="text" id="email" name="email" class="input" value="" />
@@ -40,200 +38,239 @@
                     </div>-->
 
                     <div class="row buttons">
-												<a class="fb-register-url" href="{{fbLoginUrl}}"><i class="icon-fb"></i><span>Continue with Facebook</span></a>
-										</div>
+							<a class="fb-register-url" href="{{fbLoginUrl}}"><i class="icon-fb"></i><span>Continue with Facebook</span></a>
+					</div>
+
+					<div class="row dash">
+							<div class="dash"></div>
+					</div>
+
+					<div class="row desc">
+							<p>Sign in to book artists for your events</p>
+					</div>
                 </form>
 
                 <form id="fb-form" action="/user/fb-register" class="form hidden shadow rounded">
-                		<div id="choose-pages" class="tab-form">
-                			<div class="top-tab"><span class="back" data-target="root"
-												data-current="choose-pages"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
-											<div class="row">
-													<label for="pages">We found you're connected to some Facebook Pages. Select one to import to Boogi</label>
-													<select id="pages" name="pages" class="option"><select>
-													<span class="error" id="pages-error"></span>
-											</div>
+			        <div id="choose-pages" class="tab-form">
+			            <div class="top-tab"><span class="back" data-target="root"
+							data-current="choose-pages"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
+						<div class="row">
+								<p class="bold-text">We found you're connected to some Facebook Pages.<br>
+									Select one to import to Boogi</p>
+								<div id="pages" class="dropdown none">
+									<button class="btn btn-default dropdown-toggle" type="button">
+										<span class="val">select</span>
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu"></ul>
+								</div>
+								<span class="error" id="pages-error"></span>
+						</div>
 
-											<div class="row buttons p-top-70">
-													<input data-target="user-account"
-													 data-current="choose-pages"
-													type="button" id="import" name="import" class="button disabled" value="Import" />
-											</div>
-										</div>
-										<div id="create-page" class="tab-form hidden">
-										  <div class="top-tab"><span class="back"  data-target="root"
-                          data-current="create-page">< Back</span><i>&#10005;</i></div>
-											<div class="row">
-													<img src="{{imageOops}}" alt="Oops!" />
-													<label for="pages">Oops! Is appears that you do not have access to any Facebook Pages.</label>
-											</div>
+						<div class="row buttons p-top-70">
+								<input data-target="user-account"
+								 data-current="choose-pages"
+								type="button" id="import" name="import" class="button disabled" value="Import" />
+						</div>
+					</div>
 
-											<div class="row buttons">
-													<a href="https://www.facebook.com/pages/create/" class="button" id="create">Create facebook page</a>
-											</div>
-										</div>
-										<div id="user-account" class="tab-form hidden">
-										  <div class="top-tab"><span class="back" data-target="choose-pages"
-                          data-current="user-account"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
-											<div class="row">
-													<label for="f-name">First name<span class="red">*</span></label><br />
-													<input type="text" id="f-name" name="f_name" class="input required" value="" />
-													<span class="error" id="f-name-error"></span>
-											</div>
+					<div id="create-page" class="tab-form hidden">
+					  <div class="top-tab"><span class="back"  data-target="root"
+                            data-current="create-page">< Back</span><i>&#10005;</i></div>
+						<div class="row">
+								<img src="{{imageOops}}" alt="Oops!" />
+								<p class="bold-text">Oops! Is appears that you do not have access to any Facebook Pages.</p>
+						</div>
 
-											<div class="row">
-													<label for="l-name">Last name<span class="red">*</span></label><br />
-													<input type="text" id="l-name" name="l_name" class="input required" value="" />
-													<span class="error" id="l-name-error"></span>
-											</div>
+						<div class="row buttons">
+								<a href="https://www.facebook.com/pages/create/" class="button" id="create">Create facebook page</a>
+						</div>
+					</div>
 
-											<div class="row">
-													<label for="fb-email">Email<span class="red">*</span></label><br />
-													<input type="text" id="fb-email" name="fb-email" class="input" value="" />
-													<span class="error" id="fb-email-error"></span>
-											</div>
+					<div id="user-account" class="tab-form hidden">
+					  <div class="top-tab"><span class="back" data-target="choose-pages"
+					     data-current="user-account"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
 
-											<div class="row">
-													<label for="fb-password">Password<span class="red">*</span></label><br />
-													<input type="password" id="fb-password" name="fb-password" class="input required" value="" />
-													<span class="error" id="fb-password-error"></span>
-											</div>
+						<h4>User account</h4>
 
-											<div class="row">
-													<label for="c-password">Confirm password<span class="red">*</span></label><br />
-													<input type="password" id="c-password" name="c_password" class="input required" value="" />
-													<span class="error" id="c-password-error"></span>
-											</div>
+						<div class="row">
+							<label for="f-name">First name<span class="red">*</span></label><br />
+							<input type="text" id="f-name" name="f_name" class="input required" value="" />
+							<span class="error" id="f-name-error"></span>
+						</div>
 
-											<div class="row buttons">
-													<input data-target="conpany-detail"
-													data-current="user-account" type="button" id="next" name="next" class="button" value="Next" />
-											</div>
-										</div>
-										<div id="conpany-detail" class="tab-form hidden">
-										  <div class="top-tab"><span class="back" data-target="user-account"
-                           data-current="conpany-detail"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
-											<div class="row">
-													<label for="conmpany-name">Name<span class="red">*</span></label><br />
-													<input type="text" id="conmpany-name" name="conmpany_name" class="input required" value="" />
-													<span class="error" id="conmpany-name-error"></span>
-											</div>
+						<div class="row">
+							<label for="l-name">Last name<span class="red">*</span></label><br />
+							<input type="text" id="l-name" name="l_name" class="input required" value="" />
+							<span class="error" id="l-name-error"></span>
+						</div>
 
-											<div class="row">
-												<label for="categories">Category<span class="red">*</span></label><br />
-												<select id="categories" name="categories" class="option"><select>
-												<span class="error" id="categories-error"></span>
-											</div>
+						<div class="row">
+							<label for="fb-email">Current email<span class="red">*</span></label><br />
+							<input type="text" id="fb-email" name="fb-email" class="input" value="" placeholder="enter your current email"/>
+							<span class="error" id="fb-email-error"></span>
+						</div>
 
-											<div class="row">
-													<label for="adress">Adress</label><br />
-													<input type="text" id="adress" name="adress" class="input" value="" />
-													<span class="error" id="adress-error"></span>
-											</div>
+						<div class="row">
+							<label for="fb-password">Password<span class="red">*</span></label><br />
+							<input type="password" id="fb-password" name="fb-password" class="input required" value="" />
+							<span class="error" id="fb-password-error"></span>
+						</div>
 
-											<div class="row">
-													<label for="founding-date">Founding date</label><br />
-													<input type="text" id="founding-date" name="founding_date" class="input datepicker required" value="" />
-													<span class="error" id="founding-date-error"></span>
-											</div>
+						<!--<div class="row">
+							<label for="c-password">Confirm password<span class="red">*</span></label><br />
+							<input type="password" id="c-password" name="c_password" class="input required" value="" />
+							<span class="error" id="c-password-error"></span>
+						</div>-->
 
-											<div class="row">
-													<label for="phone">Phone<span class="red">*</span></label><br />
-													<input type="text" id="phone" name="phone" class="input" value="" />
-													<span class="error" id="phone-error"></span>
-											</div>
+						<div class="row buttons">
+							<input data-target="conpany-detail"
+							data-current="user-account" type="button" id="next" name="next" class="button disabled" value="Next" />
+						</div>
+					</div>
 
-											<div class="row">
-													<label for="website">Website</label><br />
-													<input type="text" id="website" name="website" class="input" value="" />
-													<span class="error" id="website-error"></span>
-											</div>
+					<div id="conpany-detail" class="tab-form hidden">
+					  <div class="top-tab"><span class="back" data-target="user-account"
+       data-current="conpany-detail"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
 
-											<div class="row">
-													<label for="description">Description</label><br />
-													<textarea id="description" name="description"></textarea>
-													<span class="error" id="description-error"></span>
-											</div>
+						<h4>Company details</h4>
 
-											<div class="row buttons">
-													<input data-target="genres-artist"
-													data-current="conpany-detail" type="button" id="next" name="next" class="button" value="Next" />
-											</div>
-										</div>
-										<div id="genres-artist" class="tab-form hidden">
-										    <div class="top-tab"><span class="back" data-target="conpany-detail"
-                             data-current="genres-artist"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
-												<div class="row">
-														<label for="genres">Preferred genres<span class="red">*</span></label><br />
-														<div class="conteiner-genres">
-															<input type="text" id="genres" name="genres" class="input required" value="" placeholder="3 minimum" />
-														</div>
-														<ul class="genres-list list-group hidden">
-															{{#each genres}}<li class="list-group-item">{{this}}</li>{{/each}}
-														</ul>
-														<span class="error" id="genres-error"></span>
-												</div>
+						<div class="row">
+							<label for="conmpany-name">Name<span class="red">*</span></label><br />
+							<input type="text" id="conmpany-name" name="conmpany_name" class="input required" value=""
+								placeholder="booker or venue public name"/>
+							<span class="error" id="conmpany-name-error"></span>
+						</div>
 
-												<div class="row">
-														<label for="experience">Artists booked before</label><br />
-														<input type="text" id="experience" name="experience" class="input" value="" />
-														<span class="error" id="experience-error"></span>
-												</div>
+						<div class="row">
+							<label for="categories">Category<span class="red">*</span></label><br />
+							<div id="categories" class="dropdown none">
+								<button class="btn btn-default dropdown-toggle" type="button">
+									<span class="val">select</span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu"></ul>
+							</div>
+							<span class="error" id="categories-error"></span>
+						</div>
 
-												<div class="row buttons">
-														<input data-target="location"
-														data-current="genres-artist" type="button" id="proceed" name="proceed" class="button disabled" value="Proceed" />
-												</div>
-										</div>
-										<div id="location" class="tab-form hidden">
-										    <div class="top-tab"><span class="back" data-target="genres-artist"
-                             data-current="location"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
-												<h4>Location and Radar</h4>
-												<div class="clearfix">
-														<div class="col-r-m-75">
-																<label for="address">Location</label><br />
-																<input type="text" id="address" name="address" class="input" value="{{address}}" />
+						<div class="row">
+							<label for="address-company">Address</label><br />
+							<input type="text" id="address-company" name="adress" class="input" value="" />
+							<span class="error" id="adress-error"></span>
+						</div>
+
+						<div class="row">
+							<label for="founding-date">Founding date</label><br />
+							<input type="text" id="founding-date" name="founding_date" class="input required" value="" />
+							<span class="error" id="founding-date-error"></span>
+						</div>
+
+						<div class="row">
+							<label for="phone">Phone<span class="red">*</span></label><br />
+							<input type="text" id="phone" name="phone" class="input" value=""
+							       placeholder="We need it to verify your profile"/>
+							<span class="error" id="phone-error"></span>
+						</div>
+
+						<div class="row">
+							<label for="website">Website</label><br />
+							<input type="text" id="website" name="website" class="input" value="" />
+							<span class="error" id="website-error"></span>
+						</div>
+
+						<div class="row">
+							<label for="description">Description</label><br />
+							<textarea id="description" name="description"></textarea>
+							<span class="error" id="description-error"></span>
+						</div>
+
+						<div class="row buttons">
+							<input data-target="genres-artist"
+							data-current="conpany-detail" type="button" id="next" name="next" class="button disabled" value="Next" />
+						</div>
+					</div>
+
+					<div id="genres-artist" class="tab-form hidden">
+					    <div class="top-tab"><span class="back" data-target="conpany-detail"
+         data-current="genres-artist"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
+
+						<h4>Genres & Artists</h4>
+
+						<div class="row">
+							<label for="genres">Preferred genres<span class="red">*</span></label><br />
+							<div class="conteiner-genres">
+								<input type="text" id="genres" name="genres" class="input required" value="" placeholder="3 minimum" />
+							</div>
+							<ul class="genres-list list-group hidden">
+								{{#each genres}}<li class="list-group-item">{{this}}</li>{{/each}}
+							</ul>
+							<span class="error" id="genres-error"></span>
+						</div>
+
+						<div class="row">
+							<label for="experience">Artists booked before</label><br />
+							<input type="text" id="experience" name="experience" class="input" value=""
+								placeholder="optional, to prove your experience"/>
+							<span class="error" id="experience-error"></span>
+						</div>
+
+						<div class="row buttons">
+							<input data-target="location"
+							data-current="genres-artist" type="button" id="proceed" name="proceed" class="button disabled" value="Proceed" />
+						</div>
+					</div>
+
+					<div id="location" class="tab-form hidden">
+					    <div class="top-tab"><span class="back" data-target="genres-artist"
+                            data-current="location"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
+						<h4>Location and Radar</h4>
+						<div class="clearfix">
+							<div class="col-r-m-75">
+								<label for="address">Location</label><br />
+								<input type="text" id="address" name="address" class="input" value="{{address}}" />
                                 <span id="address-error" class="error"></span>
-														</div>
+							</div>
 
-														<div class="col-25 radius">
-																<label for="radius">Radius</label><br />
-																<input type="text" id="radius" name="radius" class="input" value="{{radius}}" />
-																<span class="ell">km</span>
-																<span id="radius-error" class="error"></span>
-														</div>
-												</div>
+							<div class="col-25 radius">
+								<label for="radius">Radius</label><br />
+								<input type="text" id="radius" name="radius" class="input" value="{{radius}}" />
+								<span class="ell">km</span>
+								<span id="radius-error" class="error"></span>
+							</div>
+						</div>
 
-												<div class="notice">You can drag points on map to change your location info</div>
+						<div class="notice">Drag the circle line to change radar zone</div>
 
-												<div id="profile-map"></div>
+						<div id="profile-map"></div>
 
-												<div class="clear"></div>
+						<div class="clear"></div>
 
-												<div class="row buttons">
-														<input data-target="favorite-artists"
-														data-current="location" type="button" id="done" name="done" class="button" value="Done with radar settings" />
-												</div>
-										</div>
-										<div id="favorite-artists" class="tab-form hidden">
-											<div class="top-tab"><span class="back" data-target="location"
-                          data-current="favorite-artists"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
-                          <h4>Choose minimum 5 favorite artists to track</h4>
-                          <p>The systems scans tracked artists schedule and notifies you in case they have a free date close to your location</p>
-                          <div id="search-sign-up">
-                            <input type="text" id="s-up-ac-input" name="s-up-ac-input" value="" placeholder="Search artist...">
-                            <input type="button" id="s-up-ac-submit" name="s-up-ac-submit" value="" class="button search">
-													</div>
-													<div class="row artist-items">
+						<div class="row buttons">
+								<input data-target="favorite-artists"
+								data-current="location" type="button" id="done" name="done" class="button" value="Done with radar settings" />
+						</div>
+					</div>
 
-													</div>
+					<div id="favorite-artists" class="tab-form hidden">
+						<div class="top-tab"><span class="back" data-target="location"
+						      data-current="favorite-artists"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
+				        <h4>Choose minimum 5 favorite artists to track</h4>
+				        <p>The systems scans tracked artists schedule and notifies you in case they have a free date close to your location</p>
+						<div id="search-sign-up">
+					        <input type="text" id="s-up-ac-input" name="s-up-ac-input" value="" placeholder="Search artist...">
+					        <input type="button" id="s-up-ac-submit" name="s-up-ac-submit" value="" class="button search">
+							</div>
+							<div class="row artist-items">
 
-													<div class="row buttons">
-															<input data-target="favorite-artists"
-															data-current="location" type="button" id="submit" name="submit" class="button disabled" value="Done with artists to track" />
-													</div>
-										</div>
-								</form>
+							</div>
+
+							<div class="row buttons">
+									<input data-target="favorite-artists"
+									data-current="location" type="button" id="submit" name="submit" class="button disabled" value="Done with artists to track" />
+							</div>
+						</div>
+				</form>
                 <form id="restore-form" action="/user/restore" class="form hidden shadow rounded">
                     <div class="row">
                         <label for="restore-email">Enter your email to restore password</label>
@@ -268,8 +305,7 @@
                 </form>
 
                 <form id="register-form" action="/user/register" class="form hidden shadow rounded">
-                		<div class="top-tab"><span class="back" data-target="root"
-												data-current="choose-pages"><i class="angle-left"></i> Back</span><i class="cross">&#10005;</i></div>
+                		<div class="top-tab"><span>Get Started - FREE</span><i class="cross">&#10005;</i></div>
                     <!--<input type="hidden" id="register-latitude" name="register-latitude" value="{{latitude}}" />
                     <input type="hidden" id="register-longitude" name="register-longitude" value="{{longitude}}" />
                     <input type="hidden" id="register-radius" name="register-radius" value="{{radius}}" />
@@ -309,20 +345,20 @@
                     </div>
 
                     <div class="row or-spacer">
-												<div class="or-spacer-left"></div>or<div class="or-spacer-right"></div>
-										</div>-->
+							<div class="or-spacer-left"></div>or<div class="or-spacer-right"></div>
+					</div>-->
 
-										<div class="row buttons">
-												<a class="fb-register-url" href="{{fbLoginUrl}}"><i class="icon-fb"></i><span>Continue with Facebook</span></a>
-										</div>
+					<div class="row buttons">
+							<a class="fb-register-url" href="{{fbLoginUrl}}"><i class="icon-fb"></i><span>Continue with Facebook</span></a>
+					</div>
 
-										<!-- <div class="row dash">
-												<div class="dash"></div>
-										</div>
+					<div class="row dash">
+							<div class="dash"></div>
+					</div>
 
-										<div class="row">
-												<p>Sign in to book artists for your events</p>
-										</div> -->
+					<div class="row desc">
+							<p>Sign in to book artists for your events</p>
+					</div>
 
                     <!--<div class="row already">
                         Already signed up? <a href="/user/login">Login</a>.
@@ -332,4 +368,8 @@
         </div>
     </div>
 </script>
-
+<script type="text/x-handlebars-template" id="t-user-login-button">
+	<div class="row buttons">
+		<a class="fb-register-url" href="{{fbLoginUrl}}"><i class="icon-fb"></i><span>Continue with Facebook</span></a>
+	</div>
+</script>

@@ -12,19 +12,59 @@ class ArtistController extends Controller
         $offset = $request->getPost('offset');
         $query = $request->getPost('query');
 
-        // Get artists
-        $artists = ArtistApi::getList(array('limit' => $limit, 'offset' => $offset, 'query' => $query));
+        $l_m_count = $request->getPost('load_more_count');
 
-        // Validate user input and redirect to the previous page if valid
-        if ($artists) {
+        if ($l_m_count > 3 && !Yii::app()->user->getId()) {
+            $result = array(
+                'result'    => ApiStatus::REQ_LOGIN,
+                'message'   => 'Please login first'
+            );
+        } else {
+            // Get artists
+            $artists = ArtistApi::getList( array( 'limit' => $limit, 'offset' => $offset, 'query' => $query ) );
+
+            // Validate user input and redirect to the previous page if valid
+            if ( $artists ) {
+                $result = array(
+                    'result' => ApiStatus::SUCCESS,
+                    'data'   => $artists
+                );
+            } else {
+                $result = array(
+                    'result'  => ApiStatus::NO_RECORDS,
+                    'message' => 'Could not find any records, please check filter'
+                );
+            }
+        }
+
+        $this->renderJSON($result);
+    }
+
+    /**
+     * Getting gig by id
+     */
+    public function actionGetgig() {
+
+        // Get request
+        $request = Yii::app()->request;
+        $gig_id = $request->getPost('gig_id');
+        $gig = Gig::getOrCreate($gig_id);
+        if (isset($gig->date)) {
             $result = array(
                 'result'    => ApiStatus::SUCCESS,
-                'data'      => $artists
+                'data'      => array(
+                    'id' => $gig_id,
+                    'date' => $gig->getDate('Y-m-d'),
+                    'venue' => array(
+                        'latitude' => $gig->venue->latitude,
+                        'longitude' => $gig->venue->longitude
+                    )
+                )
             );
         } else {
             $result = array(
                 'result'    => ApiStatus::NO_RECORDS,
-                'message'   => 'Could not find any records, please check filter'
+                'message'   => 'Could not find any records'
             );
         }
 
@@ -37,19 +77,27 @@ class ArtistController extends Controller
         $request = Yii::app()->request;
         $id = $request->getPost('id');
         $alias = $request->getPost('alias');
+        $artistCount = $request->getPost('artist_count');
 
-        // Get artist
-        $artist = ArtistApi::get($id, $alias);
-        if ($artist) {
+        if ($artistCount > 4 && !Yii::app()->user->getId()) {
             $result = array(
-                'result'    => ApiStatus::SUCCESS,
-                'data'      => $artist
+                'result'    => ApiStatus::REQ_LOGIN,
+                'message'   => 'Please login first'
             );
         } else {
-            $result = array(
-                'result'    => ApiStatus::NOT_FOUND,
-                'message'   => 'Could not find artist with such id'
-            );
+            // Get artist
+            $artist = ArtistApi::get( $id, $alias );
+            if ( $artist ) {
+                $result = array(
+                    'result' => ApiStatus::SUCCESS,
+                    'data'   => $artist
+                );
+            } else {
+                $result = array(
+                    'result'  => ApiStatus::NOT_FOUND,
+                    'message' => 'Could not find artist with such id'
+                );
+            }
         }
 
         $this->renderJSON($result);

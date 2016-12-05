@@ -26,11 +26,11 @@ YUI.add('base-model', function(Y) {
                         var resp = Y.JSON.parse(response.responseText);
                         if (resp.result == this.apiStatus.REQ_LOGIN) {
                             this.showLoginOverlay(resp.message, {
-                                url         : url,
-                                data        : data,
-                                callback    : callback,
-                                context     : context,
-                                showLoader  : showLoader
+                                //url         : url,
+                                //data        : data,
+                                //callback    : callback,
+                                //context     : context,
+                                //showLoader  : showLoader
                             });
                         } else if (resp.result == this.apiStatus.ERROR) {
                             this.showOverlay(resp.message);

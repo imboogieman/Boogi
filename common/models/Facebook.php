@@ -177,7 +177,7 @@ class Facebook
     public static function getPages($access_token) {
         try {
             $data_url = 'https://graph.facebook.com/v2.8/me/accounts?fields=description,description_html,website,single_line_address,'.
-                        'founded,name,phone,category_list,category&access_token=' . $access_token;
+                        'founded,name,phone,category_list,category,start_info&access_token=' . $access_token;
             $data = file_get_contents($data_url, false);
             $data = \CJSON::decode($data);
             return $data;
@@ -218,15 +218,20 @@ class Facebook
         $data_url = 'https://graph.facebook.com/v2.8/oauth/access_token?client_id=' .
                     $fbAppId . '&client_secret=' . $fbSecret . '&code=' . $code.
                     '&redirect_uri=' . $domain . 'api/user/fbauth';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $data_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $data_url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $response = curl_exec($ch);
+            $response = curl_exec($ch);
 
-        curl_close($ch);
-        $data = \CJSON::decode($response);
+            curl_close($ch);
+            $data = \CJSON::decode($response);
 
-        return $data;
+            return $data;
+        } catch (Exception $e) {
+            Command::error($e->getMessage());
+            return 0;
+        }
     }
 }

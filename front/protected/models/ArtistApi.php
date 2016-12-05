@@ -212,19 +212,20 @@ class ArtistApi
 
     }
 
-    public static function getRecomendedArtist($query, $limit = 5) {
+    public static function getRecomendedArtist($limit = 5) {
         // Check cache
         $result = Cache::get(func_get_args());
         if ($result) return $result;
 
         // Check DB
         $artists =  Yii::app()->db->createCommand("
-            SELECT a.name, a.alias, a.description, a.fb_id, CONCAT(f.path) as files
+            SELECT a.name, a.alias, a.description, a.fb_id, CONCAT(f.path) as files, COUNT(ag.artist_id) as cnt
             FROM artist a
             LEFT JOIN artist_file af ON af.artist_id = a.id
             LEFT JOIN file f ON f.id = af.file_id
-            WHERE a.name LIKE '%" . $query . "%'
-            ORDER BY a.name ASC
+            LEFT JOIN artist_gig ag ON ag.artist_id = a.id
+            GROUP BY a.name
+            ORDER BY cnt DESC
             LIMIT " . $limit . ";"
         )->queryAll();
 

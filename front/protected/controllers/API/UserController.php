@@ -235,7 +235,7 @@ class UserController extends Controller
                     $promoter = new Promoter;
                 }
                 $promoter->attributes = array(
-                    'name'      => $name,
+                    'name'      => $cName,
                     'latitude'  => $lat !== '' ? $lat : Model::getDefaultLatitude(),
                     'longitude' => $lng !== '' ? $lng : Model::getDefaultLongitude(),
                     'radius'    => $radius,
@@ -253,7 +253,7 @@ class UserController extends Controller
                     'password'  => $pass,
                     'role'      => $role,
                     'create_date' => date('Y-m-d'),
-                    'c_name'      => $cName,
+                    'c_name'      => $name,
                     'category'  => $category,
                     'c_address'   => $cAddress,
                     'founding_date' => date('Y-m-d', strtotime($foundingDate)),
@@ -380,6 +380,26 @@ class UserController extends Controller
         $this->renderJSON($result);
     }
 
+    /**
+     * Get calling code
+     */
+    public function actionGetcallingcode() {
+        $c_code = Callingcodes::getCode();
+        if ($c_code) {
+            $result = array(
+                'result'    => ApiStatus::SUCCESS,
+                'data'      => $c_code
+            );
+        } else {
+            $result = array(
+                'result'    => ApiStatus::NO_RECORDS,
+                'message'   => 'Could not find counry code'
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
     public function actionRestore()
     {
         // Get request
@@ -463,22 +483,18 @@ class UserController extends Controller
         // Get request
         $request = Yii::app()->request;
 
-        $query = $request->getQuery('q');
-        if ($query) {
-            $result = ArtistApi::getRecomendedArtist($query);
-            if ($result) {
-                $result = array(
-                    'result' => ApiStatus::SUCCESS,
-                    'data'   => $result
-                );
-            } else {
-                $result = array(
-                    'result'    => ApiStatus::INVALID,
-                    'errors'    => array('er' => 'error')
-                );
-            }
+        $limit = 5;
+        $result = ArtistApi::getRecomendedArtist($limit);
+        if ($result) {
+            $result = array(
+                'result' => ApiStatus::SUCCESS,
+                'data'   => $result
+            );
         } else {
-            $result = array();
+            $result = array(
+                'result'    => ApiStatus::INVALID,
+                'errors'    => array('er' => 'error')
+            );
         }
 
         $this->renderJSON($result);

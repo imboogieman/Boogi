@@ -196,7 +196,7 @@ class MailerCommand extends Command
             $gig       = "<strong>$item[artist_name]</strong> is performing<br>
 $date $location<br>
 ($distR km from you),<br>
-so you can <a href=\"$boogiLink\" target=\"_blank\">book</a><br>
+so you can <a href=\"" . $boogiLink."/gig/".$item['gig_id']."\" target=\"_blank\">book</a><br>
 or contact via <a href=\"https://www.facebook.com/profile.php?id=$item[fb_id]\" target=\"_blank\">facebook</a>.";
 
             // Add new notifications

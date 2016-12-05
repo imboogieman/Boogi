@@ -37,24 +37,24 @@ YUI.add('user-model', function(Y) {
             this.getData('/api/user/logout', data, callback, this, true);
         },
 
-        fbRegister: function (data) {
+        fbRegister: function () {
             var callback = Y.bind(function (response) {
                 if (response.result == this.apiStatus.SUCCESS) {
                     this.fire('user:fb-register', { response: response });
                 }
             }, this);
 
-            this.getData('/api/user/fbregister', data, callback, this, true);
+            this.getData('/api/user/fbregister', {}, callback, this, true);
         },
 
-        getRecommendedArtists: function (data) {
+        getRecommendedArtists: function () {
             var callback = Y.bind(function (response) {
                 if (response.result == this.apiStatus.SUCCESS) {
                     this.fire('user:get-artists', { response: response });
                 }
             }, this);
 
-            this.getData('/api/user/getrecommendedart?q=a', data, callback, this, true);
+            this.getData('/api/user/getrecommendedart', {}, callback, this, true);
         },
 
         restore: function(data) {
@@ -65,6 +65,16 @@ YUI.add('user-model', function(Y) {
             }, this);
 
             this.getData('/api/user/restore', data, callback, this, true);
+        },
+
+        getCallingCode: function() {
+            var callback = Y.bind(function (response) {
+                if (response.result == this.apiStatus.SUCCESS) {
+                    this.fire('user:callingcode', { code: response.data });
+                }
+            }, this);
+
+            this.getData('/api/user/getcallingcode', {}, callback, this, true);
         },
 
         //register: function(data) {

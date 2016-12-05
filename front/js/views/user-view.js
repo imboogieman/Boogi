@@ -103,35 +103,51 @@ YUI.add('user-view', function(Y) {
 
             this.get('container').all('.form').addClass('hidden');
             this.get('container').one('#login-form').removeClass('hidden');
+
+            Y.delegate('click', Y.bind(function(e) {
+                this.redirect('/');
+            }, this), this.get('container').one('#login-form'), '.top-tab i');
         },
 
         registerForm: function() {
             this.log('Show register form');
+            var container = this.get('container');
+            container.all('.form').addClass('hidden');
+            container.one('#register-form').removeClass('hidden');
 
-            this.get('container').all('.form').addClass('hidden');
-            this.get('container').one('#register-form').removeClass('hidden');
-
+            Y.delegate('click', Y.bind(function(e) {
+                this.redirect('/');
+            }, this), this.get('container').one('#register-form'), '.top-tab i');
         },
 
         fbRegisterForm: function() {
             var   container = this.get('container')
-                , data = {}
-                , date_options = {
-                    mask        : '%d.%m.%Y',
-                    popover     : {
-                        zIndex  : 100
-                    }
-                };
+                , data = {};
 
             this.log('Show facebook register form');
 
-            date_options.trigger = '#founding-date';
-            var foundingDate = new Y.DatePicker(date_options);
+            var html = Y.one('html'),
+                toggler = container.all('.dropdown-toggle'),
+                dropdown = container.all('.dropdown');
+
+            toggler.on('click', function(e) {
+                dropdown.toggleClass('open');
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            html.on('click', function() {
+                if (dropdown.hasClass('open'))
+                    dropdown.removeClass('open');
+            });
+
+            //date_options.trigger = '#founding-date';
+            //var foundingDate = new Y.DatePicker(date_options);
 
             var genresList = container.one('.genres-list');
             this.genresData.items = genresList.all('li');
 
-            this.model.fbRegister(0);
+            this.model.fbRegister();
 
              //Get facebook register info
             this.model.once('user:fb-register', Y.bind(function(e) {
@@ -140,19 +156,23 @@ YUI.add('user-view', function(Y) {
                     data.profile = e.response.profile;
 
                     if (data.pages.length > 0) {
-                        this.setPages(data.pages, '#pages');
+                        this.setPages(data.pages, '#pages .dropdown-menu');
                         this.setUserAccount(data.profile);
                     } else {
                         container.all('.tab-form').addClass('hidden');
                         container.one('#create-page').removeClass('hidden');
                     }
 
-                    VMasker(document.getElementById('phone')).maskPattern("(999) 999-9999");
-                    VMasker(document.getElementById('founding-date')).maskPattern("99.99.9999");
+                    VMasker(document.getElementById('founding-date')).maskPattern("9999");
 
-                    this.model.getRecommendedArtists(0);
+                    this.model.getRecommendedArtists();
 
-
+                    var autocomplete = new google.maps.places.Autocomplete(
+                        container.one('#address-company').getDOM(),
+                        {
+                            types: ['(regions)']
+                        }
+                    );
 
                     container.all('.form').addClass('hidden');
                     container.one('#fb-form').removeClass('hidden');
@@ -195,17 +215,30 @@ YUI.add('user-view', function(Y) {
             Y.delegate('click', Y.bind(function(e) {
                 var target = e.target.getData('target')
                     , current = e.target.getData('current')
-                    , error = [];
+                    , error = []
+                    , wrapper = container.one('.wrap .wrapper');
 
                 if (target == 'root') this.redirect('/');
 
                 if (target == 'conpany-detail') {
-                    this.setCompanyDetails(data.pages, container.one('#pages').get('value'));
+                    if (!wrapper.hasClass('map-run')) {
+                        this.setCompanyDetails(data.pages, container.one('#pages').getData('val'));
+                    }
+
+                }
+
+                if (target == 'genres-artist') {
+                    if (wrapper.hasClass('width-590'))
+                        wrapper.removeClass('width-590');
                 }
 
                 if (target == 'location') {
-                    container.one('.wrap .wrapper').set('style', 'width: 590px');
-                    this.renderProfileMapControl();
+                    if (!wrapper.hasClass('map-run')) {
+                        wrapper.addClass('map-run');
+                        this.renderProfileMapControl();
+                    }
+                    if (!wrapper.hasClass('width-590'))
+                        wrapper.addClass('width-590');
                 }
 
                 if (target == 'favorite-artists') {
@@ -236,10 +269,39 @@ YUI.add('user-view', function(Y) {
                 if (cError) cError.setHTML();
             }, this), container.one('#fb-form'), 'input, select');
 
-            Y.delegate('change', Y.bind(function(e) {
+            container.one('#pages').once('c:change', Y.bind(function(e) {
                 var button = container.one('#choose-pages .buttons .button');
                 button.removeClass('disabled');
-            }, this), container.one('#fb-form'), '#choose-pages select');
+            }, this));
+
+            Y.delegate('keyup', Y.bind(function(e) {
+                var inputs = container.all('#user-account .row input');
+                var trigger = true;
+                inputs.each(function(el){
+                    if (el.get('value') === '')
+                        trigger = false;
+                    return false;
+                });
+                if (trigger) {
+                    var button = container.one('#user-account .buttons .button');
+                    button.removeClass('disabled');
+                }
+            }, this), container.one('#fb-form'), '#user-account .row input');
+
+            container.one('#categories').once('c:change', Y.bind(function(e) {
+                var button = container.one('#conpany-detail .buttons .button');
+                button.removeClass('disabled');
+            }, this));
+
+            Y.delegate('focus', Y.bind(function(e) {
+                var inputWrap = e.target.ancestor();
+                inputWrap.addClass('selected');
+            }, this), container.one('#fb-form'), '#genres');
+
+            Y.delegate('blur', Y.bind(function(e) {
+                var inputWrap = e.target.ancestor();
+                inputWrap.removeClass('selected');
+            }, this), container.one('#fb-form'), '#genres');
 
             Y.delegate('keydown', Y.bind(function(e) {
                 var input = e.target;
@@ -304,7 +366,7 @@ YUI.add('user-view', function(Y) {
 
             Y.delegate('click', Y.bind(function(e) {
                 this.log('Submit register form');
-                var d = this.prepareDataSubmitRegister(data.profile.id);
+                var d = this.prepareDataSubmitRegister(data.pages);
                 this.model.submitRegister(d);
             }, this), container.one('#fb-form'), '#submit');
 
@@ -497,7 +559,7 @@ YUI.add('user-view', function(Y) {
                 this.loginForm();
             }
         },
-        prepareDataSubmitRegister: function(fbId) {
+        prepareDataSubmitRegister: function(pages) {
             var form = Y.one('#fb-form');
             var genres = '';
             var gItems = form.all('.conteiner-genres .g-item .val');
@@ -515,22 +577,26 @@ YUI.add('user-view', function(Y) {
                     pref = ', ';
                 fArtists += pref + el.getHTML();
             });
+            var lat = window.appConfig.params.currentPosition.latitude !== '' ?
+                window.appConfig.params.currentPosition.latitude : window.appConfig.params.defaultPosition.latitude;
+            var lng = window.appConfig.params.currentPosition.longitude !== '' ?
+                window.appConfig.params.currentPosition.longitude : window.appConfig.params.defaultPosition.longitude;
             var data = {
-                page: form.one('#pages')._node.options[form.one('#pages').get('value')*1+1].innerHTML,
+                page: form.one('#pages .dropdown-toggle .val').getHTML(),
                 name: form.one('#f-name').get('value') + ' ' + form.one('#l-name').get('value'),
-                fbId: fbId,
+                fbId: pages[form.one('#pages').getData('val')].id,
                 email: form.one('#fb-email').get('value'),
                 pass: form.one('#fb-password').get('value'),
                 genres: genres,
                 experience: form.one('#experience').get('value'),
                 address: form.one('#address').get('value'),
-                lat: window.appConfig.params.currentPosition.latitude,
-                lng: window.appConfig.params.currentPosition.longitude,
-                radius: form.one('#radius').get('value'),
+                lat: lat,
+                lng: lng,
+                radius: form.one('#radius').get('value')*1000,
                 fArtists: fArtists,
                 cName: form.one('#conmpany-name').get('value'),
-                category: form.one('#categories').get('value'),
-                cAddress: form.one('#adress').get('value'),
+                category: form.one('#categories .dropdown-toggle .val').getHTML(),
+                cAddress: form.one('#address').get('value'),
                 foundingDate: form.one('#founding-date').get('value'),
                 phone: form.one('#phone').get('value').replace(/[^0-9]/g, ''),
                 website: form.one('#website').get('value'),
@@ -542,12 +608,18 @@ YUI.add('user-view', function(Y) {
         selectingArtist: function(e) {
             if (!e.target.hasClass('cross')) {
                 var button = Y.one('#fb-form #favorite-artists .buttons .button');
+                var container = Y.one('#fb-form #favorite-artists .artist-items');
 
-                if (e.target.hasClass('selected')) {
-                    e.target.removeClass('selected');
+                if (e.target.hasClass('selected-up')) {
+                    e.target.removeClass('selected-up');
                     this.selectingArtists--;
                 } else {
                     e.target.addClass('selected');
+                    setTimeout(function(){
+                        e.target.removeClass('selected');
+                        e.target.addClass('selected-up');
+                        container.prepend(e.target);
+                    }, 700);
                     this.selectingArtists++;
                 }
 
@@ -755,7 +827,7 @@ YUI.add('user-view', function(Y) {
                     var lName = container.one('#l-name').get('value');
                     var email = container.one('#fb-email').get('value');
                     var pass = container.one('#fb-password').get('value');
-                    var cPass = container.one('#c-password').get('value');
+                    //var cPass = container.one('#c-password').get('value');
                     if ( fName === '')
                         error.push({id: 'f-name', mess: 'Please enter your first name'});
                     else if (!this.valOnlyChars(fName))
@@ -773,10 +845,10 @@ YUI.add('user-view', function(Y) {
 
                     if (pass === '' )
                         error.push({id: 'fb-password', mess: 'Please enter your password'});
-                    else if (cPass === '' )
-                        error.push({id: 'c-password', mess: 'Please confirm your password'});
-                    if (pass !== cPass)
-                        error.push({id: 'c-password', mess: 'your password is not match'});
+                    //else if (cPass === '' )
+                    //    error.push({id: 'c-password', mess: 'Please confirm your password'});
+                    //if (pass !== cPass)
+                    //    error.push({id: 'c-password', mess: 'your password is not match'});
 
                     break;
                 case 'conpany-detail':
@@ -821,12 +893,25 @@ YUI.add('user-view', function(Y) {
             return false;
         },
         setPages: function(pages, selection) {
-            var options = '<option selected="selected" disabled="disabled">Select</option>';
+            var options = '';
             pages.forEach(function(page, indx){
-                options += '<option value="' + indx + '">' + page.name + '</option>';
+                options += '<li data-value="' + indx + '">' + page.name + '</li>';
             });
 
             Y.one(selection).setHTML(options);
+
+            var dpMenu = Y.one(selection).all('li');
+            dpMenu.on('click', function(e) {
+                var dp = e.target.ancestor('.dropdown');
+                dp.one('.dropdown-toggle span.val').setHTML(e.target.getHTML());
+                dp.setData('val', e.target.getData('value'));
+                dp.toggleClass('open');
+                if (dp.hasClass('none'))
+                    dp.removeClass('none');
+                dp.fire('c:change');
+                e.preventDefault();
+                e.stopPropagation();
+            });
         },
         setUserAccount: function(profile) {
             if (profile.first_name) Y.one('#f-name').set('value', profile.first_name);
@@ -835,23 +920,56 @@ YUI.add('user-view', function(Y) {
         },
         setCompanyDetails: function(pages, pageId) {
             var page = pages[pageId];
-            var options = '<option selected="selected" disabled="disabled">Select</option>';
+            var options = '';
             if (page.category_list) {
                 page.category_list.forEach(function (category) {
-                    options += '<option value="' + category.name + '">' + category.name + '</option>';
+                    options += '<li data-value="' + category.name + '">' + category.name + '</li>';
                 });
             } else {
                 var category = page.category || 'Uncategories';
-                options += '<option value="' + category + '">' + category + '</option>';
+                options += '<li data-value="' + category + '">' + category + '</li>';
             }
-            Y.one('#categories').setHTML(options);
+            Y.one('#categories .dropdown-menu').setHTML(options);
+
+            var dpMenu = Y.one('#categories').all('li');
+            dpMenu.on('click', function(e) {
+                var dp = e.target.ancestor('.dropdown');
+                dp.one('.dropdown-toggle span.val').setHTML(e.target.getHTML());
+                dp.setData('val', e.target.getData('value'));
+                dp.toggleClass('open');
+                if (dp.hasClass('none'))
+                    dp.removeClass('none');
+                dp.fire('c:change');
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
             var des = page.description !== '' ? page.description : page.description_html;
             if (page.name) Y.one('#conmpany-name').set('value', page.name);
-            if (page.single_line_address) Y.one('#adress').set('value', page.single_line_address);
-            if (page.founded) Y.one('#founding-date').set('value', VMasker.toPattern(page.founded, "99.99.9999"));
-            if (page.phone) Y.one('#phone').set('value', VMasker.toPattern(page.phone, "(999) 999-9999"));
+            if (page.single_line_address) Y.one('#address-company').set('value', page.single_line_address);
+            if (page.founded) {
+                Y.one('#founding-date').set('value', VMasker.toPattern(page.founded, "9999"));
+            } else if (page.start_info && page.start_info.date && page.start_info.date.year) {
+                Y.one('#founding-date').set('value', VMasker.toPattern(page.start_info.date.year, "9999"));
+            }
+            if (page.phone) {
+                if (page.phone.valueOf().length == 12) {
+                    Y.one('#phone').set('value', VMasker.toPattern(page.phone, "99 (999) 999-9999"));
+                    VMasker(document.getElementById('phone')).maskPattern("99 (999) 999-9999");
+                } else {
+                    VMasker(document.getElementById('phone')).maskPattern("(999) 999-9999");
+                    Y.one('#phone').set('value', VMasker.toPattern(page.phone, "(999) 999-9999"));
+                }
+            } else {
+                this.model.getCallingCode();
+                //Get calling code
+                this.model.once('user:callingcode', Y.bind(function(e) {
+                    VMasker(document.getElementById('phone')).maskPattern("99 (999) 999-9999");
+                    Y.one('#phone').set('value', VMasker.toPattern(e.code, "99 (999) 999-9999"));
+                }, this));
+            }
             if (page.website) Y.one('#website').set('value', page.website);
-            if (page.description) Y.one('#description').setHTML(page.description);
+            if (des) Y.one('#description').setHTML(des);
         },
         searchGenres: function(val) {
             var genresList = this.get('container').one('.genres-list');
@@ -896,7 +1014,7 @@ YUI.add('user-view', function(Y) {
         'form-extension',
         'loader-extension',
         'map-extension',
-        'aui-datepicker',
+        'aui-dropdown',
         'aui-timepicker',
         'genres-extension',
         'toolbar-extension',

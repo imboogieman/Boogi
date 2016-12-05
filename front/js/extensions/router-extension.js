@@ -78,6 +78,14 @@ YUI.add('router-extension', function (Y) {
             this._afterRoute(request, 'item');
         };
 
+        this.showItemWithGig = function (request) {
+            this._beforeRoute();
+            this.log('Router ' + request.route.target + ' ' + request.params.alias);
+            this.showView(request.route.target, { action: 'show-with-gig', alias: request.params.alias
+                , gig: request.params.gig });
+            this._afterRoute(request, 'item');
+        };
+
         this.initRouter = function () {
             this.log('Init router');
 
@@ -407,6 +415,11 @@ YUI.add('router-extension', function (Y) {
                         path: '/:alias',
                         target: 'artist',
                         callbacks: Y.bind(this.showItem, this)
+                    },
+                    {
+                        path: '/:alias/gig/:gig',
+                        target: 'artist',
+                        callbacks: Y.bind(this.showItemWithGig, this)
                     }
                 ]
             });
