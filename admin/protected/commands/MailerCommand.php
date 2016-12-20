@@ -124,6 +124,7 @@ class MailerCommand extends Command
     // @TODO: Decrease Cyclomatic complexity, NPath complexity
     public function actionSendPeriodicEmails($check_radius = false)
     {
+
         if ($check_radius) {
             $email_template_id = MCMDBridge::PROMOTER_GIG_IN_RADIUS;
             $where = "g.datetime_from > NOW()
@@ -138,77 +139,89 @@ class MailerCommand extends Command
         }
 
         $data = Yii::app()->db->createCommand("
-            SELECT g.id AS gig_id, g.name AS gig_name, g.alias AS gig_alias,
-              a.id AS artist_id, a.name AS artist_name, a.alias AS artist_alias,
+            SELECT g.id AS gig_id, g.name AS gig_name, g.alias AS gig_alias, g.datetime_from AS date, g.address AS address,
+              a.id AS artist_id, a.fb_id as fb_id, a.name AS artist_name, a.alias AS artist_alias,
               v.latitude AS venue_lat, v.longitude AS venue_lon,
               p.id AS promoter_id, p.name AS promoter_name, u.email AS promoter_email,
               p.latitude AS promoter_lat, p.longitude AS promoter_lon, p.radius AS promoter_radius,
-              u.id AS user_id, u.email
+              u.id AS user_id, u.email, ag1.gig_id AS marker
             FROM gig g
             JOIN venue v ON g.venue_id = v.id
             JOIN artist_gig ag ON g.id = ag.gig_id
             JOIN artist a ON ag.artist_id = a.id
+            LEFT JOIN artist_gig ag1 ON
+            a.id = ag1.artist_id
+            AND DATE(ag1.datetime_from) = DATE(DATE_ADD(g.datetime_from, INTERVAL 3 DAY))
+            AND DATE(ag1.datetime_from) = DATE(DATE_ADD(g.datetime_from, INTERVAL 2 DAY))
+            AND DATE(ag1.datetime_from) = DATE(DATE_ADD(g.datetime_from, INTERVAL 1 DAY))
+            AND DATE(ag1.datetime_from) = DATE(SUBDATE(g.datetime_from, 3))
+            AND DATE(ag1.datetime_from) = DATE(SUBDATE(g.datetime_from, 2))
+            AND DATE(ag1.datetime_from) = DATE(SUBDATE(g.datetime_from, 1))
             JOIN artist_promoter ap ON a.id = ap.artist_id
             JOIN promoter p ON ap.promoter_id = p.id
             JOIN user u ON p.user_id = u.id
             WHERE " . $where . "
               AND p.is_approved = 1
+              AND ag1.gig_id IS NULL
+              AND ag.timestamp > SUBDATE(NOW(), 1)
+              AND DATE(g.datetime_from) < DATE(DATE_ADD(NOW(), INTERVAL 11 DAY))
             ORDER BY g.datetime_from ASC;"
         )->queryAll();
 
         $result = array();
-        foreach ($data as $item) {
+        foreach ($data as $key => $item) {
+
             // Check already sent notifications
-            $options = Mailer::getMailOptions($item['email'], $email_template_id);
-            if (array_key_exists($item['gig_id'], $options) && in_array($item['artist_id'], $options[$item['gig_id']])) {
+            $options = Mailer::getMailOptions( $item['email'], $email_template_id );
+            if ( array_key_exists( $item['gig_id'], $options ) && in_array( $item['artist_id'],
+                    $options[ $item['gig_id'] ] )
+            ) {
                 continue;
             }
-
+            $distance = 0;
             // Check distance
-            if ($check_radius) {
-                $distance = Model::getDistance($item['venue_lat'], $item['venue_lon'],
-                                               $item['promoter_lat'], $item['promoter_lon']);
-                $radius = $item['promoter_radius'] / 1000;
-                if (is_nan($distance) || bccomp($distance, $radius) == 1) {
+            if ( $check_radius ) {
+                $distance = Model::getDistance( $item['venue_lat'], $item['venue_lon'],
+                    $item['promoter_lat'], $item['promoter_lon'] );
+                $radius   = $item['promoter_radius'] / 1000;
+                if ( is_nan( $distance ) || bccomp( $distance, $radius ) == 1 ) {
                     continue;
                 }
             }
 
-            // Add new notifications
-            if (isset($result[$item['promoter_id']])) {
-                if (array_key_exists($item['gig_id'], $result[$item['promoter_id']]['gigs'])) {
-                    if (!in_array($item['artist_name'], $result[$item['promoter_id']]['gigs'][$item['gig_id']])) {
-                        $result[$item['promoter_id']]['gigs'][$item['gig_id']][] = $item;
-                        $result[$item['promoter_id']]['options'][$item['gig_id']][] = $item['artist_id'];
-                    }
-                } else {
-                    // Send notification only fo 10 gigs
-                    if ($result[$item['promoter_id']]['gig_count'] >= 10) {
-                        continue;
-                    }
+            $boogiLink = Yii::app()->params['baseUrl'] . $item['artist_alias'];
+            $distR     = round( $distance, 2 );
+            $location  = empty( $item['address'] ) ? "" : "in $item[address]";
+            $date      = date( 'D, d M Y', strtotime( $item['date'] ) );
+            $gig       = "<strong>$item[artist_name]</strong> is performing<br>
+$date $location<br>
+($distR km from you),<br>
+so you can <a href=\"" . $boogiLink."/gig/".$item['gig_id']."\" target=\"_blank\">book</a><br>
+or contact via <a href=\"https://www.facebook.com/profile.php?id=$item[fb_id]\" target=\"_blank\">facebook</a>.";
 
-                    $result[$item['promoter_id']]['gig_count'] += 1;
-                    $result[$item['promoter_id']]['gigs'][$item['gig_id']] = array($item);
-                    $result[$item['promoter_id']]['options'][$item['gig_id']] = array($item['artist_id']);
+            // Add new notifications
+            if ( isset( $result[ $item['promoter_id'] ] ) ) {
+                if ($result[ $item['promoter_id'] ]['count'] < 9 ) {
+                    $result[ $item['promoter_id'] ]['gigs'] .= "<br><br>" . $gig;
+                    $result[ $item['promoter_id'] ]['count'] += 1;
                 }
             } else {
-                $result[$item['promoter_id']] = array(
-                    'user_id'   => $item['user_id'],
-                    'name'      => $item['promoter_name'],
-                    'email'     => $item['promoter_email'],
-                    'gigs'      => array($item['gig_id'] => array($item)),
-                    'options'   => array($item['gig_id'] => array($item['artist_id'])),
-                    'gig_count' => 1
+                $result[ $item['promoter_id'] ] = array(
+                    'name'  => $item['promoter_name'],
+                    'email' => $item['promoter_email'],
+                    'gigs'  => $gig,
+                    'count' => 0
                 );
             }
+
         }
 
         $sent = 0;
         foreach ($result as $item) {
-            if ($this->hasGigs($item['gigs'])) {
+//            if ($this->hasGigs($item['gigs'])) {
                 $send_result = $check_radius ? Mailer::sendGigInRadiusEmail($item) : Mailer::sendFollowedEmail($item);
                 $sent += $send_result ? 1 : 0;
-            }
+//            }
         }
 
         Command::info($sent . ' Periodic email(s) sent');

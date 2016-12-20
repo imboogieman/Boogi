@@ -51,7 +51,8 @@ class Facebook
 
         try {
             $fb_graph_data = file_get_contents('https://graph.facebook.com/' . $id .
-                '?'  . self::getAccessToken(), false, self::context());
+                '?fields=current_location,location,hometown,name,id,emails,general_manager,booking_agent,username&'
+                . self::getAccessToken(), false, self::context());
 
             return \CJSON::decode($fb_graph_data);
         } catch (Exception $e) {
@@ -63,7 +64,7 @@ class Facebook
     {
         try {
             $fb_search_data = file_get_contents('https://graph.facebook.com/search?q=' . urlencode($query) .
-                '&type=page&' . self::getAccessToken(), false, self::context());
+                '&type=page&&fields=id,name.limit(100),category&' . self::getAccessToken(), false, self::context());
 
             return \CJSON::decode($fb_search_data);
         } catch (Exception $e) {
@@ -170,6 +171,67 @@ class Facebook
             return \CJSON::decode($data);
         } catch (Exception $e) {
             return false;
+        }
+    }
+
+    public static function getPages($access_token) {
+        try {
+            $data_url = 'https://graph.facebook.com/v2.8/me/accounts?fields=description,description_html,website,single_line_address,'.
+                        'founded,name,phone,category_list,category,start_info&access_token=' . $access_token;
+            $data = file_get_contents($data_url, false);
+            $data = \CJSON::decode($data);
+            return $data;
+        } catch (Exception $e) {
+            Command::error($e->getMessage());
+            return 0;
+        }
+    }
+
+    public static function getProfile($access_token){
+        try {
+            $data_url = 'https://graph.facebook.com/v2.5/me?fields=email,first_name,last_name&access_token='
+                        . $access_token;
+            $data = file_get_contents($data_url, false);
+            $data = \CJSON::decode($data);
+            return $data;
+        } catch (Exception $e) {
+            Command::error($e->getMessage());
+            return 0;
+        }
+    }
+
+    public static function generateFbUrl() {
+
+        $fbAppId = Yii::app()->params['fbAppId'];
+        $domain = Yii::app()->params['baseUrl'];
+
+        $data_url = 'https://www.facebook.com/dialog/oauth?client_id=' .
+                    $fbAppId . '&scope=manage_pages,email,public_profile&redirect_uri='. $domain . 'api/user/fbauth';
+        return $data_url;
+    }
+
+    public static function getAccessMarker($code){
+        $fbAppId = Yii::app()->params['fbAppId'];
+        $fbSecret = Yii::app()->params['fbSecret'];
+        $domain = Yii::app()->params['baseUrl'];
+
+        $data_url = 'https://graph.facebook.com/v2.8/oauth/access_token?client_id=' .
+                    $fbAppId . '&client_secret=' . $fbSecret . '&code=' . $code.
+                    '&redirect_uri=' . $domain . 'api/user/fbauth';
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $data_url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            $response = curl_exec($ch);
+
+            curl_close($ch);
+            $data = \CJSON::decode($response);
+
+            return $data;
+        } catch (Exception $e) {
+            Command::error($e->getMessage());
+            return 0;
         }
     }
 }

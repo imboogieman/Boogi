@@ -21,3 +21,4 @@ vagrant/.vagrant/
 composer.lock
 
 .DS_Store
+.idea/

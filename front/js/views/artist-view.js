@@ -42,6 +42,13 @@ YUI.add('artist-view', function(Y) {
                 case 'show':
                     this.show(this.get('id'), this.get('alias'), this.get('gig'));
                     break;
+                case 'show-with-gig':
+                    this.model.getGig(this.get('gig'));
+                    this.model.once('artist:show-gig', Y.bind(function(e) {
+                        var gig = e.gig;
+                        this.show(this.get('id'), this.get('alias'), gig);
+                    }, this));
+                    break;
                 default:
                     this.list();
                     break;
@@ -78,6 +85,11 @@ YUI.add('artist-view', function(Y) {
 
                 // Init pagination
                 this.get('container').one('#load-more-artists').on('click', Y.bind(function(e) {
+                    if (sessionStorage.loadMoreCount) {
+                        sessionStorage.loadMoreCount = sessionStorage.loadMoreCount*1+1;
+                    } else {
+                        sessionStorage.loadMoreCount = 1;
+                    }
                     var button = e.target;
 
                     offset = button.getData('offset');
@@ -113,6 +125,11 @@ YUI.add('artist-view', function(Y) {
         },
 
         show: function(id, alias, selected_gig) {
+            if (sessionStorage.artistCount) {
+                sessionStorage.artistCount = sessionStorage.artistCount*1+1;
+            } else {
+                sessionStorage.artistCount = 1;
+            }
             this.log('Show artist #' + id + '; alias: ' + alias);
 
             // Track artist profile
@@ -124,7 +141,13 @@ YUI.add('artist-view', function(Y) {
                 template    = Y.Handlebars.compile(source),
                 html;
 
-            this.model.find({ id: id, alias: alias, radius: this.radius, center: this.center });
+            this.model.find({
+                id: id
+                , alias: alias
+                , radius: this.radius
+                , center: this.center
+                , artist_count: sessionStorage.artistCount*1
+            });
 
             this.model.once('artist:404', Y.bind(function() {
                 this.model.detachAll();
@@ -353,6 +376,13 @@ YUI.add('artist-view', function(Y) {
 
             // Update markers when calendar month changed
             container.on('calendar:monthChanged', Y.bind(function(e) {
+                var daysFrom = Math.round(
+                    (e.month.getTime() - this.get('calendarFirstDate').getTime()) / 1000 / 24 / 60 / 60
+                );
+                if (daysFrom > 60 && !window.appConfig.user) {
+                    this.redirect('/user/signup');
+                    this.showOverlay('Please login first');
+                }
                 this.month = e.month;
 
                 // Update current month
@@ -397,7 +427,7 @@ YUI.add('artist-view', function(Y) {
                 book_date = book_date ? book_date : Y.Date.format(new Date, { format: '%Y-%m-%d'});
 
                 // Fix dates
-                var datetime = Y.Date.parse(book_date + ' 19:00'),
+                var datetime = Y.Date.parse(new Date(book_date).getTime() + 3600 * 19 * 1000),
                     date_from = Y.Date.format(datetime, { format: '%d.%m.%Y'}),
                     time_from = Y.Date.format(datetime, { format: '%l:%M %P'}),
                     date_to, time_to;

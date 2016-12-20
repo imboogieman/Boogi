@@ -141,6 +141,15 @@ textarea {
   }
 }
 
+.button.disabled {
+  background: @light-blue;
+  cursor: default;
+
+  &:hover {
+    box-shadow: none;
+  }
+}
+
 input.datepicker {
   background: url(@images + 'icon/i-calendar.png') no-repeat 97% center;
   padding-right: 30px;

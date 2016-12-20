@@ -37,6 +37,26 @@ YUI.add('user-model', function(Y) {
             this.getData('/api/user/logout', data, callback, this, true);
         },
 
+        fbRegister: function () {
+            var callback = Y.bind(function (response) {
+                if (response.result == this.apiStatus.SUCCESS) {
+                    this.fire('user:fb-register', { response: response });
+                }
+            }, this);
+
+            this.getData('/api/user/fbregister', {}, callback, this, true);
+        },
+
+        getRecommendedArtists: function () {
+            var callback = Y.bind(function (response) {
+                if (response.result == this.apiStatus.SUCCESS) {
+                    this.fire('user:get-artists', { response: response });
+                }
+            }, this);
+
+            this.getData('/api/user/getrecommendedart', {}, callback, this, true);
+        },
+
         restore: function(data) {
             var callback = Y.bind(function (response) {
                 if (response.result == this.apiStatus.SUCCESS) {
@@ -47,7 +67,30 @@ YUI.add('user-model', function(Y) {
             this.getData('/api/user/restore', data, callback, this, true);
         },
 
-        register: function(data) {
+        getCallingCode: function() {
+            var callback = Y.bind(function (response) {
+                if (response.result == this.apiStatus.SUCCESS) {
+                    this.fire('user:callingcode', { code: response.data });
+                }
+            }, this);
+
+            this.getData('/api/user/getcallingcode', {}, callback, this, true);
+        },
+
+        //register: function(data) {
+        //    var callback = Y.bind(function (response) {
+        //        if (response.result == this.apiStatus.SUCCESS) {
+        //            window.appConfig.user = response.data;
+        //            this.fire('user:registered', { message: response.message });
+        //        } else if (response.result == this.apiStatus.INVALID) {
+        //            this.fire('user:register-invalid', { message: response.message, errors: response.errors });
+        //        }
+        //    }, this);
+        //
+        //    this.getData('/api/user/register', data, callback, this, true);
+        //},
+
+        submitRegister: function(data) {
             var callback = Y.bind(function (response) {
                 if (response.result == this.apiStatus.SUCCESS) {
                     window.appConfig.user = response.data;
@@ -57,7 +100,7 @@ YUI.add('user-model', function(Y) {
                 }
             }, this);
 
-            this.getData('/api/user/register', data, callback, this, true);
+            this.getData('/api/user/submitregister', data, callback, this, true);
         },
 
         checkhash: function(hash) {

@@ -1,0 +1,240 @@
+2016/11/10 12:38:44 [error] [exception.CDbException] SQLSTATE[HY000] [1045] Access denied for user 'boogi_dev'@'localhost' (using password: YES)
+2016/11/10 12:38:44 [error] [exception.CDbException] SQLSTATE[HY000] [1045] Access denied for user 'boogi_dev'@'localhost' (using password: YES)
+2016/11/10 12:38:44 [error] [exception.CDbException] CDbException: CDbConnection failed to open the DB connection. in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php:405
+Stack trace:
+#0 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(347): CDbConnection->open()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(325): CDbConnection->setActive(true)
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CModule.php(394): CDbConnection->init()
+#3 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(472): CModule->getComponent('db')
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(481): MigrateCommand->getDbConnection()
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(340): MigrateCommand->getMigrationHistory(-1)
+#6 [internal function]: MigrateCommand->actionHistory(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#9 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#10 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#11 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#12 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#13 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#14 {main}
+---
+2016/11/10 12:38:44 [error] [exception.CDbException] CDbException: CDbConnection failed to open the DB connection. in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php:405
+Stack trace:
+#0 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(347): CDbConnection->open()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbConnection.php(325): CDbConnection->setActive(true)
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CModule.php(394): CDbConnection->init()
+#3 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(472): CModule->getComponent('db')
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(481): MigrateCommand->getDbConnection()
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(340): MigrateCommand->getMigrationHistory(-1)
+#6 [internal function]: MigrateCommand->actionHistory(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#9 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#10 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#11 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#12 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#13 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#14 {main}
+---
+2016/11/10 12:45:43 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'boogi_dev.tbl_migration' doesn't exist. The SQL statement executed was: SHOW FULL COLUMNS FROM `tbl_migration`.
+2016/11/10 12:45:43 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'boogi_dev.tbl_migration' doesn't exist. The SQL statement executed was: SHOW FULL COLUMNS FROM `tbl_migration`.
+2016/11/10 15:06:35 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'boogi_dev.promouter' doesn't exist. The SQL statement executed was: 
+            ALTER TABLE `promouter`
+                ADD `page` varchar(64) AFTER `homepage`,
+                ADD `genress` varchar(256) AFTER `homepage`,
+                ADD `experience` varchar(128) AFTER `homepage`,
+                ADD `f_artists` varchar(256) AFTER `homepage`,
+                ADD `company_id` varchar(256) AFTER `homepage`,
+                ADD KEY `fk_promoter_companies` (`company_id`),
+                ADD CONSTRAINT `fk_promoter_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        .
+2016/11/10 15:06:35 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'boogi_dev.promouter' doesn't exist. The SQL statement executed was: 
+            ALTER TABLE `promouter`
+                ADD `page` varchar(64) AFTER `homepage`,
+                ADD `genress` varchar(256) AFTER `homepage`,
+                ADD `experience` varchar(128) AFTER `homepage`,
+                ADD `f_artists` varchar(256) AFTER `homepage`,
+                ADD `company_id` varchar(256) AFTER `homepage`,
+                ADD KEY `fk_promoter_companies` (`company_id`),
+                ADD CONSTRAINT `fk_promoter_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        .
+2016/11/10 15:06:35 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'boogi_dev.promouter' doesn't exist in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(16): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(415): m161110_124931_add_column_to_table_promouter->up()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(109): MigrateCommand->migrateUp('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionUp(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---
+2016/11/10 15:06:35 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'boogi_dev.promouter' doesn't exist in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(16): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(415): m161110_124931_add_column_to_table_promouter->up()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(109): MigrateCommand->migrateUp('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionUp(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---
+2016/11/10 15:07:26 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY000]: General error: 1215 Cannot add foreign key constraint. The SQL statement executed was: 
+            ALTER TABLE `promoter`
+                ADD `page` varchar(64) AFTER `homepage`,
+                ADD `genress` varchar(256) AFTER `homepage`,
+                ADD `experience` varchar(128) AFTER `homepage`,
+                ADD `f_artists` varchar(256) AFTER `homepage`,
+                ADD `company_id` varchar(256) AFTER `homepage`,
+                ADD KEY `fk_promoter_companies` (`company_id`),
+                ADD CONSTRAINT `fk_promoter_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        .
+2016/11/10 15:07:26 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY000]: General error: 1215 Cannot add foreign key constraint. The SQL statement executed was: 
+            ALTER TABLE `promoter`
+                ADD `page` varchar(64) AFTER `homepage`,
+                ADD `genress` varchar(256) AFTER `homepage`,
+                ADD `experience` varchar(128) AFTER `homepage`,
+                ADD `f_artists` varchar(256) AFTER `homepage`,
+                ADD `company_id` varchar(256) AFTER `homepage`,
+                ADD KEY `fk_promoter_companies` (`company_id`),
+                ADD CONSTRAINT `fk_promoter_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        .
+2016/11/10 15:07:26 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[HY000]: General error: 1215 Cannot add foreign key constraint in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(16): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(415): m161110_124931_add_column_to_table_promouter->up()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(109): MigrateCommand->migrateUp('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionUp(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---
+2016/11/10 15:07:26 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[HY000]: General error: 1215 Cannot add foreign key constraint in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(16): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(415): m161110_124931_add_column_to_table_promouter->up()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(109): MigrateCommand->migrateUp('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionUp(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---
+2016/11/10 15:20:35 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'company_id'. The SQL statement executed was: 
+            ALTER TABLE `promoter`
+                ADD `page` varchar(64) AFTER `homepage`,
+                ADD `genress` varchar(256) AFTER `homepage`,
+                ADD `experience` varchar(128) AFTER `homepage`,
+                ADD `f_artists` varchar(256) AFTER `homepage`,
+                ADD `company_id` int(11) AFTER `homepage`,
+                ADD KEY `fk_promoter_companies` (`company_id`),
+                ADD CONSTRAINT `fk_promoter_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        .
+2016/11/10 15:20:35 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'company_id'. The SQL statement executed was: 
+            ALTER TABLE `promoter`
+                ADD `page` varchar(64) AFTER `homepage`,
+                ADD `genress` varchar(256) AFTER `homepage`,
+                ADD `experience` varchar(128) AFTER `homepage`,
+                ADD `f_artists` varchar(256) AFTER `homepage`,
+                ADD `company_id` int(11) AFTER `homepage`,
+                ADD KEY `fk_promoter_companies` (`company_id`),
+                ADD CONSTRAINT `fk_promoter_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        .
+2016/11/10 15:20:35 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'company_id' in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(16): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(415): m161110_124931_add_column_to_table_promouter->up()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(109): MigrateCommand->migrateUp('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionUp(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---
+2016/11/10 15:20:35 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'company_id' in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(16): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(415): m161110_124931_add_column_to_table_promouter->up()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(109): MigrateCommand->migrateUp('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionUp(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---
+2016/11/10 15:25:22 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1091 Can't DROP 'fk_promoter_companies'; check that column/key exists. The SQL statement executed was: 
+            ALTER TABLE `promoter`
+                DROP `page`,
+                DROP `genress`,
+                DROP `experience`,
+                DROP `f_artists`,
+                DROP `company_id`,
+                DROP FOREIGN KEY `fk_promoter_companies`,
+                DROP KEY `company_id`
+        .
+2016/11/10 15:25:22 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1091 Can't DROP 'fk_promoter_companies'; check that column/key exists. The SQL statement executed was: 
+            ALTER TABLE `promoter`
+                DROP `page`,
+                DROP `genress`,
+                DROP `experience`,
+                DROP `f_artists`,
+                DROP `company_id`,
+                DROP FOREIGN KEY `fk_promoter_companies`,
+                DROP KEY `company_id`
+        .
+2016/11/10 15:25:22 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1091 Can't DROP 'fk_promoter_companies'; check that column/key exists in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(30): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(440): m161110_124931_add_column_to_table_promouter->down()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(145): MigrateCommand->migrateDown('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionDown(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---
+2016/11/10 15:25:22 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1091 Can't DROP 'fk_promoter_companies'; check that column/key exists in /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/db/CDbCommand.php:358
+Stack trace:
+#0 /home/workpcv/www/boogi/admin/protected/migrations/m161110_124931_add_column_to_table_promouter.php(30): CDbCommand->execute()
+#1 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(440): m161110_124931_add_column_to_table_promouter->down()
+#2 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/cli/commands/MigrateCommand.php(145): MigrateCommand->migrateDown('m161110_124931_...')
+#3 [internal function]: MigrateCommand->actionDown(Array)
+#4 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#5 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php(71): CConsoleCommand->run(Array)
+#6 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/base/CApplication.php(184): CConsoleApplication->processRequest()
+#8 /home/workpcv/www/boogi/vendor/yiisoft/yii/framework/yiic.php(33): CApplication->run()
+#9 /home/workpcv/www/boogi/admin/protected/yiic.php(44): require_once('/home/workpcv/w...')
+#10 /home/workpcv/www/boogi/admin/protected/yiic(4): require_once('/home/workpcv/w...')
+#11 {main}
+---

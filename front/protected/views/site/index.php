@@ -11,6 +11,8 @@
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/library/markerclusterer.min.js"></script>
 <?php endif; ?>
 
+<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/library/vanilla-masker.js"></script>
+
 <div id="loader">
     <div><div></div></div>
 </div>

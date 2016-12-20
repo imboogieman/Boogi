@@ -6,7 +6,7 @@ defined('DOC_ROOT') or define('DOC_ROOT', realpath(dirname(__FILE__) . DS . '..'
 
 // Log path
 if (!defined('LOG_PATH')) {
-    $path = realpath(DOC_ROOT . '/../../log/');
+    $path = realpath(DOC_ROOT . '/../../log_dev/');
     if ($path !== false && is_dir($path)) {
         define('LOG_PATH', $path);
     } else {

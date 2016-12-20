@@ -30,6 +30,7 @@ YUI.add('site-view', function(Y) {
                 case '404':
                 case 'team':
                 case 'terms':
+                case 'privacy':
                 case 'about':
                 case 'pricing':
                 case 'contact':
