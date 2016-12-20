@@ -232,7 +232,7 @@ YUI.add('base-app', function(Y) {
         registerHandlebarPartials: function() {
             Y.Array.each([
                 'features', 'footer', 'pricing', 'statuses',
-                'artist-booking', 'promoter-booking', 'promoter-profile-booking'
+                'artist-booking', 'promoter-booking', 'promoter-profile-booking', 'promoter-profile-booking-past'
             ], function(name) {
                 Y.Handlebars.registerPartial(name, Y.one('#t-' + name + '-partial').getHTML());
             });

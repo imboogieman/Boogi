@@ -366,8 +366,8 @@ class ArtistController extends Controller
         }
 
         // Clean all artist related caches
-//        Cache::clean(Cache::GIG_NS);
-//        Cache::clean(Cache::MESSAGE_NS);
+        Cache::clean(Cache::GIG_NS);
+        Cache::clean(Cache::MESSAGE_NS);
 
         $this->renderJSON(array(
             'result'        => ApiStatus::SUCCESS,

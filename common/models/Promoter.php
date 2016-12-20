@@ -83,6 +83,8 @@ class Promoter extends Model
             array('id, is_approved, name, latitude, longitude, radius, fb_id', 'safe', 'on' => 'search'),
             array('address', 'length', 'max' => 255),
             array('homepage', 'length', 'max' => 255),
+            array('facebook', 'length', 'max' => 255),
+            array('facebook_name', 'length', 'max' => 255),
             array('description', 'type', 'type'=>'string'),
             array('page', 'length', 'max' => 64),
             array('genres', 'length', 'max' => 256),
@@ -236,7 +238,7 @@ class Promoter extends Model
                 $company                = new Companies;
                 $company->promoter_id   = $this->id;
                 $company->name          = $this->_related_params['c_name'];
-                $company->category      = $this->_related_params['category'];
+//                $company->category      = $this->_related_params['category'];
                 $company->address       = $this->_related_params['c_address'];
                 $company->founding_date = $this->_related_params['founding_date'];
                 $company->phone         = $this->_related_params['phone'];

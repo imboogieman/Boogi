@@ -12,7 +12,7 @@ class m161111_080753_create_new_table_companies extends CDbMigration
               `category` varchar(64) NOT NULL,
               `address` varchar(128),
               `founding_date` date,
-              `phone` int(11) NOT NULL,
+              `phone` int(13) NOT NULL,
               `website` varchar(64),
               `description` text,
               `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

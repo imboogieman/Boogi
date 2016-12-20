@@ -111,9 +111,10 @@
 							<span class="error" id="fb-email-error"></span>
 						</div>
 
-						<div class="row">
+						<div class="row pass">
 							<label for="fb-password">Password<span class="red">*</span></label><br />
 							<input type="password" id="fb-password" name="fb-password" class="input required" value="" />
+							<i class="eye"></i>
 							<span class="error" id="fb-password-error"></span>
 						</div>
 
@@ -125,7 +126,7 @@
 
 						<div class="row buttons">
 							<input data-target="conpany-detail"
-							data-current="user-account" type="button" id="next" name="next" class="button disabled" value="Next" />
+							data-current="user-account" type="button" name="next" class="button disabled" value="Next" />
 						</div>
 					</div>
 
@@ -142,17 +143,17 @@
 							<span class="error" id="conmpany-name-error"></span>
 						</div>
 
-						<div class="row">
-							<label for="categories">Category<span class="red">*</span></label><br />
-							<div id="categories" class="dropdown none">
-								<button class="btn btn-default dropdown-toggle" type="button">
-									<span class="val">select</span>
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu"></ul>
-							</div>
-							<span class="error" id="categories-error"></span>
-						</div>
+						<!--<div class="row">-->
+							<!--<label for="categories">Category<span class="red">*</span></label><br />-->
+							<!--<div id="categories" class="dropdown none">-->
+								<!--<button class="btn btn-default dropdown-toggle" type="button">-->
+									<!--<span class="val">select</span>-->
+									<!--<span class="caret"></span>-->
+								<!--</button>-->
+								<!--<ul class="dropdown-menu"></ul>-->
+							<!--</div>-->
+							<!--<span class="error" id="categories-error"></span>-->
+						<!--</div>-->
 
 						<div class="row">
 							<label for="address-company">Address</label><br />
@@ -179,15 +180,9 @@
 							<span class="error" id="website-error"></span>
 						</div>
 
-						<div class="row">
-							<label for="description">Description</label><br />
-							<textarea id="description" name="description"></textarea>
-							<span class="error" id="description-error"></span>
-						</div>
-
 						<div class="row buttons">
 							<input data-target="genres-artist"
-							data-current="conpany-detail" type="button" id="next" name="next" class="button disabled" value="Next" />
+							data-current="conpany-detail" type="button" name="next" class="button" value="Next" />
 						</div>
 					</div>
 
@@ -213,6 +208,12 @@
 							<input type="text" id="experience" name="experience" class="input" value=""
 								placeholder="optional, to prove your experience"/>
 							<span class="error" id="experience-error"></span>
+						</div>
+
+						<div class="row">
+							<label for="description">Description</label><br />
+							<textarea id="description" name="description"></textarea>
+							<span class="error" id="description-error"></span>
 						</div>
 
 						<div class="row buttons">

@@ -212,15 +212,16 @@ class UserController extends Controller
         $lng = $request->getPost( 'lng' );
         $radius = $request->getPost( 'radius' );
         $fArtists = $request->getPost( 'fArtists' );
+        $to_track_arr = json_decode($request->getPost( 'to_track_arr' ));
         $cName = $request->getPost( 'cName' );
-        $category = $request->getPost( 'category' );
+//        $category = $request->getPost( 'category' );
         $cAddress = $request->getPost( 'cAddress' );
         $foundingDate = $request->getPost( 'foundingDate' );
         $phone = $request->getPost( 'phone' );
         $website = $request->getPost( 'website' );
         $description = $request->getPost( 'description' );
 
-        $account = isset($request->cookies['account']) ? $request->cookies['account'] : null;
+        $account = null;//isset($request->cookies['account']) ? $request->cookies['account'] : null;
 
         // Check already registered user
         $user = User::model()->with('promoters')->find('email = :email or fb_id = :fb_id',
@@ -234,6 +235,7 @@ class UserController extends Controller
                 } else {
                     $promoter = new Promoter;
                 }
+
                 $promoter->attributes = array(
                     'name'      => $cName,
                     'latitude'  => $lat !== '' ? $lat : Model::getDefaultLatitude(),
@@ -241,6 +243,8 @@ class UserController extends Controller
                     'radius'    => $radius,
                     'address'   => $address,
                     'fb_id'     => $fbId,
+                    'facebook'  => 'http://facebook.com/profile.php?id='.$fbId,
+                    'facebook_name' => $cName,
                     'homepage'  => $website,
                     'description' => $description,
                     'page'      => $page,
@@ -254,7 +258,7 @@ class UserController extends Controller
                     'role'      => $role,
                     'create_date' => date('Y-m-d'),
                     'c_name'      => $name,
-                    'category'  => $category,
+//                    'category'  => $category,
                     'c_address'   => $cAddress,
                     'founding_date' => date('Y-m-d', strtotime($foundingDate)),
                     'phone' => $phone,
@@ -265,6 +269,7 @@ class UserController extends Controller
                 if ($promoter->save()) {
                     $promoter->user->login();
 
+                    $this->_artistsToTrack($promoter, $to_track_arr);
                     if ($account = Promoter::getByAccount($account)) {
                         PromoterApi::updateByAccount($account);
                     } else {
@@ -274,11 +279,12 @@ class UserController extends Controller
                     $result = array(
                         'result'    => ApiStatus::SUCCESS,
                         'data'      => $promoter->user->getNormalizedData(true, true),
-                        'message'   => $account ?
-                            'Your booking request has just been send.<br />
-                             Booked artist will be likely to respond positively, if you fill up your profile
-                             with true and up-to-date information.<br />
-                             Please, take time to fill up your profile.' : ''
+                        'message'   => ''
+//                        'message'   => $account ?
+//                            'Your booking request has just been send.<br />
+//                             Booked artist will be likely to respond positively, if you fill up your profile
+//                             with true and up-to-date information.<br />
+//                             Please, take time to fill up your profile.' : ''
                     );
                 } else {
                     $result = array(
@@ -321,6 +327,89 @@ class UserController extends Controller
         }
 
         $this->renderJSON($result);
+    }
+
+    protected function _artistsToTrack($promoter, $to_track_arr) {
+        $isNewRelation = false;
+
+        foreach($to_track_arr as $item_to_track) {
+            // Check follow type
+            switch ( $item_to_track->follow_type ) {
+                case 'promoter':
+                    $event_type = Event::FOLLOW_PROMOTER;
+                    $item       = Promoter::model()->findByPk( $item_to_track->follow_id );
+                    if ( ! $item ) {
+                        break;
+                    }
+
+                    $relation = PromoterPromoter::model()->find(
+                        'promoter_id = :promoter_id AND follow_id = :follow_id',
+                        array(
+                            ':promoter_id' => $promoter->id,
+                            ':follow_id'   => $item->id,
+                        )
+                    );
+
+                    if ( ! $relation ) {
+                        $isNewRelation         = true;
+                        $relation              = new PromoterPromoter;
+                        $relation->promoter_id = $promoter->id;
+                        $relation->follow_id   = $item->id;
+                    }
+                    break;
+                default:
+                    $event_type = Event::FOLLOW_ARTIST;
+                    $item       = Artist::model()->findByPk( $item_to_track->follow_id );
+                    if ( ! $item ) {
+                        break;
+                    }
+
+                    $relation = ArtistPromoter::model()->find(
+                        'promoter_id = :promoter_id AND artist_id = :artist_id',
+                        array(
+                            ':promoter_id' => $promoter->id,
+                            ':artist_id'   => $item->id,
+                        )
+                    );
+
+                    if ( ! $relation ) {
+                        $isNewRelation         = true;
+                        $relation              = new ArtistPromoter;
+                        $relation->promoter_id = $promoter->id;
+                        $relation->artist_id   = $item->id;
+                    }
+                    break;
+            }
+
+            if ( $item ) {
+                if ( $isNewRelation ) {
+                    if ( $relation->save() ) {
+                        // Create event
+                        $promoter->getOrCreateEvent( $event_type, $item );
+                        Yii::app()->cache->delete( 'dashboard-' . $promoter->id );
+
+                        $result['to_track'][$item_to_track->follow_id]['result'] = ApiStatus::SUCCESS;
+                    } else {
+                        $result['to_track'][$item_to_track->follow_id] = array(
+                            'result' => ApiStatus::INVALID,
+                            'errors' => $relation->getErrors()
+                        );
+                    }
+                } else {
+                    $result['to_track'][$item_to_track->follow_id] = array(
+                        'result'  => ApiStatus::ERROR,
+                        'message' => 'You already following this artist'
+                    );
+                }
+            } else {
+                $result['to_track'][$item_to_track->follow_id] = array(
+                    'result'  => ApiStatus::ERROR,
+                    'message' => 'Cant find following item'
+                );
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -483,8 +572,9 @@ class UserController extends Controller
         // Get request
         $request = Yii::app()->request;
 
-        $limit = 5;
-        $result = ArtistApi::getRecomendedArtist($limit);
+        $from = $request->getPost('from');
+        $count = $request->getPost('to');
+        $result = ArtistApi::getRecomendedArtist($from, $count);
         if ($result) {
             $result = array(
                 'result' => ApiStatus::SUCCESS,

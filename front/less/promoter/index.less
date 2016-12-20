@@ -7,8 +7,10 @@
     background: @white;
 
     h1 {
-      font-size: 24pt;
+      font-size: 34px;
       font-weight: 600;
+      line-height: 34px;
+      margin-top: 30px;
 
       .back {
         float: right;
@@ -43,8 +45,8 @@
         font-size: 11pt;
 
         .wrap {
-          padding: 20px 30px;
-
+          padding: 15px 30px 20px;
+          text-align: center;
           h3 {
             font-size: 11pt;
             margin-bottom: 10px;
@@ -68,21 +70,53 @@
             margin-top: 10px;
             padding-right: 20px;
             background: url(@images + 'icon/i-approved.png') no-repeat center right;
+            line-height: 22px;
+            background-position-y: 4px;
           }
 
-          #facebook {
-            padding-left: 22px;
+          #address {
+            h3 {
+              margin-bottom: 0;
+            }
+          }
+
+          #social {
+            margin-top: 20px;
+            a {
+              text-decoration: none;
+              width: 16px;
+              height: 16px;
+              margin-left: 10px;
+
+              &:hover {
+                text-decoration: none;
+              }
+
+              &:after {
+                content: "";
+                display: inline-block;
+                position: relative;
+                width: 16px;
+                height: 16px;
+                top: 3px;
+              }
+            }
+          }
+
+          #facebook:after {
             background: url(@images + 'icon/i-facebook.png') no-repeat center left;
           }
-
-          #twitter {
-            padding-left: 22px;
+          #twitter:after {
             background: url(@images + 'icon/i-twitter.png') no-repeat center left;
+          }
+          #homepage:after {
+            background: url(@images + 'icon/i-www.png') no-repeat center left;
           }
 
           #abuse {
             margin: 30px 15px;
             padding-left: 22px;
+            display: inline-block;
             background: url(@images + 'icon/i-report.png') no-repeat center left;
           }
 
@@ -91,6 +125,8 @@
             max-width: 250px;
             max-height: 250px;
             overflow: hidden;
+            margin: 0 auto;
+            display: inline-block;
 
             img {
               width: 100%;
@@ -123,15 +159,51 @@
             }
           }
 
+          #info {
+            > h3 {
+              color: @grey;
+            }
+          }
+
+          #promoter-active-gigs {
+            .gig {
+              .date {
+                float      : left;
+                width      : 50px;
+                text-align : center;
+                font-size  : 14px;
+                outline    : 1px solid @blue;
+                box-sizing : border-box;
+
+                &:hover {
+                  cursor: pointer;
+                }
+
+                p.month {
+                  margin      : 0;
+                  line-height : 25px;
+                  background  : @blue;
+                  color       : @white;
+                }
+
+                p.day {
+                  margin      : 0;
+                  line-height : 25px;
+                }
+              }
+
+              h2 {
+                float: left;
+                margin: 0 0 0 10px;
+                line-height: 50px;
+              }
+            }
+          }
+
           .booking {
             padding: 10px 15px;
             font-size: 11pt;
-            border: 1px solid @light-grey;
             border-bottom: none;
-
-            &:last-child {
-              border-bottom: 1px solid @light-grey;
-            }
 
             .image {
               float: left;
@@ -143,6 +215,10 @@
               img {
                 width: 40px;
               }
+            }
+
+            .event-name {
+              color: @blue;
             }
 
             .date {
@@ -157,6 +233,10 @@
                 display: inline-block;
                 margin: 0 5px 0 0;
                 font-size: 11pt;
+              }
+
+              h2 {
+                color: @dark-grey;
               }
 
               .description {

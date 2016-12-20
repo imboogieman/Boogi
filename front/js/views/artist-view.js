@@ -46,7 +46,8 @@ YUI.add('artist-view', function(Y) {
                     this.model.getGig(this.get('gig'));
                     this.model.once('artist:show-gig', Y.bind(function(e) {
                         var gig = e.gig;
-                        this.show(this.get('id'), this.get('alias'), gig);
+                        var center = new google.maps.LatLng(gig.venue.latitude, gig.venue.longitude);
+                        this.show(this.get('id'), this.get('alias'), gig, center);
                     }, this));
                     break;
                 default:
@@ -124,7 +125,7 @@ YUI.add('artist-view', function(Y) {
             }, this));
         },
 
-        show: function(id, alias, selected_gig) {
+        show: function(id, alias, selected_gig, center) {
             if (sessionStorage.artistCount) {
                 sessionStorage.artistCount = sessionStorage.artistCount*1+1;
             } else {
@@ -186,6 +187,11 @@ YUI.add('artist-view', function(Y) {
 
                 // Bind calendar events
                 this.bindCalendarEvents();
+
+                if (center) {
+                    this.map.panTo(center);
+                    this.map.panBy(this.offsetCenter.x, this.offsetCenter.y);
+                }
             }, this));
         },
 

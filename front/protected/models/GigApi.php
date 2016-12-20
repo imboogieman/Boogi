@@ -231,7 +231,7 @@ class GigApi extends Api
             'datetime_from' => $gig['datetime_from'],
             'datetime_to'   => $gig['datetime_to'],
             'timezone'      => TZInfo::get($gig['timezone']),
-            'date'          => date('M, j Y', $datetime),
+            'date'          => date('d.m.Y', $datetime),
             'month'         => date('M', $datetime),
             'day'           => date('j', $datetime),
             'start_time'    => $start_time ? min($start_time) : '',

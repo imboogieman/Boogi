@@ -51,7 +51,7 @@
 
                         {{#if promoter.address}}
                             <div id="address" class="push">
-                                <h3>Location</h3>
+                                <h3><strong>Location</strong></h3>
 
                                 {{promoter.address}}
                             </div>
@@ -59,24 +59,18 @@
 
                         {{#if promoter.social}}
                             <div id="social" class="push">
-                                <h3>Social</h3>
+                                <strong>Social:</strong>
 
                                 {{#if promoter.facebook}}
-                                    <div id="facebook">
-                                        <a href="{{promoter.facebook}}" class="external">{{promoter.facebook_name}}</a>
-                                    </div>
+                                    <a id="facebook" href="{{promoter.facebook}}" class="external"></a>
                                 {{/if}}
 
                                 {{#if promoter.twitter}}
-                                    <div id="twitter">
-                                        <a href="{{promoter.twitter}}" class="external">{{promoter.twitter_name}}</a>
-                                    </div>
+                                    <a id="twitter" href="{{promoter.twitter}}" class="external"></a>
                                 {{/if}}
 
                                 {{#if promoter.homepage}}
-                                    <div id="homepage">
-                                        <a href="{{promoter.homepage}}" class="external">{{promoter.homepage_name}}</a>
-                                    </div>
+                                    <a id="homepage" href="{{promoter.homepage}}" class="external"></a>
                                 {{/if}}
                             </div>
                         {{/if}}
@@ -119,7 +113,7 @@
                             <h3>Booking History</h3>
                             <div id="promoter-past-gigs">
                                 {{#promoter.gigs.past}}
-                                    {{> promoter-profile-booking }}
+                                    {{> promoter-profile-booking-past }}
                                 {{else}}
                                     <div class="empty">
                                         There are no past events for this promoter.
@@ -139,28 +133,44 @@
 <script type="text/x-handlebars-template" id="t-promoter-profile-booking-partial">
     <div class="booking" data-id="{{id}}">
         {{#bookings}}
-            <div class="image">
-                <img src="{{artist_thumb}}" />
-            </div>
-            <div class="name">
-                <h3>{{artist_name}}</h3>
-                <span class="description">{{artist_description}}</span>
-            </div>
-            <div class="date">{{../date}}</div>
-
-            <br />
-
             <div class="gig">
-                Event: &laquo;{{../name}}&raquo;
-                <span class="venue">
-                Place: &laquo;{{../venue.name}}&raquo;
-                {{#if ../venue.city}}
-                    ({{../../venue.city}}{{#if ../../venue.country}}, {{../../../venue.country}}{{/if}})
-                {{/if}}
-                </span>
+                <div class="date">
+                    <p class="month">{{../month}}</p>
+                    <p class="day">{{../day}}</p>
+                </div>
+                <h2>{{../name}}</h2>
             </div>
 
             <div class="clear"></div>
+        {{/bookings}}
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="t-promoter-profile-booking-past-partial">
+    <div class="booking" data-id="{{id}}">
+        {{#bookings}}
+        <div class="image">
+            <img src="{{artist_thumb}}" />
+        </div>
+        <div class="name">
+            <h3>{{artist_name}}</h3>
+            <span class="description">{{artist_description}}</span>
+        </div>
+        <div class="date">{{../date}}</div>
+
+        <br />
+
+        <div class="gig">
+            Event: <span class="event-name">&laquo;{{../name}}&raquo;</span>
+            <span class="venue">
+                Place: &laquo;{{../venue.name}}&raquo;
+                {{#if ../venue.city}}
+                    in {{../../venue.city}}{{#if ../../venue.country}}, {{../../../venue.country}}{{/if}}
+                {{/if}}
+                </span>
+        </div>
+
+        <div class="clear"></div>
         {{/bookings}}
     </div>
 </script>

@@ -47,14 +47,17 @@ YUI.add('user-model', function(Y) {
             this.getData('/api/user/fbregister', {}, callback, this, true);
         },
 
-        getRecommendedArtists: function () {
+        getRecommendedArtists: function (from, to, mode) {
             var callback = Y.bind(function (response) {
                 if (response.result == this.apiStatus.SUCCESS) {
-                    this.fire('user:get-artists', { response: response });
+                    if (mode === 'first') {
+                        this.fire('user:get-artists', {response: response});
+                    } else if (mode === 'next') {
+                        this.fire('user:get-artists-next', {response: response});
+                    }
                 }
             }, this);
-
-            this.getData('/api/user/getrecommendedart', {}, callback, this, true);
+            this.getData('/api/user/getrecommendedart', {from: from, to: to}, callback, this, true);
         },
 
         restore: function(data) {
