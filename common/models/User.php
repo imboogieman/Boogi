@@ -225,7 +225,7 @@ class User extends Model
         );
 
         if ($required) {
-//            $data['artist']     = $this->artist() ? $this->artist()->getNormalizedData($follow) : false;
+            $data['artist']     = $this->artist() ? $this->artist()->getNormalizedData($follow) : false;
             $data['promoter']   = $this->promoter() ? $this->promoter()->getNormalizedData($follow) : false;
         }
 
