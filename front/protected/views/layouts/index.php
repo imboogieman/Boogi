@@ -58,15 +58,16 @@ $base = Yii::app()->request->baseUrl;
         <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="<?php echo $base; ?>/images/favicon/ie.ico" />
         <link rel="image_src" href="<?php echo $base; ?>/images/favicon/114.png">
 
-        <link href="http://cdn.alloyui.com/3.0.1/aui-css/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" />
+<!--        <link href="http://cdn.alloyui.com/3.0.1/aui-css/css/bootstrap.min.css" rel="stylesheet" />-->
+        <link rel="stylesheet" type="text/css" href="<?php echo $base; ?>/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" />
         <link rel="stylesheet" type="text/css" href="<?php echo Less::getLink(); ?>" />
 
         <script type="text/javascript">
             window.appConfig = <?php echo \CJSON::encode($config); ?>;
         </script>
 
-        <script src="http://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script>
+        <script src="<?php echo $base; ?>/js/aui-min.js"></script>
         <?php if (Yii::app()->params['isDebug']): ?>
             <script type="text/javascript" src="<?php echo $base; ?>/js/index.js"></script>
         <?php else: ?>

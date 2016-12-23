@@ -616,7 +616,7 @@ YUI.add('user-view', function(Y) {
             var data = {
                 page: form.one('#pages .dropdown-toggle .val').getHTML(),
                 name: form.one('#f-name').get('value') + ' ' + form.one('#l-name').get('value'),
-                fbId: pages[form.one('#pages').getData('val')].id,
+                fbId: pages[form.one('#pages').getData('val')] ? pages[form.one('#pages').getData('val')].id : '',
                 email: form.one('#fb-email').get('value'),
                 pass: form.one('#fb-password').get('value'),
                 genres: genres,

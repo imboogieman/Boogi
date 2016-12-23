@@ -76,7 +76,7 @@ return array(
         'isDebug'       => false,
         'sendEmail'     => true,
         'emailTestMode' => false,
-        'baseUrl'       => 'http://dev.boogi.co/',
+        'baseUrl'       => 'https://dev.boogi.co/',
 
         'adminEmail'    => 'info@dev.boogi.co',
         'adminName'     => 'Boogi Admin',

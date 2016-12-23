@@ -94,8 +94,8 @@ return array(
         'enableCache'   => true,
         'emailTestMode' => false,
 
-        'baseUrl'       => 'http://dev.boogi.co/',
-        'adminUrl'      => 'http://admin.dev.boogi.co/',
+        'baseUrl'       => 'https://dev.boogi.co/',
+        'adminUrl'      => 'https://admin.dev.boogi.co/',
 
         'adminEmail'    => 'info@dev.boogi.co',
         'adminName'     => 'Boogi Admin',
