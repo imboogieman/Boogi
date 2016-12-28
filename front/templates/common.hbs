@@ -239,7 +239,7 @@
 
 <script type="text/x-handlebars-template" id="t-s-up-recom-art">
 	{{#each artists}}
-    <div class="artist-item col-50">
+    <div class="artist-item col-50" data-type="{{this.data_type}}" data-id="{{this.data_id}}">
 			<img src="{{image}}" alt="artist"/>
 			<div class="description">
 				<h5>{{this.name}}</h5>
@@ -251,8 +251,22 @@
 	{{/each}}
 </script>
 
+<script type="text/x-handlebars-template" id="t-s-up-recom-art-item">
+    {{#each artists}}
+    <div class="artist-item col-50" data-type="{{this.data_type}}" data-id="{{this.data_id}}">
+        <img src="{{image}}" alt="artist"/>
+        <div class="description">
+            <h5>{{this.name}}</h5>
+            <p class="location">{{this.location}}</p>
+            <p class="genres">genres</p>
+        </div>
+        <i class="cross">&#10005;</i>
+    </div>
+    {{/each}}
+</script>
+
 <script type="text/x-handlebars-template" id="t-s-up-ac-item">
-    <div class="ac-item">
+    <div class="ac-item" data-type="{{data_type}}" data-id="{{data_id}}">
         <img src="{{image}}" alt="artist"/>
 				<div class="description">
 					<h5>{{name}}</h5>

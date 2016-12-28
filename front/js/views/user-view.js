@@ -703,8 +703,8 @@ YUI.add('user-view', function(Y) {
                         var name = e.itemNode.one('h5').getHTML();
                         var location = e.itemNode.one('.location').getHTML();
                         var image = e.itemNode.one('img').get('src');
-                        var dataType = e.itemNode.getData('type');
-                        var dataId = e.itemNode.getData('id');
+                        var dataType = e.itemNode.one('.ac-item').getData('type');
+                        var dataId = e.itemNode.one('.ac-item').getData('id');
                         if (name !== 'Artist not finded') {
                             var source   = Y.one('#t-s-up-recom-art').getHTML(),
                                 template = Y.Handlebars.compile(source),
