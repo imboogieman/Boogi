@@ -470,6 +470,35 @@ class UserController extends Controller
     }
 
     /**
+     *
+     */
+    public function actionInstagram()
+    {
+        $request = Yii::app()->request;
+        $code = $request->getQuery('code', null);
+        $profile = null;
+
+        if ($code) {
+            var_dump($code);die;
+        }
+
+        $session=new CHttpSession;
+        $session->open();
+        if ($session['insttoken']) {
+            $result = array(
+                'result'  => ApiStatus::SUCCESS,
+                'message' => 'Your account was succesfully switched',
+            );
+        } else {
+            $result = array(
+                'result'    => ApiStatus::INVALID,
+                'errors'    => 'Not registered by instagram'
+            );
+        }
+//        $this->renderJSON($result);
+    }
+
+    /**
      * Get calling code
      */
     public function actionGetcallingcode() {

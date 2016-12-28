@@ -41,7 +41,7 @@ $configTest = require_once DOC_ROOT . '/protected/config/test-local.php';
 $config = CMap::mergeArray($configMain, $configTest);
 
 // Test set up
-require_once DOC_ROOT . '/protected/tests/WebTestCase.php';
+//require_once DOC_ROOT . '/protected/tests/WebTestCase.php';
 
 // Run application
 Yii::createWebApplication($config);

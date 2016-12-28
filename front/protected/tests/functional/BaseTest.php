@@ -53,20 +53,6 @@ class BaseTest extends WebTestCase
     /**
      * @group Pages
      */
-//    public function testUpgrade()
-//    {
-//        // Go to Upgrade page
-//        $this->url('/upgrade');
-//        $this->timeout();
-//
-//        // Check Upgrade page title
-//        $header = $this->byCssSelector('h1');
-//        $this->stringContains('Upgrade Your Account', $header->text());
-//    }
-
-    /**
-     * @group Pages
-     */
     public function testTC()
     {
         //  Go to TC page
